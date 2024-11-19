@@ -88,10 +88,11 @@
                 android:text="+91" />
 
             <EditText
-                android:id="@+id/et_password"
+                android:id="@+id/et_mobile_number"
                 style="@style/EditTextStyle"
+                android:autofillHints="phone"
                 android:imeOptions="actionDone"
-                android:inputType="textPassword"
+                android:inputType="numberDecimal"
                 android:maxLength="250" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

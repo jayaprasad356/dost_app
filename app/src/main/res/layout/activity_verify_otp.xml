@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_blue"
+    android:padding="16dp"
+    tools:context=".activities.LoginActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <TextView
+        android:id="@+id/tl_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_to_get_started"
+        android:textColor="@color/white"
+        android:textSize="26sp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gl_top_margin" />
+
+    <TextView
+        android:id="@+id/tv_otp_mobile_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/please_enter_otp_sent_to"
+        android:layout_marginTop="14dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tl_title" />
+
+    <TextView
+        android:id="@+id/tv_enter_otp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_otp"
+        android:layout_marginTop="14dp"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_otp_mobile_number" />
+
+    <com.chaos.view.PinView
+        android:id="@+id/pv_otp"
+        app:itemCount="6"
+        app:itemWidth="45dp"
+        app:itemHeight="45dp"
+        app:itemSpacing="15dp"
+        android:gravity="center"
+        android:layout_marginTop="14dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:itemBackground="#321a56"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:inputType="number"
+        android:cursorVisible="true"
+        app:hideLineWhenFilled="true"
+        app:itemRadius="13dp"
+        app:lineColor="@color/white"
+        app:lineWidth="1dp"
+        style="@style/PinWidget.PinView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_enter_otp" />
+
+    <TextView
+        android:id="@+id/tv_didnt_received_otp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/didnt_receive_the_otp"
+        android:layout_marginTop="54dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pv_otp" />
+
+    <com.gmwapp.dostt.widgets.DButton
+        android:id="@+id/btn_resend_otp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.35"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:background="@drawable/d_button_bg_white"
+        android:padding="8dp"
+        android:text="@string/resend_otp"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/tv_didnt_received_otp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.gmwapp.dostt.widgets.DButton
+        android:id="@+id/btn_verify_otp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/d_button_bg"
+        android:padding="8dp"
+        android:text="@string/verify_otp"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
