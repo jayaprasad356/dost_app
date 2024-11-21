@@ -1,0 +1,48 @@
+package com.gmwapp.dostt.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.gmwapp.dostt.databinding.FragmentHomeBinding
+
+
+class HomeFragment : BaseFragment() {
+    private var isAllFabVisible: Boolean = false
+    lateinit var binding: FragmentHomeBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentHomeBinding.inflate(layoutInflater)
+
+        initFab()
+        return binding.root
+    }
+
+    fun initFab(){
+        binding.fabRandom.shrink()
+        binding.fabRandom.setOnClickListener {
+            if (!isAllFabVisible) {
+                binding.fabAudio.show()
+                binding.fabVideo.show()
+                binding.tvAudio.setVisibility(View.VISIBLE)
+                binding.tvVideo.setVisibility(View.VISIBLE)
+
+                binding.fabRandom.extend()
+                isAllFabVisible = true
+            } else {
+                binding.fabAudio.hide()
+                binding.fabVideo.hide()
+                binding.tvAudio.setVisibility(View.GONE)
+                binding.tvVideo.setVisibility(View.GONE)
+
+                binding.fabRandom.shrink()
+
+                isAllFabVisible = false
+            }
+        }
+    }
+}

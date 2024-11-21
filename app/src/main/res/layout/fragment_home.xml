@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_profiles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_audio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/audio_text"
+        app:layout_constraintBottom_toBottomOf="@+id/fab_audio"
+        app:layout_constraintEnd_toStartOf="@+id/fab_audio"
+        app:layout_constraintTop_toTopOf="@+id/fab_audio" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_audio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/colorAccent"
+        android:contentDescription="@string/audio_text"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/fab_video"
+        app:layout_constraintEnd_toEndOf="@+id/fab_video"
+        app:srcCompat="@drawable/audio" />
+
+    <TextView
+        android:id="@+id/tv_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/audio_text"
+        app:layout_constraintBottom_toBottomOf="@+id/fab_video"
+        app:layout_constraintEnd_toStartOf="@+id/fab_video"
+        app:layout_constraintTop_toTopOf="@+id/fab_video" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/colorAccent"
+        android:contentDescription="@string/video"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/fab_random"
+        app:layout_constraintEnd_toEndOf="@+id/fab_random"
+        app:srcCompat="@drawable/video" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_random"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/d_button_bg_blue"
+        app:icon="@drawable/star"
+        app:iconGravity="textTop"
+        android:textColor="@color/white"
+        android:text="@string/random"
+        android:contentDescription="@string/random"
+        android:layout_margin="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
