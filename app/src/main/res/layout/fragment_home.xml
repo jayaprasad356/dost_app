@@ -62,11 +62,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/d_button_bg_blue"
         app:icon="@drawable/star"
-        app:iconGravity="textTop"
+        app:iconGravity="textStart"
+        android:backgroundTint="@color/colorAccent"
         android:textColor="@color/white"
         android:text="@string/random"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended"
         android:contentDescription="@string/random"
         android:layout_margin="16dp" />
 

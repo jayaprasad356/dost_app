@@ -8,17 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.gmwapp.dostt.databinding.ActivityMainBinding
 import com.gmwapp.dostt.databinding.FragmentHomeBinding
+import com.gmwapp.dostt.databinding.FragmentProfileBinding
 
 
 class ProfileFragment : BaseFragment() {
-    lateinit var binding: FragmentHomeBinding
+    lateinit var binding: FragmentProfileBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        binding = FragmentProfileBinding.inflate(layoutInflater)
 
         return binding.root
     }

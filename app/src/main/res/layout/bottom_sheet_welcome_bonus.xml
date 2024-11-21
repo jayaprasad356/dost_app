@@ -48,9 +48,7 @@
             android:src="@drawable/coin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:start="@+id/tl_title"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_bonus_text"
@@ -91,9 +89,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/star"
         app:layout_constraintEnd_toStartOf="@+id/tv_used_by"
-        app:layout_constraintTop_toBottomOf="@+id/cl_coins"
-        app:start="@+id/tl_title"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/cl_coins" />
 
     <TextView
         android:id="@+id/tv_used_by"

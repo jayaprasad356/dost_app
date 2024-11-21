@@ -1,5 +1,6 @@
 package com.gmwapp.dostt.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.Window
@@ -27,6 +28,10 @@ class VerifyOTPActivity : BaseActivity() {
         if(mobileNumber!=null){
             binding.tvOtpMobileNumber.text = getString(R.string.please_enter_otp_sent_to, mobileNumber)
         }
+        binding.btnVerifyOtp.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
 
+        })
     }
 }

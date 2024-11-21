@@ -23,7 +23,7 @@ class HomeFragment : BaseFragment() {
     }
 
     fun initFab(){
-        binding.fabRandom.shrink()
+        binding.fabRandom.extend()
         binding.fabRandom.setOnClickListener {
             if (!isAllFabVisible) {
                 binding.fabAudio.show()
@@ -31,7 +31,7 @@ class HomeFragment : BaseFragment() {
                 binding.tvAudio.setVisibility(View.VISIBLE)
                 binding.tvVideo.setVisibility(View.VISIBLE)
 
-                binding.fabRandom.extend()
+                binding.fabRandom.shrink()
                 isAllFabVisible = true
             } else {
                 binding.fabAudio.hide()
@@ -39,7 +39,7 @@ class HomeFragment : BaseFragment() {
                 binding.tvAudio.setVisibility(View.GONE)
                 binding.tvVideo.setVisibility(View.GONE)
 
-                binding.fabRandom.shrink()
+                binding.fabRandom.extend()
 
                 isAllFabVisible = false
             }
