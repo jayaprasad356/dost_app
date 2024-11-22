@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.gmwapp.dostt.R
 import com.gmwapp.dostt.databinding.BottomSheetWelcomeBonusBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
