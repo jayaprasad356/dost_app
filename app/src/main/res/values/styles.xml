@@ -12,7 +12,7 @@
     </style>
     <style name="ShapeAppearanceOverlayExtended" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">5dp</item>
+        <item name="cornerSize">40dp</item>
     </style>
     <style name="CardViewStyle" parent="CardView">
         <item name="android:layout_height">50dp</item>

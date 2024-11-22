@@ -18,6 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/audio_text"
+        android:visibility="gone"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/fab_audio"
         app:layout_constraintEnd_toStartOf="@+id/fab_audio"
         app:layout_constraintTop_toTopOf="@+id/fab_audio" />
@@ -30,8 +32,11 @@
         android:backgroundTint="#8a3ffe"
         android:contentDescription="@string/audio_text"
         app:fabSize="normal"
+        app:borderWidth="0dp"
+        app:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/fab_video"
         app:layout_constraintEnd_toEndOf="@+id/fab_video"
+        app:iconTint="@color/white"
         app:srcCompat="@drawable/audio" />
 
     <TextView
@@ -40,6 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/audio_text"
+        android:textColor="@color/white"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/fab_video"
         app:layout_constraintEnd_toStartOf="@+id/fab_video"
         app:layout_constraintTop_toTopOf="@+id/fab_video" />
@@ -50,11 +57,15 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:backgroundTint="#8a3ffe"
+        app:borderWidth="0dp"
         android:contentDescription="@string/video"
         app:fabSize="normal"
+        android:elevation="0dp"
         app:layout_constraintBottom_toTopOf="@+id/fab_random"
         app:layout_constraintEnd_toEndOf="@+id/fab_random"
-        app:srcCompat="@drawable/video" />
+        app:tint="@color/white"
+        app:srcCompat="@drawable/video"
+        />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_random"
@@ -65,11 +76,12 @@
         app:icon="@drawable/random"
         app:iconTint="@color/white"
         app:iconGravity="textStart"
+        android:textAllCaps="false"
         android:backgroundTint="#8a3ffe"
         android:textColor="@color/white"
         android:text="@string/random"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended"
         android:contentDescription="@string/random"
-        android:layout_margin="16dp" />
+        android:layout_margin="24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
