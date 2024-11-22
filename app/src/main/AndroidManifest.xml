@@ -25,6 +25,7 @@
         </activity>
         <activity android:name="com.gmwapp.dostt.activities.VerifyOTPActivity" />
         <activity android:name="com.gmwapp.dostt.activities.MainActivity" />
+        <activity android:name="com.gmwapp.dostt.activities.WalletActivity" />
     </application>
 
 </manifest>

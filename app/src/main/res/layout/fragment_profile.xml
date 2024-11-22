@@ -11,10 +11,10 @@
         style="@style/CardViewStyle.Spacing"
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.27"
         app:cardBackgroundColor="@color/black_light"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.27"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -70,9 +70,9 @@
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
         app:cardBackgroundColor="@color/black_light"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.25"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_profile">
 
@@ -97,126 +97,150 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_end="54dp" />
 
-            <ImageView
-                android:id="@+id/iv_wallet"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:contentDescription="@string/edit"
-                android:padding="6dp"
-                android:src="@drawable/wallet"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@+id/gl_margin_1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tv_wallet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/wallet"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/gl_margin_1"
-                app:layout_constraintStart_toEndOf="@+id/iv_wallet"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/iv_wallet"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/edit"
+                    android:padding="6dp"
+                    android:src="@drawable/wallet"
+                    app:tint="@color/white"
+                    tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/iv_wallet_arrow"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/right_arrow"
-                app:tint="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/gl_margin_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/tv_wallet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wallet"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_wallet"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_wallet_arrow"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/right_arrow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
                 android:background="@color/profile_cardview_divider"
-                app:layout_constraintEnd_toEndOf="@+id/iv_wallet_arrow"
-                app:layout_constraintStart_toStartOf="@+id/iv_wallet"
-                app:layout_constraintTop_toBottomOf="@+id/gl_margin_1" />
+                app:layout_constraintEnd_toEndOf="@+id/cl_wallet"
+                app:layout_constraintStart_toStartOf="@+id/cl_wallet"
+                app:layout_constraintTop_toTopOf="@+id/gl_margin_1" />
 
-            <ImageView
-                android:id="@+id/iv_transactions"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:contentDescription="@string/edit"
-                android:padding="6dp"
-                android:src="@drawable/transactions"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_transactions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@+id/gl_margin_2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gl_margin_1"
-                app:tint="@color/white"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toBottomOf="@+id/gl_margin_1">
 
-            <TextView
-                android:id="@+id/tv_transactions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/transactions"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/gl_margin_2"
-                app:layout_constraintStart_toEndOf="@+id/iv_transactions"
-                app:layout_constraintTop_toTopOf="@+id/gl_margin_1" />
+                <ImageView
+                    android:id="@+id/iv_transactions"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/edit"
+                    android:padding="6dp"
+                    android:src="@drawable/transactions"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white"
+                    tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/iv_transactions_arrow"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/right_arrow"
-                app:tint="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/gl_margin_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/gl_margin_1" />
+                <TextView
+                    android:id="@+id/tv_transactions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transactions"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_transactions"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/iv_transactions_arrow"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/right_arrow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
                 android:background="@color/profile_cardview_divider"
-                app:layout_constraintEnd_toEndOf="@+id/iv_transactions_arrow"
-                app:layout_constraintStart_toStartOf="@+id/iv_transactions"
-                app:layout_constraintTop_toBottomOf="@+id/gl_margin_2" />
+                app:layout_constraintEnd_toEndOf="@+id/cl_transactions"
+                app:layout_constraintStart_toStartOf="@+id/cl_transactions"
+                app:layout_constraintTop_toTopOf="@+id/gl_margin_2" />
 
-            <ImageView
-                android:id="@+id/iv_account_privacy"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:contentDescription="@string/edit"
-                android:padding="6dp"
-                android:src="@drawable/account_privacy"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gl_margin_2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:tint="@color/white"
-                tools:ignore="MissingConstraints" />
-
-            <TextView
-                android:id="@+id/tv_account_privacy"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_account_privacy"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/account_privacy"
-                android:textColor="@color/white"
-                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_account_privacy"
-                app:layout_constraintTop_toBottomOf="@+id/gl_margin_2" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gl_margin_2">
 
-            <ImageView
-                android:id="@+id/iv_account_privacy_arrow"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/right_arrow"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gl_margin_2"
-                app:tint="@color/white" />
+                <ImageView
+                    android:id="@+id/iv_account_privacy"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/edit"
+                    android:padding="6dp"
+                    android:src="@drawable/account_privacy"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white"
+                    tools:ignore="MissingConstraints" />
 
+                <TextView
+                    android:id="@+id/tv_account_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_privacy"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_account_privacy"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_account_privacy_arrow"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/right_arrow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -225,10 +249,10 @@
         style="@style/CardViewStyle.Spacing"
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.08"
         app:cardBackgroundColor="@color/black_light"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_profile_options">
 
@@ -244,21 +268,22 @@
                 android:layout_height="18dp"
                 android:contentDescription="@string/edit"
                 android:src="@drawable/logout"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:tint="@color/white"
                 tools:ignore="MissingConstraints" />
+
             <ImageView
                 android:id="@+id/iv_logout_right_arrow"
                 android:layout_width="10dp"
                 android:layout_height="20dp"
+                android:layout_marginStart="13dp"
                 android:contentDescription="@string/edit"
                 android:src="@drawable/logout_right_arrow"
-                android:layout_marginStart="13dp"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintStart_toStartOf="@+id/iv_logout"
                 app:layout_constraintTop_toTopOf="@+id/iv_logout"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:tint="@color/white"
                 tools:ignore="MissingConstraints" />
 
@@ -266,10 +291,10 @@
                 android:id="@+id/tv_logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="@string/logout"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintStart_toEndOf="@+id/iv_logout_right_arrow"
                 app:layout_constraintTop_toTopOf="@+id/iv_logout" />
@@ -279,10 +304,10 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:src="@drawable/right_arrow"
-                app:tint="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/iv_logout" />
+                app:layout_constraintTop_toTopOf="@+id/iv_logout"
+                app:tint="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -291,10 +316,10 @@
         android:id="@+id/tv_help"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
         android:text="@string/need_help"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:layout_marginTop="55dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_logout" />
@@ -303,10 +328,10 @@
         android:id="@+id/tv_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/version"
-        android:textSize="11sp"
         android:layout_marginTop="10dp"
+        android:text="@string/version"
         android:textColor="#8d8e92"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_help" />

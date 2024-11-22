@@ -1,11 +1,15 @@
 package com.gmwapp.dostt.fragments
 
 import android.R
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.gmwapp.dostt.activities.VerifyOTPActivity
+import com.gmwapp.dostt.activities.WalletActivity
+import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.databinding.ActivityMainBinding
 import com.gmwapp.dostt.databinding.FragmentHomeBinding
 import com.gmwapp.dostt.databinding.FragmentProfileBinding
@@ -21,6 +25,10 @@ class ProfileFragment : BaseFragment() {
     ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
+        binding.clWallet.setOnClickListener(View.OnClickListener {
+            val intent = Intent(context, WalletActivity::class.java)
+            startActivity(intent)
+        })
         return binding.root
     }
 }
