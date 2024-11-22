@@ -76,6 +76,8 @@ dependencies {
 
     //coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation ("io.github.chaosleung:pinview:1.4.4")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

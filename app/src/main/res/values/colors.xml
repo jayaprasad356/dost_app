@@ -3,6 +3,7 @@
     <color name="colorAccent">#9C27B0</color>
     <color name="colorPrimaryDark">#161a1d</color>
     <color name="dark_blue">#1a0042</color>
+    <color name="black_background">#161a1d</color>
     <color name="light_blue">#321a56</color>
     <color name="cardview_divider">#5d457f</color>
     <color name="card_view_border">#ebdafc</color>
@@ -14,5 +15,6 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="black_light">#303135</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
