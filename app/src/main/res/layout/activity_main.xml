@@ -8,57 +8,6 @@
     android:background="@color/black_background"
     tools:context=".activities.LoginActivity">
 
-    <ImageView
-        android:id="@+id/iv_logo"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:contentDescription="@string/edit"
-        android:scaleType="fitXY"
-        android:src="@drawable/logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/colorAccent"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/tv_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
-        app:layout_constraintStart_toEndOf="@+id/iv_logo"
-        app:layout_constraintTop_toTopOf="@+id/iv_logo" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="55dp"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:layout_marginEnd="12dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_logo"
-        android:background="@drawable/d_button_bg"
-        android:backgroundTint="#464646">
-        <TextView
-            android:id="@+id/tv_coins"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="\u20B9  0"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <FrameLayout
         android:id="@+id/flFragment"
         android:layout_width="match_parent"
