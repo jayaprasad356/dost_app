@@ -6,6 +6,7 @@
     <color name="black_background">#161a1d</color>
     <color name="light_blue">#321a56</color>
     <color name="cardview_divider">#5d457f</color>
+    <color name="profile_cardview_divider">#444549</color>
     <color name="card_view_border">#ebdafc</color>
     <color name="card_view_text">#a395b6</color>
     <color name="button_fill">#473368</color>
