@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import com.gmwapp.dostt.R
 import com.gmwapp.dostt.databinding.ActivityAccountPrivacyBinding
+import com.gmwapp.dostt.databinding.ActivityDeleteAccountBinding
 import com.gmwapp.dostt.databinding.ActivityMainBinding
 import com.gmwapp.dostt.databinding.ActivityWalletBinding
 import com.gmwapp.dostt.dialogs.BottomSheetWelcomeBonus
@@ -20,16 +21,12 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.google.android.material.navigation.NavigationBarView
 
 
-class AccountPrivacyActivity : BaseActivity() {
-    lateinit var binding: ActivityAccountPrivacyBinding
+class DeleteAccountActivity : BaseActivity() {
+    lateinit var binding: ActivityDeleteAccountBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAccountPrivacyBinding.inflate(layoutInflater)
+        binding = ActivityDeleteAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.cvDeleteAccount.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, DeleteAccountActivity::class.java)
-            startActivity(intent)
-        })
     }
 }

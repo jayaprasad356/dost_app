@@ -34,4 +34,6 @@
     <string name="recent_calls">Recent Calls</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="delete_account">Delete Account</string>
+    <string name="delete_reason_text">Please select at least one reason for deleting your account</string>
+    <string name="logout_text">Are you sure you want to Log out?</string>
 </resources>

@@ -15,6 +15,8 @@ import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.databinding.ActivityMainBinding
 import com.gmwapp.dostt.databinding.FragmentHomeBinding
 import com.gmwapp.dostt.databinding.FragmentProfileBinding
+import com.gmwapp.dostt.dialogs.BottomSheetLogout
+import com.gmwapp.dostt.dialogs.BottomSheetWelcomeBonus
 
 
 class ProfileFragment : BaseFragment() {
@@ -38,6 +40,16 @@ class ProfileFragment : BaseFragment() {
         binding.clAccountPrivacy.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, AccountPrivacyActivity::class.java)
             startActivity(intent)
+        })
+        binding.cvLogout.setOnClickListener(View.OnClickListener {
+            val bottomSheet: BottomSheetLogout =
+                BottomSheetLogout()
+            fragmentManager?.let { it1 ->
+                bottomSheet.show(
+                    it1,
+                    "BottomSheetLogout"
+                )
+            }
         })
 
         return binding.root
