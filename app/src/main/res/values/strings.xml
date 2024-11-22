@@ -32,4 +32,6 @@
     <string name="version">version 1.0.0</string>
     <string name="welcome_bonus">Welcome Bonus!</string>
     <string name="recent_calls">Recent Calls</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="delete_account">Delete Account</string>
 </resources>

@@ -26,6 +26,8 @@
         <activity android:name="com.gmwapp.dostt.activities.VerifyOTPActivity" />
         <activity android:name="com.gmwapp.dostt.activities.MainActivity" />
         <activity android:name="com.gmwapp.dostt.activities.WalletActivity" />
+        <activity android:name="com.gmwapp.dostt.activities.TransactionsActivity" />
+        <activity android:name="com.gmwapp.dostt.activities.AccountPrivacyActivity" />
     </application>
 
 </manifest>

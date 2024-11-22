@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.gmwapp.dostt.activities.AccountPrivacyActivity
+import com.gmwapp.dostt.activities.TransactionsActivity
 import com.gmwapp.dostt.activities.VerifyOTPActivity
 import com.gmwapp.dostt.activities.WalletActivity
 import com.gmwapp.dostt.constants.DConstants
@@ -29,6 +31,15 @@ class ProfileFragment : BaseFragment() {
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
         })
+        binding.clTransactions.setOnClickListener(View.OnClickListener {
+            val intent = Intent(context, TransactionsActivity::class.java)
+            startActivity(intent)
+        })
+        binding.clAccountPrivacy.setOnClickListener(View.OnClickListener {
+            val intent = Intent(context, AccountPrivacyActivity::class.java)
+            startActivity(intent)
+        })
+
         return binding.root
     }
 }
