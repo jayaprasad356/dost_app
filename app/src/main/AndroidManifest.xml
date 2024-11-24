@@ -15,8 +15,7 @@
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true"
-            android:resizeableActivity="true"
-            android:theme="@style/AppTheme">
+            android:resizeableActivity="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
