@@ -113,9 +113,11 @@
                 android:id="@+id/et_mobile_number"
                 style="@style/EditTextStyle"
                 android:autofillHints="phone"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textColor="@color/white"
                 android:imeOptions="actionDone"
                 android:inputType="numberDecimal"
-                android:maxLength="250" />
+                android:maxLength="10" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     <TextView
