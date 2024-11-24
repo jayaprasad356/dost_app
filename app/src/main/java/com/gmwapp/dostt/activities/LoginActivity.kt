@@ -2,11 +2,16 @@ package com.gmwapp.dostt.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.MotionEvent
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import android.view.View.OnTouchListener
 import com.gmwapp.dostt.R
@@ -23,7 +28,6 @@ class LoginActivity : BaseActivity() {
         initUI()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun initUI(){
         binding.cvLogin.setBackgroundResource(R.drawable.card_view_border);
 
@@ -33,10 +37,10 @@ class LoginActivity : BaseActivity() {
             startActivity(intent)
 
         })
-        binding.etMobileNumber.setOnTouchListener(OnTouchListener { v, event ->
+        binding.etMobileNumber.setOnTouchListener { v, _ ->
             binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_active)
             false
-        })
+        }
         binding.etMobileNumber.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
@@ -53,5 +57,29 @@ class LoginActivity : BaseActivity() {
             override fun afterTextChanged(s: Editable) {
             }
         })
+        setMessageWithClickableLink();
+    }
+
+    private fun setMessageWithClickableLink() {
+        val content = getString(R.string.terms_and_conditions_text)
+        val url = "http://my-site.com/information" //TODO need tp add the terms & conditions link
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(url)
+                startActivity(intent);
+            }
+            override fun updateDrawState(textPaint: TextPaint) {
+                super.updateDrawState(textPaint)
+                textPaint.color = getColor(R.color.yellow)
+                textPaint.isUnderlineText = false;
+            }
+        }
+        val startIndex = content.indexOf("terms & conditions")
+        val endIndex = startIndex + "terms & conditions".length
+        val spannableString = SpannableString(content)
+        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.tvTermsAndConditions.text = spannableString
+        binding.tvTermsAndConditions.movementMethod = LinkMovementMethod.getInstance()
     }
 }
