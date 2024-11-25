@@ -36,4 +36,6 @@
     <string name="delete_account">Delete Account</string>
     <string name="delete_reason_text">Please select at least one reason for deleting your account</string>
     <string name="logout_text">Are you sure you want to Log out?</string>
+    <string name="please_try_again_later">Please try again later</string>
+    <string name="invalid_phone_number_text">This phone number is invalid. Please try again.</string>
 </resources>

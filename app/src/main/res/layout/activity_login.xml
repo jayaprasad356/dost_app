@@ -164,6 +164,7 @@
         app:layout_constraintHeight_percent="0.06"
         android:layout_marginBottom="24dp"
         android:textAllCaps="false"
+        android:enabled="false"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
         app:layout_constraintTop_toTopOf="@+id/gl_bottom_margin"

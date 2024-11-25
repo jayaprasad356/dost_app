@@ -1,6 +1,5 @@
 package com.gmwapp.dostt.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,14 +12,21 @@ import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
-import android.view.View.OnTouchListener
+import android.widget.CompoundButton
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.gmwapp.dostt.R
 import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.databinding.ActivityLoginBinding
+import com.gmwapp.dostt.viewmodels.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class LoginActivity : BaseActivity() {
     lateinit var binding: ActivityLoginBinding
+    var mobile:String? = null;
+    private val loginViewModel: LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -31,15 +37,29 @@ class LoginActivity : BaseActivity() {
     private fun initUI(){
         binding.cvLogin.setBackgroundResource(R.drawable.card_view_border);
 
-        binding.btnLogin.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, VerifyOTPActivity::class.java)
-            intent.putExtra(DConstants.MOBILE_NUMBER, binding.etMobileNumber.text.toString())
-            startActivity(intent)
-
-        })
+        binding.btnLogin.setOnClickListener {
+            binding.btnLogin.isEnabled = false;
+            var mobile = binding.etMobileNumber.text.toString();
+            if(TextUtils.isEmpty(mobile) || mobile.length<10){
+                binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
+                binding.tvOtpText.setTextColor(getColor(R.color.error))
+                binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error);
+            } else {
+                login(mobile)
+            }
+        }
         binding.etMobileNumber.setOnTouchListener { v, _ ->
             binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_active)
             false
+        }
+        binding.cbTermsAndConditions.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg_white)
+                binding.btnLogin.isEnabled = true
+            } else{
+                binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg)
+                binding.btnLogin.isEnabled = false
+            }
         }
         binding.etMobileNumber.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -47,22 +67,51 @@ class LoginActivity : BaseActivity() {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 window.statusBarColor = resources.getColor(R.color.dark_blue);
-                if(TextUtils.isEmpty(s)){
+                if(!binding.cbTermsAndConditions.isChecked || TextUtils.isEmpty(s)){
                     binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg)
-                }else{
+                    binding.btnLogin.isEnabled = false
+                } else {
                     binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg_white)
+                    binding.btnLogin.isEnabled = true
                 }
             }
 
             override fun afterTextChanged(s: Editable) {
             }
         })
+        loginViewModel.loginResponseLiveData.observe(this, Observer {
+            binding.btnLogin.isEnabled = true;
+            if (it.success) {
+                val intent = Intent(this, VerifyOTPActivity::class.java)
+                intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
+                startActivity(intent)
+            } else {
+                binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
+                binding.tvOtpText.setTextColor(getColor(R.color.error))
+                binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error);
+            }
+        })
+        loginViewModel.loginErrorLiveData.observe(this, Observer {
+            binding.btnLogin.isEnabled = true;
+            if (it.equals(DConstants.LOGIN_ERROR)) {
+                binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
+            } else {
+                binding.tvOtpText.text = getString(R.string.please_try_again_later)
+            }
+            binding.tvOtpText.setTextColor(getColor(R.color.error))
+            binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error);
+        })
+
         setMessageWithClickableLink();
     }
 
+    private fun login(mobile:String){
+        this.mobile = mobile;
+        loginViewModel.login(mobile)
+    }
     private fun setMessageWithClickableLink() {
         val content = getString(R.string.terms_and_conditions_text)
-        val url = "http://my-site.com/information" //TODO need tp add the terms & conditions link
+        val url = "http://my-site.com/information" //TODO need to add the terms & conditions link
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
                 val intent = Intent(Intent.ACTION_VIEW)
