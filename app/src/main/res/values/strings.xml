@@ -55,4 +55,10 @@
     <string name="love">Love</string>
     <string name="cooking">Cooking</string>
     <string name="select_maximum">Select a maximum of 4</string>
+    <string name="personalise_yourself">Personalise yourself</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="continue_text">Continue</string>
+    <string name="personalise_yourself_hint">Pick your gender and avatar to make your profile unique</string>
+    <string name="gender_change_warning">Gender can\'t be changed later</string>
 </resources>

@@ -34,7 +34,7 @@ class VerifyOTPActivity : BaseActivity() {
                 intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             } else {
-                intent = Intent(this, EditProfileActivity::class.java)
+                intent = Intent(this, SelectGenderActivity::class.java)
                 startActivity(intent)
             }
         })
