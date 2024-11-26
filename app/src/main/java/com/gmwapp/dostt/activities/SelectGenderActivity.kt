@@ -49,6 +49,7 @@ class SelectGenderActivity : BaseActivity() {
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
             val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
             intent.putExtra(DConstants.AVATAR_ID, avatarId)
+            intent.putExtra(DConstants.MOBILE_NUMBER, avatarId)
             startActivity(intent)
 
         }

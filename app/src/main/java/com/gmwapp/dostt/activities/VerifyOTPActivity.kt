@@ -35,6 +35,7 @@ class VerifyOTPActivity : BaseActivity() {
                 startActivity(intent)
             } else {
                 intent = Intent(this, SelectGenderActivity::class.java)
+                intent.putExtra(DConstants.MOBILE_NUMBER, intent.getStringExtra(DConstants.MOBILE_NUMBER))
                 startActivity(intent)
             }
         })

@@ -3,6 +3,7 @@ package com.gmwapp.dostt.retrofit
 import com.gmwapp.dostt.retrofit.callbacks.NetworkCallback
 import com.gmwapp.dostt.retrofit.responses.AvatarsListResponse
 import com.gmwapp.dostt.retrofit.responses.LoginResponse
+import com.gmwapp.dostt.retrofit.responses.RegisterResponse
 import com.gmwapp.dostt.utils.Helper
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -41,6 +42,21 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit){
             callback.onNoNetwork()
         }
     }
+
+    fun register(
+        mobile: String,
+        language: String,
+        avatarId: String,
+        callback: NetworkCallback<RegisterResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<RegisterResponse> =
+                getApiInterface().register(mobile,language, avatarId )
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 interface ApiInterface {
     @FormUrlEncoded
@@ -50,4 +66,8 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/avatar_list")
     fun getAvatarsList(@Field("gender") gender: String): Call<AvatarsListResponse>
+
+    @FormUrlEncoded
+    @POST("api/avatar_list")
+    fun register(@Field("mobile") mobile: String, @Field("language") language: String, @Field("avatar_id") avatarId: String): Call<RegisterResponse>
 }

@@ -3,6 +3,7 @@ package com.gmwapp.dostt.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,34 +38,40 @@ class SelectLanguageActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        val layoutManager = GridLayoutManager(this,2);
-        binding.rvLanguages.addItemDecoration(SpacesItemDecoration(20));
+        val layoutManager = GridLayoutManager(this, 2)
+        binding.rvLanguages.addItemDecoration(SpacesItemDecoration(20))
 
-        binding.btnContinue.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra(DConstants.AVATAR_ID, getIntent().getStringExtra(DConstants.AVATAR_ID))
-            intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
-            startActivity(intent)
+        profileViewModel.registerLiveData.observe(this, Observer {
+            if(it.success) {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra(DConstants.AVATAR_ID, getIntent().getStringExtra(DConstants.AVATAR_ID))
+                intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
+                startActivity(intent)
+            }
+        })
+        binding.btnContinue.setOnClickListener {
+            profileViewModel.register(
+                intent.getStringExtra(DConstants.MOBILE_NUMBER).toString(),
+                intent.getStringExtra(DConstants.AVATAR_ID).toString(),
+                selectedLanguage.toString()
+            )
         }
         binding.rvLanguages.setLayoutManager(layoutManager)
-        val interestsListAdapter = LanguageAdapter(
-            this,
-            arrayListOf(
-                Language(getString(R.string.hindi), R.drawable.hindi, false),
-                Language(getString(R.string.telugu), R.drawable.telugu, false),
-                Language(getString(R.string.malayalam), R.drawable.malayalam, false),
-                Language(getString(R.string.kannada), R.drawable.kannada, false),
-                Language(getString(R.string.punjabi), R.drawable.punjabi, false),
-                Language(getString(R.string.tamil), R.drawable.tamil, false),
-            ),
-            object : OnItemSelectionListener<Language> {
-                override fun onItemSelected(language: Language){
-                    binding.btnContinue.isEnabled = true
-                    selectedLanguage = language.name
-                }
+        val interestsListAdapter = LanguageAdapter(this, arrayListOf(
+            Language(getString(R.string.hindi), R.drawable.hindi, false),
+            Language(getString(R.string.telugu), R.drawable.telugu, false),
+            Language(getString(R.string.malayalam), R.drawable.malayalam, false),
+            Language(getString(R.string.kannada), R.drawable.kannada, false),
+            Language(getString(R.string.punjabi), R.drawable.punjabi, false),
+            Language(getString(R.string.tamil), R.drawable.tamil, false),
+        ), object : OnItemSelectionListener<Language> {
+            override fun onItemSelected(language: Language) {
+                binding.btnContinue.isEnabled = true
+                selectedLanguage = language.name
             }
+        }
 
-            )
+        )
         binding.rvLanguages.setAdapter(interestsListAdapter)
     }
 

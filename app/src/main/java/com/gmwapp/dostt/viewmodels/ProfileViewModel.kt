@@ -10,6 +10,7 @@ import com.gmwapp.dostt.repositories.ProfileRepositories
 import com.gmwapp.dostt.retrofit.callbacks.NetworkCallback
 import com.gmwapp.dostt.retrofit.responses.AvatarsListResponse
 import com.gmwapp.dostt.retrofit.responses.LoginResponse
+import com.gmwapp.dostt.retrofit.responses.RegisterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(private val profileRepositories: ProfileRepositories) : ViewModel() {
 
+    val registerLiveData = MutableLiveData<RegisterResponse>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -32,6 +34,27 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onFailure(call: Call<AvatarsListResponse>, t: Throwable) {
+                }
+
+                override fun onNoNetwork() {
+                }
+            })
+        }
+    }
+
+    fun register(mobile: String,
+                 language: String,
+                 avatarId: String) {
+        viewModelScope.launch {
+            profileRepositories.register(mobile,language, avatarId, object:NetworkCallback<RegisterResponse> {
+                override fun onResponse(
+                    call: Call<RegisterResponse>,
+                    response: Response<RegisterResponse>
+                ) {
+                    registerLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
                 }
 
                 override fun onNoNetwork() {
