@@ -47,6 +47,12 @@ class SelectLanguageActivity : BaseActivity() {
                 intent.putExtra(DConstants.AVATAR_ID, getIntent().getStringExtra(DConstants.AVATAR_ID))
                 intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
                 startActivity(intent)
+            }else{//TODO need to remove once otp validation completed
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra(DConstants.AVATAR_ID, getIntent().getStringExtra(DConstants.AVATAR_ID))
+                intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
+                startActivity(intent)
+
             }
         })
         binding.btnContinue.setOnClickListener {
