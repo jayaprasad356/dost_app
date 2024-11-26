@@ -69,4 +69,5 @@
     <string name="kannada">Kannada</string>
     <string name="punjabi">Punjabi</string>
     <string name="tamil">Tamil</string>
+    <string name="above_fields_are_not_editable">Above fields are not editable.</string>
 </resources>
