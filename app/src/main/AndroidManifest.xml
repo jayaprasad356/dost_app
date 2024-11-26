@@ -33,6 +33,7 @@
         <activity android:name="com.gmwapp.dostt.activities.DeleteAccountActivity" />
         <activity android:name="com.gmwapp.dostt.activities.EditProfileActivity" />
         <activity android:name="com.gmwapp.dostt.activities.SelectGenderActivity" />
+        <activity android:name="com.gmwapp.dostt.activities.SelectLanguageActivity" />
     </application>
 
 </manifest>

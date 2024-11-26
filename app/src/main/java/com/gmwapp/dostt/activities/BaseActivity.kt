@@ -6,6 +6,7 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -26,7 +27,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun setCenterLayoutManager(recyclerView: RecyclerView){
-        recyclerView.setLayoutManager(object : CenterLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) {
+        val centerLayoutManager = object : CenterLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
                 lp.width = width / 2
                 lp.height = width / 2
@@ -51,7 +52,8 @@ open class BaseActivity : AppCompatActivity() {
                 return 5000F / displayMetrics.densityDpi
             }
 
-            private open inner class CenterSmoothScroller(context: Context?) : LinearSmoothScroller(context) {
+            private open inner class CenterSmoothScroller(context: Context?) :
+                LinearSmoothScroller(context) {
                 override fun calculateDtToFit(
                     viewStart: Int,
                     viewEnd: Int,
@@ -66,6 +68,7 @@ open class BaseActivity : AppCompatActivity() {
             override fun canScrollHorizontally(): Boolean {
                 return true
             }
+
             override fun scrollHorizontallyBy(
                 dx: Int,
                 recycler: RecyclerView.Recycler?,
@@ -82,7 +85,8 @@ open class BaseActivity : AppCompatActivity() {
                     val s1 = 1f - mShrinkAmount
                     for (i in 0 until childCount) {
                         val child = getChildAt(i)
-                        val childMidpoint = (getDecoratedRight(child!!) + getDecoratedLeft(child)) / 2f
+                        val childMidpoint =
+                            (getDecoratedRight(child!!) + getDecoratedLeft(child)) / 2f
                         val d = d1.coerceAtMost(abs(midpoint - childMidpoint))
                         val scale = s0 + (s1 - s0) * (d - d0) / (d1 - d0)
                         child.scaleX = scale
@@ -94,8 +98,8 @@ open class BaseActivity : AppCompatActivity() {
                 }
 
             }
-
-        })
+        }
+        recyclerView.setLayoutManager(centerLayoutManager)
 
     }
 }

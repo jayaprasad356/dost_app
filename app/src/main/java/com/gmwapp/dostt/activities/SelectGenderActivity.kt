@@ -44,20 +44,40 @@ class SelectGenderActivity : BaseActivity() {
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
+        binding.btnContinue.setOnClickListener {
+            val intent = Intent(this, SelectLanguageActivity::class.java)
+            val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
+            val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
+            intent.putExtra(DConstants.AVATAR_ID, avatarId)
+            startActivity(intent)
+
+        }
+        binding.btnMale.setOnClickListener {
+            profileViewModel.getAvatarsList("male")
+            binding.btnMale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)
+            binding.btnFemale.setBackgroundColor(getColor(android.R.color.transparent))
+            binding.btnMale.isEnabled = false
+            binding.btnFemale.isEnabled = true
+        }
+        binding.btnFemale.setOnClickListener {
+            profileViewModel.getAvatarsList("female")
+            binding.btnMale.setBackgroundColor(getColor(android.R.color.transparent))
+            binding.btnFemale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)
+            binding.btnMale.isEnabled = true
+            binding.btnFemale.isEnabled = false
+        }
         profileViewModel.getAvatarsList("male")
         profileViewModel.avatarsListLiveData.observe(this, Observer {
             if(it.data != null) {
                 it.data.add(it.data.size, null);
                 it.data.add(0, null);
-
-                var avatarsListAdapter = AvatarsListAdapter(
+                val avatarsListAdapter = AvatarsListAdapter(
                     this,
-                    it.data,
-                    1
+                    it.data
                 )
                 binding.rvAvatars.setAdapter(avatarsListAdapter)
+                binding.rvAvatars.smoothScrollToPosition(1);
             }
-            binding.rvAvatars.smoothScrollToPosition(1);
         })
 
     }

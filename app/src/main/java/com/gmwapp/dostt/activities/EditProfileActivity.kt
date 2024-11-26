@@ -1,19 +1,10 @@
 package com.gmwapp.dostt.activities
 
-import android.R.drawable
-import android.content.Context
-import android.graphics.PointF
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.DisplayMetrics
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.gmwapp.dostt.R
 import com.gmwapp.dostt.adapters.AvatarsListAdapter
 import com.gmwapp.dostt.adapters.InterestsListAdapter
@@ -27,7 +18,6 @@ import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.abs
 
 
 @AndroidEntryPoint
@@ -88,8 +78,7 @@ class EditProfileActivity : BaseActivity(){
 
                  avatarsListAdapter = AvatarsListAdapter(
                     this,
-                    it.data,
-                     1
+                    it.data
                 )
                 binding.rvAvatars.setAdapter(avatarsListAdapter)
             }

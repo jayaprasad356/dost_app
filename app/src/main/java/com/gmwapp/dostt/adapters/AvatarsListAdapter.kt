@@ -19,9 +19,8 @@ import kotlin.math.abs
 
 
 class AvatarsListAdapter(
-    val activity: Activity,
+    private val activity: Activity,
     private val avatarsListData: ArrayList<AvatarsListData?>,
-    var highlightedPosition: Int,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

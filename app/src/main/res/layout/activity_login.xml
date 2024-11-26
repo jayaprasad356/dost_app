@@ -138,6 +138,7 @@
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:layout_marginStart="8dp"
         android:buttonTint="@color/white"
+        android:checked="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_login"
         android:focusable="false"

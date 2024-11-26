@@ -32,11 +32,9 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onFailure(call: Call<AvatarsListResponse>, t: Throwable) {
-                    Log.e("siva", ""+t.message)
                 }
 
                 override fun onNoNetwork() {
-                    Log.e("siva", "network")
                 }
             })
         }
