@@ -9,12 +9,10 @@ object Helper {
 
     fun checkNetworkConnection(): Boolean {
         try {
-            val connectivityManager: ConnectivityManager = BaseApplication().getInstance()
+            val connectivityManager: ConnectivityManager = BaseApplication.getInstance()
                 ?.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             var activeNetwork: NetworkInfo? = null
-            if (connectivityManager != null) {
-                activeNetwork = connectivityManager.getActiveNetworkInfo()
-            }
+            activeNetwork = connectivityManager.getActiveNetworkInfo()
             if (activeNetwork != null) {
                 return activeNetwork.isConnected()
             }

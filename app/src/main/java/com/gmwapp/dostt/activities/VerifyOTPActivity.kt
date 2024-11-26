@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import com.gmwapp.dostt.BaseApplication
 import com.gmwapp.dostt.R
 import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.databinding.ActivityLoginBinding
@@ -29,9 +30,13 @@ class VerifyOTPActivity : BaseActivity() {
             binding.tvOtpMobileNumber.text = getString(R.string.please_enter_otp_sent_to, mobileNumber)
         }
         binding.btnVerifyOtp.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-
+            if(BaseApplication.getInstance()?.getPrefs()?.isRegistered == true) {
+                intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            } else {
+                intent = Intent(this, EditProfileActivity::class.java)
+                startActivity(intent)
+            }
         })
     }
 }

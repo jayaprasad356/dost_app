@@ -7,7 +7,7 @@ data class LoginResponse(
     val data: Data?,
 )
 
-data class Data(
+data class Data (
     val id: Int,
     val name: String,
     val language: String,
