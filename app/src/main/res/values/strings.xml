@@ -76,4 +76,16 @@
     <string name="preferred_language">Preferred Language</string>
     <string name="profile_updated">Profile updated</string>
     <string name="session_id">"Session ID: "</string>
+    <string name="india">India (+91)</string>
+    <string name="saudi_arabia">Saudi Arabia (+966)</string>
+    <string name="nepal">Nepal (+977)</string>
+    <string name="bangladesh">Bangladesh (+880)</string>
+    <string name="bahrain">Bahrain (+973)</string>
+    <string name="qatar">Qatar (+974)</string>
+    <string name="oman">Oman (+968)</string>
+    <string name="uae">UAE (+971)</string>
+    <string name="kuwait">Kuwait (+965)</string>
+    <string name="srilanka">Sri Lanka (+94)</string>
+    <string name="malaysia">Malaysia (+60)</string>
+    <string name="search_for_country">Search for Country</string>
 </resources>

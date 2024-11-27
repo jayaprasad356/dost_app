@@ -17,14 +17,18 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.dostt.BaseApplication
 import com.gmwapp.dostt.R
+import com.gmwapp.dostt.callbacks.OnItemSelectionListener
 import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.databinding.ActivityLoginBinding
+import com.gmwapp.dostt.dialogs.BottomSheetCountry
+import com.gmwapp.dostt.dialogs.BottomSheetWelcomeBonus
+import com.gmwapp.dostt.retrofit.responses.Country
 import com.gmwapp.dostt.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class LoginActivity : BaseActivity() {
+class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
     lateinit var binding: ActivityLoginBinding
     var mobile:String? = null;
     private val loginViewModel: LoginViewModel by viewModels()
@@ -33,6 +37,11 @@ class LoginActivity : BaseActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
+    }
+
+    override fun onItemSelected(country: Country){
+        binding.ivFlag.setImageResource(country.image)
+        binding.tvCountryCode.text = country.code
     }
 
     private fun initUI(){
@@ -48,6 +57,14 @@ class LoginActivity : BaseActivity() {
             } else {
                 login(mobile)
             }
+        }
+        binding.clCountry.setOnClickListener {
+            val bottomSheet =
+                BottomSheetCountry()
+            bottomSheet.show(
+                supportFragmentManager,
+                "BottomSheetCountry"
+            )
         }
         binding.etMobileNumber.setOnTouchListener { v, _ ->
             binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_active)
