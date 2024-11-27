@@ -70,4 +70,6 @@
     <string name="punjabi">Punjabi</string>
     <string name="tamil">Tamil</string>
     <string name="above_fields_are_not_editable">Above fields are not editable.</string>
+    <string name="gender">Gender</string>
+    <string name="preferred_language">Preferred Language</string>
 </resources>

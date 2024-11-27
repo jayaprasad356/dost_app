@@ -1,6 +1,7 @@
 package com.gmwapp.dostt.activities
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
