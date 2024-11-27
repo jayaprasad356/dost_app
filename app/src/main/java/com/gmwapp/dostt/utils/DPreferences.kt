@@ -22,8 +22,21 @@ class DPreferences(context: Context) {
             mPrefsWrite.apply()
         }
 
+    fun setUserId(userId: Int) {
+        mPrefsWrite.putInt(
+            DPreferences.USER_ID,
+            userId
+        )
+        mPrefsWrite.apply()
+    }
+
+    fun getUserId():Int {
+        return mPrefsRead.getInt(USER_ID, 0);
+    }
+
     companion object {
         private const val REGISTERED = "registered"
+        private const val USER_ID = "user_id"
         private const val PREFS = "Dostt"
     }
 }

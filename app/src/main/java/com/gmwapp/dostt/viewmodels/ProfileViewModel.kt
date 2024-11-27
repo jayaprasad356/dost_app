@@ -11,6 +11,7 @@ import com.gmwapp.dostt.retrofit.callbacks.NetworkCallback
 import com.gmwapp.dostt.retrofit.responses.AvatarsListResponse
 import com.gmwapp.dostt.retrofit.responses.LoginResponse
 import com.gmwapp.dostt.retrofit.responses.RegisterResponse
+import com.gmwapp.dostt.retrofit.responses.UpdateProfileResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(private val profileRepositories: ProfileRepositories) : ViewModel() {
 
     val registerLiveData = MutableLiveData<RegisterResponse>()
+    val updateProfileLiveData = MutableLiveData<UpdateProfileResponse>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -55,6 +57,28 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                }
+
+                override fun onNoNetwork() {
+                }
+            })
+        }
+    }
+
+    fun updateProfile(userId: Int,
+                      avatarId: Int,
+                      name: String,
+                      interests: ArrayList<String>?) {
+        viewModelScope.launch {
+            profileRepositories.updateProfile(userId,avatarId,name, interests, object:NetworkCallback<UpdateProfileResponse> {
+                override fun onResponse(
+                    call: Call<UpdateProfileResponse>,
+                    response: Response<UpdateProfileResponse>
+                ) {
+                    updateProfileLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
                 }
 
                 override fun onNoNetwork() {

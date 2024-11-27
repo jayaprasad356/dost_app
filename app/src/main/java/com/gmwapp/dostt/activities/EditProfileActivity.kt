@@ -2,10 +2,13 @@ package com.gmwapp.dostt.activities
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.PagerSnapHelper
+import com.gmwapp.dostt.BaseApplication
 import com.gmwapp.dostt.R
 import com.gmwapp.dostt.adapters.AvatarsListAdapter
 import com.gmwapp.dostt.adapters.InterestsListAdapter
@@ -83,12 +86,33 @@ class EditProfileActivity : BaseActivity() {
                 }
             }
         })
+        binding.btnUpdate.setOnClickListener(View.OnClickListener {
+            val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
+            val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
+            BaseApplication.getInstance()?.getPrefs()?.getUserId()?.let { it1 ->
+                avatarId?.let { it2 ->
+                    profileViewModel.updateProfile(
+                        it1,
+                        it2,
+                        binding.etUserName.text.toString(),
+                        selectedInterests
+                    )
+                }
+            }
+
+        })
         binding.rvInterests.setAdapter(interestsListAdapter)
         binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_user_name)
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
         profileViewModel.getAvatarsList("male")
+        profileViewModel.updateProfileLiveData.observe(this, Observer {
+            if (it.data != null) {
+                Toast.makeText(this@EditProfileActivity,getString(R.string.profile_updated), Toast.LENGTH_LONG).show()
+                finish()
+            }
+        })
         profileViewModel.avatarsListLiveData.observe(this, Observer {
             if (it.data != null) {
                 it.data.add(it.data.size, null)

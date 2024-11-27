@@ -5,6 +5,7 @@ import com.gmwapp.dostt.retrofit.responses.AvatarsListResponse
 import com.gmwapp.dostt.retrofit.responses.LoginResponse
 import com.gmwapp.dostt.retrofit.responses.RegisterResponse
 import com.gmwapp.dostt.retrofit.responses.TransactionsResponse
+import com.gmwapp.dostt.retrofit.responses.UpdateProfileResponse
 import com.gmwapp.dostt.utils.Helper
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -71,6 +72,22 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit){
             callback.onNoNetwork()
         }
     }
+
+    fun updateProfile(
+        userId: Int,
+        avatarId: Int,
+        name: String,
+        interests: ArrayList<String>?,
+        callback: NetworkCallback<UpdateProfileResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<UpdateProfileResponse> =
+                getApiInterface().updateProfile(userId, avatarId, name, interests)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 interface ApiInterface {
     @FormUrlEncoded
@@ -88,4 +105,11 @@ interface ApiInterface {
    @FormUrlEncoded
     @POST("api/transaction_list")
     fun getTransactions(@Field("user_id") userId: String): Call<TransactionsResponse>
+
+   @FormUrlEncoded
+    @POST("api/transaction_list")
+    fun updateProfile(@Field("user_id") userId: Int,
+                        @Field("avatar_id") avatarId: Int,
+                        @Field("name") name: String,
+                        @Field("interests") interests: ArrayList<String>?): Call<UpdateProfileResponse>
 }
