@@ -6,8 +6,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_background"
-    android:padding="16dp"
     tools:context=".activities.LoginActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_left_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_right_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.027" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_bottom_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.92" />
+
     <ImageView
         android:id="@+id/iv_back"
         android:layout_width="15dp"
@@ -17,8 +45,12 @@
         android:contentDescription="@string/edit"
         android:src="@drawable/right_arrow"
         android:rotation="180"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.02"
+        app:layout_constraintStart_toStartOf="@id/gl_left_margin"
+        app:layout_constraintTop_toTopOf="@id/gl_top_margin"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.05"
         app:tint="@color/white"
         tools:ignore="MissingConstraints" />
 
@@ -58,26 +90,58 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
     <ImageView
         android:id="@+id/iv_bonus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/bonus"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_back"
-        tools:ignore="ContentDescription" />
-
-    <GridView
-        android:id="@+id/gv_plans"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:horizontalSpacing="6dp"
-        android:numColumns="3"
-        android:verticalSpacing="6dp"
+        android:src="@drawable/bonus"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.17"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_wallet"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:id="@+id/v_divider"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#020202"
+        android:alpha="0.5"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.02"
+        app:layout_constraintBottom_toTopOf="@+id/rv_plans"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_plans"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:nestedScrollingEnabled="false"
+        android:overScrollMode="never"
+        android:background="#020202"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_bonus"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@+id/btn_add_coins" />
+
+    <com.gmwapp.dostt.widgets.DButton
+        android:id="@+id/btn_add_coins"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.06"
+        android:layout_marginBottom="24dp"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="@id/gl_left_margin"
+        app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/d_button_bg"
+        android:text="@string/send_otp"
+        android:visibility="gone"
+        android:backgroundTint="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#1e152a"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

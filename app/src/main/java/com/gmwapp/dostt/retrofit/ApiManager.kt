@@ -2,6 +2,7 @@ package com.gmwapp.dostt.retrofit
 
 import com.gmwapp.dostt.retrofit.callbacks.NetworkCallback
 import com.gmwapp.dostt.retrofit.responses.AvatarsListResponse
+import com.gmwapp.dostt.retrofit.responses.CoinsResponse
 import com.gmwapp.dostt.retrofit.responses.LoginResponse
 import com.gmwapp.dostt.retrofit.responses.RegisterResponse
 import com.gmwapp.dostt.retrofit.responses.TransactionsResponse
@@ -88,6 +89,19 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit){
             callback.onNoNetwork()
         }
     }
+
+   fun getCoins(
+        userId: Int,
+        callback: NetworkCallback<CoinsResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<CoinsResponse> =
+                getApiInterface().getCoins(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 interface ApiInterface {
     @FormUrlEncoded
@@ -112,4 +126,8 @@ interface ApiInterface {
                         @Field("avatar_id") avatarId: Int,
                         @Field("name") name: String,
                         @Field("interests") interests: ArrayList<String>?): Call<UpdateProfileResponse>
+
+   @FormUrlEncoded
+    @POST("api/coins_list")
+    fun getCoins(@Field("user_id") userId: Int): Call<CoinsResponse>
 }
