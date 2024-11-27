@@ -1,26 +1,17 @@
 package com.gmwapp.dostt.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.activity.viewModels
-import com.gmwapp.dostt.R
-import com.gmwapp.dostt.databinding.ActivityMainBinding
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.gmwapp.dostt.BaseApplication
+import com.gmwapp.dostt.adapters.TransactionAdapter
 import com.gmwapp.dostt.databinding.ActivityTransactionsBinding
-import com.gmwapp.dostt.databinding.ActivityWalletBinding
-import com.gmwapp.dostt.dialogs.BottomSheetWelcomeBonus
-import com.gmwapp.dostt.fragments.HomeFragment
-import com.gmwapp.dostt.fragments.ProfileFragment
-import com.gmwapp.dostt.fragments.RecentFragment
-import com.gmwapp.dostt.viewmodels.LoginViewModel
+import com.gmwapp.dostt.retrofit.responses.TransactionsResponseData
 import com.gmwapp.dostt.viewmodels.TransactionsViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomnavigation.LabelVisibilityMode
-import com.google.android.material.navigation.NavigationBarView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class TransactionsActivity : BaseActivity() {
     lateinit var binding: ActivityTransactionsBinding
     private val transactionsViewModel: TransactionsViewModel by viewModels()
@@ -29,5 +20,25 @@ class TransactionsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTransactionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initUI()
+    }
+
+    private fun initUI() {
+        BaseApplication.getInstance()?.getPrefs()?.getUserId()
+            ?.let { transactionsViewModel.getTransactions(it) }
+        transactionsViewModel.transactionsResponseLiveData.observe(this, Observer {
+            if (it.data != null) {
+                binding.rvTransactions.setLayoutManager(
+                    LinearLayoutManager(
+                        this,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    ))
+
+                var transactionAdapter = TransactionAdapter(this, it.data)
+                binding.rvTransactions.setAdapter(transactionAdapter)
+            }
+        })
+
     }
 }

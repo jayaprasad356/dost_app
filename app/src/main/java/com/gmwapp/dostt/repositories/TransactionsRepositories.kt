@@ -7,7 +7,7 @@ import com.gmwapp.dostt.retrofit.responses.TransactionsResponse
 import javax.inject.Inject
 
 class TransactionsRepositories @Inject constructor(private val apiManager: ApiManager) {
-  fun getTransactions(userId: String, callback: NetworkCallback<TransactionsResponse>) {
+  fun getTransactions(userId: Int, callback: NetworkCallback<TransactionsResponse>) {
         apiManager.getTransactions(userId, callback)
     }
 }

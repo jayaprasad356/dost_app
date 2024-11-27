@@ -3,7 +3,7 @@ package com.gmwapp.dostt.retrofit.responses
 data class TransactionsResponse(
     val success: Boolean,
     val message: String,
-    val data: ArrayList<RegisterResponseData?>?,
+    val data: ArrayList<TransactionsResponseData>?,
 )
 
 data class TransactionsResponseData(

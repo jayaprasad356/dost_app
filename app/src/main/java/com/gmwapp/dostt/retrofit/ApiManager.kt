@@ -61,7 +61,7 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit){
     }
 
     fun getTransactions(
-        userId: String,
+        userId: Int,
         callback: NetworkCallback<TransactionsResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
@@ -104,7 +104,7 @@ interface ApiInterface {
 
    @FormUrlEncoded
     @POST("api/transaction_list")
-    fun getTransactions(@Field("user_id") userId: String): Call<TransactionsResponse>
+    fun getTransactions(@Field("user_id") userId: Int): Call<TransactionsResponse>
 
    @FormUrlEncoded
     @POST("api/transaction_list")

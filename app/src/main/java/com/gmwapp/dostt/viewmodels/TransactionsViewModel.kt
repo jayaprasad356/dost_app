@@ -22,7 +22,7 @@ class TransactionsViewModel @Inject constructor(private val transactionsReposito
     val transactionsResponseLiveData = MutableLiveData<TransactionsResponse>()
     val transactionsErrorLiveData = MutableLiveData<String>()
 
-    fun getTransactions(userId: String) {
+    fun getTransactions(userId: Int) {
         viewModelScope.launch {
             transactionsRepositories.getTransactions(userId, object:NetworkCallback<TransactionsResponse> {
                 override fun onResponse(
