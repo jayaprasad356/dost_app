@@ -4,6 +4,7 @@ import com.gmwapp.dostt.retrofit.callbacks.NetworkCallback
 import com.gmwapp.dostt.retrofit.responses.AvatarsListResponse
 import com.gmwapp.dostt.retrofit.responses.LoginResponse
 import com.gmwapp.dostt.retrofit.responses.RegisterResponse
+import com.gmwapp.dostt.retrofit.responses.TransactionsResponse
 import com.gmwapp.dostt.utils.Helper
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -57,6 +58,19 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit){
             callback.onNoNetwork()
         }
     }
+
+    fun getTransactions(
+        userId: String,
+        callback: NetworkCallback<TransactionsResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<TransactionsResponse> =
+                getApiInterface().getTransactions(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 interface ApiInterface {
     @FormUrlEncoded
@@ -70,4 +84,8 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/avatar_list")
     fun register(@Field("mobile") mobile: String, @Field("language") language: String, @Field("avatar_id") avatarId: String): Call<RegisterResponse>
+
+   @FormUrlEncoded
+    @POST("api/transaction_list")
+    fun getTransactions(@Field("user_id") userId: String): Call<TransactionsResponse>
 }
