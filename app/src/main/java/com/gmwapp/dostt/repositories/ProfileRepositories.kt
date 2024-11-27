@@ -15,8 +15,8 @@ class ProfileRepositories @Inject constructor(private val apiManager: ApiManager
 
   fun register(mobile: String,
                language: String,
-               avatarId: String, callback: NetworkCallback<RegisterResponse>) {
-        apiManager.register(mobile,language, avatarId, callback)
+               avatarId: Int,gender:String, callback: NetworkCallback<RegisterResponse>) {
+        apiManager.register(mobile,language, avatarId,gender, callback)
     }
 
   fun updateProfile(userId: Int,

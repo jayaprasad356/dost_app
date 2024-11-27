@@ -46,9 +46,10 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
 
     fun register(mobile: String,
                  language: String,
-                 avatarId: String) {
+                 avatarId: Int,
+                 gender:String) {
         viewModelScope.launch {
-            profileRepositories.register(mobile,language, avatarId, object:NetworkCallback<RegisterResponse> {
+            profileRepositories.register(mobile,language, avatarId,gender, object:NetworkCallback<RegisterResponse> {
                 override fun onResponse(
                     call: Call<RegisterResponse>,
                     response: Response<RegisterResponse>

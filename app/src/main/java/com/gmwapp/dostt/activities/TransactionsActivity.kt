@@ -24,8 +24,8 @@ class TransactionsActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        BaseApplication.getInstance()?.getPrefs()?.getUserId()
-            ?.let { transactionsViewModel.getTransactions(it) }
+        BaseApplication.getInstance()?.getPrefs()?.getUserData()
+            ?.let { transactionsViewModel.getTransactions(it.id) }
         transactionsViewModel.transactionsResponseLiveData.observe(this, Observer {
             if (it.data != null) {
                 binding.rvTransactions.setLayoutManager(

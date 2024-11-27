@@ -32,7 +32,7 @@ class WalletActivity : BaseActivity() {
         binding.rvPlans.addItemDecoration(SpacesItemDecoration(20))
         binding.rvPlans.setLayoutManager(layoutManager)
         binding.rvPlans.addItemDecoration(SpacesItemDecoration(10))
-        BaseApplication.getInstance()?.getPrefs()?.getUserId()?.let { WalletViewModel.getCoins(it) }
+        BaseApplication.getInstance()?.getPrefs()?.getUserData()?.let { WalletViewModel.getCoins(it.id) }
         WalletViewModel.coinsLiveData.observe(this, Observer {
             if(it.success && it.data!=null) {
                 val coinAdapter = CoinAdapter(this,it.data,object :

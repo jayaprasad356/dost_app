@@ -29,15 +29,18 @@ class VerifyOTPActivity : BaseActivity() {
         if(mobileNumber!=null){
             binding.tvOtpMobileNumber.text = getString(R.string.please_enter_otp_sent_to, mobileNumber)
         }
-        binding.btnVerifyOtp.setOnClickListener(View.OnClickListener {
-            if(BaseApplication.getInstance()?.getPrefs()?.isRegistered == true) {
-                intent = Intent(this, MainActivity::class.java)
+        binding.btnVerifyOtp.setOnClickListener {
+            if (BaseApplication.getInstance()?.getPrefs()?.isRegistered == true) {
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             } else {
-                intent = Intent(this, SelectGenderActivity::class.java)
-                intent.putExtra(DConstants.MOBILE_NUMBER, intent.getStringExtra(DConstants.MOBILE_NUMBER))
+                val intent = Intent(this, SelectGenderActivity::class.java)
+                intent.putExtra(
+                    DConstants.MOBILE_NUMBER,
+                    getIntent().getStringExtra(DConstants.MOBILE_NUMBER)
+                )
                 startActivity(intent)
             }
-        })
+        }
     }
 }

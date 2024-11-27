@@ -89,10 +89,10 @@ class EditProfileActivity : BaseActivity() {
         binding.btnUpdate.setOnClickListener(View.OnClickListener {
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
             val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
-            BaseApplication.getInstance()?.getPrefs()?.getUserId()?.let { it1 ->
+            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.let { it1 ->
                 avatarId?.let { it2 ->
                     profileViewModel.updateProfile(
-                        it1,
+                        it1.id,
                         it2,
                         binding.etUserName.text.toString(),
                         selectedInterests

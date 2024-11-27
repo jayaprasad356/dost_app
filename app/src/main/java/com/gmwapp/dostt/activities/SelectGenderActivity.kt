@@ -31,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SelectGenderActivity : BaseActivity() {
     lateinit var binding: ActivitySelectGenderBinding
     private val profileViewModel: ProfileViewModel by viewModels()
-
+    private var selectedGender = "male"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectGenderBinding.inflate(layoutInflater)
@@ -49,11 +49,13 @@ class SelectGenderActivity : BaseActivity() {
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
             val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
             intent.putExtra(DConstants.AVATAR_ID, avatarId)
-            intent.putExtra(DConstants.MOBILE_NUMBER, avatarId)
+            intent.putExtra(DConstants.MOBILE_NUMBER, getIntent().getStringExtra(DConstants.MOBILE_NUMBER))
+            intent.putExtra(DConstants.GENDER, selectedGender)
             startActivity(intent)
 
         }
         binding.btnMale.setOnClickListener {
+            selectedGender = "male"
             profileViewModel.getAvatarsList("male")
             binding.btnMale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)
             binding.btnFemale.setBackgroundColor(getColor(android.R.color.transparent))
@@ -61,6 +63,7 @@ class SelectGenderActivity : BaseActivity() {
             binding.btnFemale.isEnabled = true
         }
         binding.btnFemale.setOnClickListener {
+            selectedGender = "female"
             profileViewModel.getAvatarsList("female")
             binding.btnMale.setBackgroundColor(getColor(android.R.color.transparent))
             binding.btnFemale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)

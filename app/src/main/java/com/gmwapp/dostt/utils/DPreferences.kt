@@ -1,7 +1,12 @@
 package com.gmwapp.dostt.utils
 
+import android.R.string
 import android.content.Context
 import android.content.SharedPreferences
+import com.gmwapp.dostt.retrofit.responses.UserData
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+
 
 class DPreferences(context: Context) {
     private val mPrefsRead: SharedPreferences = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -22,21 +27,21 @@ class DPreferences(context: Context) {
             mPrefsWrite.apply()
         }
 
-    fun setUserId(userId: Int) {
-        mPrefsWrite.putInt(
-            DPreferences.USER_ID,
-            userId
+    fun setUserData(userData: UserData) {
+        mPrefsWrite.putString(
+            DPreferences.USER_DATA,
+            Gson().toJson(userData)
         )
         mPrefsWrite.apply()
     }
 
-    fun getUserId():Int {
-        return mPrefsRead.getInt(USER_ID, 0);
+    fun getUserData():UserData {
+        return Gson().fromJson(mPrefsRead.getString(USER_DATA,""), UserData::class.java);
     }
 
     companion object {
         private const val REGISTERED = "registered"
-        private const val USER_ID = "user_id"
+        private const val USER_DATA = "user_data"
         private const val PREFS = "Dostt"
     }
 }

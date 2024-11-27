@@ -12,7 +12,6 @@ import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
-import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.dostt.BaseApplication
@@ -21,9 +20,9 @@ import com.gmwapp.dostt.callbacks.OnItemSelectionListener
 import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.databinding.ActivityLoginBinding
 import com.gmwapp.dostt.dialogs.BottomSheetCountry
-import com.gmwapp.dostt.dialogs.BottomSheetWelcomeBonus
 import com.gmwapp.dostt.retrofit.responses.Country
 import com.gmwapp.dostt.viewmodels.LoginViewModel
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -102,6 +101,8 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             if (it.success) {
                 val intent = Intent(this, VerifyOTPActivity::class.java)
                 intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
+
+                it.data?.let { it1 -> BaseApplication.getInstance()?.getPrefs()?.setUserData(it1) }
                 BaseApplication.getInstance()?.getPrefs()?.setIsRegistered(it.registered)
                 intent.putExtra(DConstants.REGISTERED, it.registered)
                 startActivity(intent)

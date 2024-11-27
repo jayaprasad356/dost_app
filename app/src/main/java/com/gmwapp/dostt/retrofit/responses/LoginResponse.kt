@@ -4,10 +4,10 @@ data class LoginResponse(
     val success: Boolean,
     val registered: Boolean,
     val message: String,
-    val data: Data?,
+    val data: UserData?,
 )
 
-data class Data (
+data class UserData (
     val id: Int,
     val name: String,
     val language: String,
