@@ -1,6 +1,7 @@
 package com.gmwapp.dostt.activities
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,10 @@ class TransactionsActivity : BaseActivity() {
     }
 
     private fun initUI() {
+        binding.ivBack.setOnClickListener(View.OnClickListener {
+            finish()
+        })
+
         BaseApplication.getInstance()?.getPrefs()?.getUserData()
             ?.let { transactionsViewModel.getTransactions(it.id) }
         transactionsViewModel.transactionsResponseLiveData.observe(this, Observer {

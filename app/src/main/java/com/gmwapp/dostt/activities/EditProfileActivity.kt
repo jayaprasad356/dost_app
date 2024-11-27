@@ -43,6 +43,9 @@ class EditProfileActivity : BaseActivity() {
 
     private fun initUI() {
         binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+        binding.ivBack.setOnClickListener(View.OnClickListener {
+            finish()
+        })
         window.navigationBarColor = getColor(R.color.black_background)
 
         val staggeredGridLayoutManager = FlexboxLayoutManager(this).apply {

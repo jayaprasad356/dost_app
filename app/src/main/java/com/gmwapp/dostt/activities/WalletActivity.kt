@@ -29,6 +29,9 @@ class WalletActivity : BaseActivity() {
 
     private fun initUI() {
         val layoutManager = GridLayoutManager(this, 3)
+        binding.ivBack.setOnClickListener(View.OnClickListener {
+            finish()
+        })
         binding.rvPlans.addItemDecoration(SpacesItemDecoration(20))
         binding.rvPlans.setLayoutManager(layoutManager)
         binding.rvPlans.addItemDecoration(SpacesItemDecoration(10))

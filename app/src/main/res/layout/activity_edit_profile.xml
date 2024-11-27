@@ -164,8 +164,6 @@
                         android:id="@+id/et_user_name"
                         style="@style/EditTextStyle"
                         android:imeOptions="actionDone"
-                        android:inputType="numberDecimal"
-                        android:maxLength="10"
                         android:textColor="@color/white"
                         android:textCursorDrawable="@drawable/color_cursor" />
                 </LinearLayout>
