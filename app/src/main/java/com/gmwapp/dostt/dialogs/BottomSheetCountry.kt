@@ -17,15 +17,14 @@ import com.gmwapp.dostt.callbacks.OnItemSelectionListener
 import com.gmwapp.dostt.databinding.BottomSheetCountryBinding
 import com.gmwapp.dostt.retrofit.responses.Country
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.util.Locale
 
 
 class BottomSheetCountry : BottomSheetDialogFragment() {
     private var onItemSelectionListener: OnItemSelectionListener<Country>? = null
     lateinit var binding: BottomSheetCountryBinding
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = BottomSheetCountryBinding.inflate(layoutInflater)
 
@@ -47,14 +46,12 @@ class BottomSheetCountry : BottomSheetDialogFragment() {
         }
     }
 
-    private fun initUI(){
-        binding.cvCountry.setBackgroundResource(R.drawable.card_view_border_country);
+    private fun initUI() {
+        binding.cvCountry.setBackgroundResource(R.drawable.card_view_border_country)
 
         binding.rvCountries.setLayoutManager(
             LinearLayoutManager(
-                activity,
-                LinearLayoutManager.VERTICAL,
-                false
+                activity, LinearLayoutManager.VERTICAL, false
             )
         )
         val countries = arrayListOf(
@@ -75,16 +72,27 @@ class BottomSheetCountry : BottomSheetDialogFragment() {
                 onItemSelectionListener?.onItemSelected(country)
                 dismiss()
             }
-        }
-        )
+        })
         binding.rvCountries.setAdapter(countryAdapter)
+        binding.ivClose.setOnClickListener(View.OnClickListener {
+            binding.etCountry.setText("")
+        })
         binding.etCountry.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                var filtered: List<Country> = countries.filter { country -> s.toString().toLowerCase() in country.name.toLowerCase() }
+                var filtered: List<Country> = countries.filter { country ->
+                    s.toString().lowercase(Locale.getDefault()) in country.name.lowercase(Locale.getDefault())
+                }
                 countryAdapter.updateValues(filtered)
+                binding.cvCountry.setBackgroundResource(R.drawable.card_view_border_country_selected)
+                if (s.toString().length > 0) {
+                    binding.ivClose.visibility = View.VISIBLE
+                } else {
+                    binding.ivClose.visibility = View.GONE
+                }
+
             }
 
             override fun afterTextChanged(s: Editable) {
