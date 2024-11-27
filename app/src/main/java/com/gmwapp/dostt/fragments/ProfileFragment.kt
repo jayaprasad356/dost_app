@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.gmwapp.dostt.BaseApplication
 import com.gmwapp.dostt.activities.AccountPrivacyActivity
 import com.gmwapp.dostt.activities.EditProfileActivity
 import com.gmwapp.dostt.activities.TransactionsActivity
@@ -30,6 +31,7 @@ class ProfileFragment : BaseFragment() {
     ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
+        binding.tvName.setText(BaseApplication.getInstance()?.getPrefs()?.getUserData()?.name)
         binding.clWallet.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
