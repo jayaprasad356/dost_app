@@ -2,16 +2,21 @@ package com.gmwapp.dostt.adapters
 
 import android.app.Activity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.gmwapp.dostt.R
+import com.gmwapp.dostt.callbacks.OnItemSelectionListener
 import com.gmwapp.dostt.databinding.AdapterInterestBinding
 import com.gmwapp.dostt.retrofit.responses.Interests
+import com.gmwapp.dostt.retrofit.responses.Language
 
 
 class InterestsListAdapter(
     val activity: Activity,
     private val interests: ArrayList<Interests>,
-    var highlightedPosition: Int,
+    private var isLimitreached: Boolean,
+    val onItemSelectionListener: OnItemSelectionListener<Interests>
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -26,15 +31,33 @@ class InterestsListAdapter(
 
     override fun onBindViewHolder(holderParent: RecyclerView.ViewHolder, position: Int) {
         val holder: ItemHolder = holderParent as ItemHolder
-        val interests: Interests = interests[position]
+        val interest: Interests = interests[position]
 
-        holder.binding.tvInterest.text = interests.name
-        holder.binding.ivInterest.setImageResource(interests.image)
-//        Glide.with(activity)
-//            .load(activity.getDrawable(interests.image))
-//            .into(holder.binding.ivInterest)
+        holder.binding.main.setOnClickListener(View.OnClickListener {
+            onItemSelectionListener.onItemSelected(interest)
+            interest.isSelected = interest.isSelected == null || interest.isSelected == false
+            interests[position] = interest
+            notifyDataSetChanged()
+        })
+        if(interest.isSelected == true){
+            holder.binding.main.isEnabled  = true
+            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_selected)
+            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.black))
+        } else if(isLimitreached){
+            holder.binding.main.isEnabled  = false
+            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_disabled)
+            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_disabled_text_color))
+        }else{
+            holder.binding.main.isEnabled  = true
+            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest)
+            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_text_color))
+        }
+        holder.binding.tvInterest.text = interest.name
+        holder.binding.ivInterest.setImageResource(interest.image)
+    }
 
-
+    fun updateLimitReached(isLimitreached: Boolean){
+        this.isLimitreached = isLimitreached
     }
 
     override fun getItemCount(): Int {

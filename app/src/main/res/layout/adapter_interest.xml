@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="#f4f5f9"/>
+        android:textColor="@color/interest_text_color"/>
     <ImageView
         android:id="@+id/iv_interest"
         android:layout_width="match_parent"

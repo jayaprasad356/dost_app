@@ -331,7 +331,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/d_button_bg"
-        android:backgroundTint="@color/white"
         android:enabled="false"
         android:text="@string/update"
         android:textAllCaps="false"
