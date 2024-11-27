@@ -83,7 +83,7 @@ class BottomSheetCountry : BottomSheetDialogFragment() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                var filtered: List<Country> = countries.filter { country -> s.toString().equals(country.name, ignoreCase = true) }
+                var filtered: List<Country> = countries.filter { country -> s.toString().toLowerCase() in country.name.toLowerCase() }
                 countryAdapter.updateValues(filtered)
             }
 
