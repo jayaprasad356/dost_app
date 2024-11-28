@@ -24,7 +24,7 @@ class TransactionsViewModel @Inject constructor(private val transactionsReposito
 
     fun getTransactions(userId: Int) {
         viewModelScope.launch {
-            transactionsRepositories.getTransactions(userId, object:NetworkCallback<TransactionsResponse> {
+            transactionsRepositories.getTransactions(1, object:NetworkCallback<TransactionsResponse> {
                 override fun onResponse(
                     call: Call<TransactionsResponse>,
                     response: Response<TransactionsResponse>

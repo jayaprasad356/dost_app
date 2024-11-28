@@ -25,9 +25,9 @@ class TransactionsActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.ivBack.setOnClickListener(View.OnClickListener {
+        binding.ivBack.setOnClickListener {
             finish()
-        })
+        }
 
         BaseApplication.getInstance()?.getPrefs()?.getUserData()
             ?.let { transactionsViewModel.getTransactions(it.id) }

@@ -28,10 +28,16 @@ class TransactionAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val transaction: TransactionsResponseData = transactions[position]
 
+        if(transaction.payment_type == "Credit"){
+            holder.binding.tvCoins.text = "+"+transaction.coins
+            holder.binding.tvCoins.setTextColor(activity.getColor(android.R.color.holo_green_dark))
+        } else{
+            holder.binding.tvCoins.text = "-"+transaction.coins
+            holder.binding.tvCoins.setTextColor(activity.getColor(android.R.color.holo_red_dark))
+        }
         holder.binding.tvTransactionTitle.text = transaction.type
         holder.binding.tvTransactionDate.text = transaction.datetime
         holder.binding.tvTransactionHint.text = activity.getString(R.string.session_id)+transaction.id
-        holder.binding.ivTransaction.setImageResource(R.drawable.star)
     }
 
      override fun getItemCount(): Int {
