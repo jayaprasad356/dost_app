@@ -42,7 +42,9 @@ class EditProfileActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.tvPreferredLanguage.setText(BaseApplication.getInstance()?.getPrefs()?.getUserData()?.language)
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        binding.tvGender.setText(userData?.gender)
+        binding.tvPreferredLanguage.setText(userData?.language)
         binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         binding.ivBack.setOnClickListener(View.OnClickListener {
             finish()
@@ -93,7 +95,7 @@ class EditProfileActivity : BaseActivity() {
         binding.btnUpdate.setOnClickListener(View.OnClickListener {
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
             val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
-            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.let { it1 ->
+            userData?.let { it1 ->
                 avatarId?.let { it2 ->
                     profileViewModel.updateProfile(
                         it1.id,
