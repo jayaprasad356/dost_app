@@ -37,9 +37,13 @@ class AvatarsListAdapter(
         val avatarsListData: AvatarsListData? = avatarsListData[position]
         if (avatarsListData == null) {
             if (activity is EditProfileActivity) {
-                holder.binding.root.setBackgroundColor(activity.getColor(R.color.black_background))
+                Glide.with(activity).load(R.drawable.d_button_bg_black_background)
+                    .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
+                    .into(holder.binding.ivAvatar)
             } else {
-                holder.binding.root.setBackgroundColor(activity.getColor(R.color.blue_background))
+                Glide.with(activity).load(R.drawable.d_button_bg_blue_background)
+                    .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
+                    .into(holder.binding.ivAvatar)
             }
         } else {
             Glide.with(activity).load(avatarsListData.image)

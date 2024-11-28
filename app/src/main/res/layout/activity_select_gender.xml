@@ -160,13 +160,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_avatars"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.31"
-        android:nestedScrollingEnabled="false"
-        android:overScrollMode="never"
         android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_gender" />

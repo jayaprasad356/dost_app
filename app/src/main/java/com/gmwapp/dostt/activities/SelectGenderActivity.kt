@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.viewModels
@@ -73,8 +74,8 @@ class SelectGenderActivity : BaseActivity() {
         profileViewModel.getAvatarsList("male")
         profileViewModel.avatarsListLiveData.observe(this, Observer {
             if(it.data != null) {
-                it.data.add(it.data.size, null);
                 it.data.add(0, null);
+                it.data.add(it.data.size, null);
                 val avatarsListAdapter = AvatarsListAdapter(
                     this,
                     it.data
