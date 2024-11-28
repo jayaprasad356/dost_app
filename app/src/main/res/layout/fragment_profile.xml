@@ -266,6 +266,7 @@
                 android:id="@+id/iv_logout"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
+                android:layout_marginStart="4dp"
                 android:contentDescription="@string/edit"
                 android:src="@drawable/logout"
                 app:layout_constraintBottom_toBottomOf="parent"

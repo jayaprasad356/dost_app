@@ -42,6 +42,7 @@ class EditProfileActivity : BaseActivity() {
     }
 
     private fun initUI() {
+        binding.tvPreferredLanguage.setText(BaseApplication.getInstance()?.getPrefs()?.getUserData()?.language)
         binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         binding.ivBack.setOnClickListener(View.OnClickListener {
             finish()

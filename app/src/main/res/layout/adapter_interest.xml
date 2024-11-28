@@ -26,9 +26,9 @@
         android:textColor="@color/interest_text_color"/>
     <ImageView
         android:id="@+id/iv_interest"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/logo"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:scaleType="fitCenter"
         android:layout_marginStart="2dp"
         app:layout_constraintStart_toEndOf="@+id/tv_interest"
         app:layout_constraintTop_toTopOf="parent"
