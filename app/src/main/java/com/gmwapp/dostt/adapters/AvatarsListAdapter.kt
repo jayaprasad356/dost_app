@@ -35,22 +35,10 @@ class AvatarsListAdapter(
     override fun onBindViewHolder(holderParent: RecyclerView.ViewHolder, position: Int) {
         val holder: ItemHolder = holderParent as ItemHolder
         val avatarsListData: AvatarsListData? = avatarsListData[position]
-        if (avatarsListData == null) {
-            if (activity is EditProfileActivity) {
-                Glide.with(activity).load(R.drawable.d_button_bg_black_background)
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
-                    .into(holder.binding.ivAvatar)
-            } else {
-                Glide.with(activity).load(R.drawable.d_button_bg_blue_background)
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
-                    .into(holder.binding.ivAvatar)
-            }
-        } else {
-            Glide.with(activity).load(avatarsListData.image)
-                .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
-                .into(holder.binding.ivAvatar)
 
-        }
+        Glide.with(activity).load(avatarsListData?.image)
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(14))).into(holder.binding.ivAvatar)
+
     }
 
     override fun getItemCount(): Int {

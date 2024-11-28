@@ -118,15 +118,12 @@ class EditProfileActivity : BaseActivity() {
         })
         profileViewModel.avatarsListLiveData.observe(this, Observer {
             if (it.data != null) {
-                it.data.add(it.data.size, null)
-                it.data.add(0, null)
-
                 avatarsListAdapter = AvatarsListAdapter(
                     this, it.data
                 )
                 binding.rvAvatars.setAdapter(avatarsListAdapter)
             }
-            binding.rvAvatars.smoothScrollToPosition(1)
+            binding.rvAvatars.smoothScrollToPosition(0)
         })
     }
 }

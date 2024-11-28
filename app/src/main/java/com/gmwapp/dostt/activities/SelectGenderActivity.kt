@@ -1,6 +1,7 @@
 package com.gmwapp.dostt.activities
 
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +18,7 @@ import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.gmwapp.dostt.BaseApplication
 import com.gmwapp.dostt.R
 import com.gmwapp.dostt.adapters.AvatarsListAdapter
@@ -40,17 +42,21 @@ class SelectGenderActivity : BaseActivity() {
         initUI()
     }
 
-    private fun initUI(){
-        binding.cvGender.setBackgroundResource(R.drawable.d_button_bg_gender_outline);
+    private fun initUI() {
+        binding.cvGender.setBackgroundResource(R.drawable.d_button_bg_gender_outline)
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
         binding.btnContinue.setOnClickListener {
             val intent = Intent(this, SelectLanguageActivity::class.java)
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
-            val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
+            val avatarId =
+                profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
             intent.putExtra(DConstants.AVATAR_ID, avatarId)
-            intent.putExtra(DConstants.MOBILE_NUMBER, getIntent().getStringExtra(DConstants.MOBILE_NUMBER))
+            intent.putExtra(
+                DConstants.MOBILE_NUMBER,
+                getIntent().getStringExtra(DConstants.MOBILE_NUMBER)
+            )
             intent.putExtra(DConstants.GENDER, selectedGender)
             startActivity(intent)
 
@@ -73,15 +79,12 @@ class SelectGenderActivity : BaseActivity() {
         }
         profileViewModel.getAvatarsList("male")
         profileViewModel.avatarsListLiveData.observe(this, Observer {
-            if(it.data != null) {
-                it.data.add(0, null);
-                it.data.add(it.data.size, null);
+            if (it.data != null) {
                 val avatarsListAdapter = AvatarsListAdapter(
-                    this,
-                    it.data
+                    this, it.data
                 )
                 binding.rvAvatars.setAdapter(avatarsListAdapter)
-                binding.rvAvatars.smoothScrollToPosition(1);
+                binding.rvAvatars.smoothScrollToPosition(0)
             }
         })
 

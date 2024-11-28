@@ -3,10 +3,12 @@ package com.gmwapp.dostt.activities
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.PointF
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -20,11 +22,25 @@ open class BaseActivity : AppCompatActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
+    fun setCenterLayoutManager(recyclerView: RecyclerView) {
+        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+            ) {
+                super.getItemOffsets(outRect, view, parent, state)
 
-    fun setCenterLayoutManager(recyclerView: RecyclerView){
+                val itemPosition = parent.getChildAdapterPosition(view)
+
+                val itemWidth = view.layoutParams.width
+                val offset = (parent.width - itemWidth) / 2
+
+                if (itemPosition == 0) {
+                    outRect.left = offset
+                } else if (itemPosition == state.itemCount - 1) {
+                    outRect.right = offset
+                }
+            }
+        })
         val centerLayoutManager = CenterLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.setLayoutManager(centerLayoutManager)
     }
@@ -33,19 +49,15 @@ open class BaseActivity : AppCompatActivity() {
 open class CenterLayoutManager : LinearLayoutManager {
     private val mShrinkAmount = 0.20f
     private val mShrinkDistance = 0.9f
+
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(
-        context,
-        orientation,
-        reverseLayout
+        context, orientation, reverseLayout
     )
 
     constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
+        context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
@@ -55,9 +67,7 @@ open class CenterLayoutManager : LinearLayoutManager {
     }
 
     override fun smoothScrollToPosition(
-        recyclerView: RecyclerView,
-        state: RecyclerView.State,
-        position: Int
+        recyclerView: RecyclerView, state: RecyclerView.State, position: Int
     ) {
         val smoothScroller: SmoothScroller = CenterSmoothScroller(recyclerView.context)
         smoothScroller.targetPosition = position
@@ -66,11 +76,7 @@ open class CenterLayoutManager : LinearLayoutManager {
 
     private class CenterSmoothScroller(context: Context?) : LinearSmoothScroller(context) {
         override fun calculateDtToFit(
-            viewStart: Int,
-            viewEnd: Int,
-            boxStart: Int,
-            boxEnd: Int,
-            snapPreference: Int
+            viewStart: Int, viewEnd: Int, boxStart: Int, boxEnd: Int, snapPreference: Int
         ): Int {
             return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
         }
@@ -81,9 +87,7 @@ open class CenterLayoutManager : LinearLayoutManager {
     }
 
     override fun scrollHorizontallyBy(
-        dx: Int,
-        recycler: RecyclerView.Recycler?,
-        state: RecyclerView.State?
+        dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?
     ): Int {
         val orientation = orientation
         if (orientation == HORIZONTAL) {
@@ -96,12 +100,12 @@ open class CenterLayoutManager : LinearLayoutManager {
             val s1 = 1f - mShrinkAmount
             for (i in 0 until childCount) {
                 val child = getChildAt(i)
-                val childMidpoint =
-                    (getDecoratedRight(child!!) + getDecoratedLeft(child)) / 2f
+                val childMidpoint = (getDecoratedRight(child!!) + getDecoratedLeft(child)) / 2f
                 val d = d1.coerceAtMost(abs(midpoint - childMidpoint))
                 val scale = s0 + (s1 - s0) * (d - d0) / (d1 - d0)
                 child.scaleX = scale
                 child.scaleY = scale
+
             }
             return scrolled
         } else {
