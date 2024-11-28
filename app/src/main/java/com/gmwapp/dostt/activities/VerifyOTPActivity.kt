@@ -13,8 +13,9 @@ import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.databinding.ActivityLoginBinding
 import com.gmwapp.dostt.databinding.ActivityVerifyOtpBinding
 import com.gmwapp.dostt.viewmodels.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class VerifyOTPActivity : BaseActivity() {
     lateinit var binding: ActivityVerifyOtpBinding
     private val loginViewModel: LoginViewModel by viewModels()

@@ -56,7 +56,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
                 binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
             } else {
                 val r = Random(System.currentTimeMillis())
-                val randomNumber = 1 + r.nextInt(2) * 10000 + r.nextInt(10000)
+                val randomNumber = 1 + r.nextInt(2) * 100000 + r.nextInt(100000)
 
                 sendOTP(mobile, binding.tvCountryCode.text.toString().toInt(), randomNumber)
             }
@@ -104,6 +104,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
                 val intent = Intent(this, VerifyOTPActivity::class.java)
                 intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
                 intent.putExtra(DConstants.OTP, otp)
+                startActivity(intent)
             } else {
                 binding.tvOtpText.text = it.message
                 binding.tvOtpText.setTextColor(getColor(R.color.error))
