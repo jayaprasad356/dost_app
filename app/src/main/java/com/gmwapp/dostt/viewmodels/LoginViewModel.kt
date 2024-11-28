@@ -7,6 +7,7 @@ import com.gmwapp.dostt.constants.DConstants
 import com.gmwapp.dostt.repositories.LoginRepositories
 import com.gmwapp.dostt.retrofit.callbacks.NetworkCallback
 import com.gmwapp.dostt.retrofit.responses.LoginResponse
+import com.gmwapp.dostt.retrofit.responses.SendOTPResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -19,6 +20,9 @@ class LoginViewModel @Inject constructor(private val loginRepositories: LoginRep
 
     val loginResponseLiveData = MutableLiveData<LoginResponse>()
     val loginErrorLiveData = MutableLiveData<String>()
+
+    val sendOTPResponseLiveData = MutableLiveData<SendOTPResponse>()
+    val sendOTPErrorLiveData = MutableLiveData<String>()
 
     fun login(mobile: String) {
         viewModelScope.launch {
@@ -36,6 +40,27 @@ class LoginViewModel @Inject constructor(private val loginRepositories: LoginRep
 
                 override fun onNoNetwork() {
                     loginErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                }
+            })
+        }
+    }
+
+    fun sendOTP(mobile: String, countryCode:Int, otp:Int) {
+        viewModelScope.launch {
+            loginRepositories.sendOTP(mobile, countryCode, otp, object:NetworkCallback<SendOTPResponse> {
+                override fun onResponse(
+                    call: Call<SendOTPResponse>,
+                    response: Response<SendOTPResponse>
+                ) {
+                    sendOTPResponseLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
+                    sendOTPErrorLiveData.postValue(DConstants.LOGIN_ERROR);
+                }
+
+                override fun onNoNetwork() {
+                    sendOTPErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
                 }
             })
         }

@@ -23,12 +23,14 @@ import com.gmwapp.dostt.dialogs.BottomSheetCountry
 import com.gmwapp.dostt.retrofit.responses.Country
 import com.gmwapp.dostt.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.random.Random
 
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
     lateinit var binding: ActivityLoginBinding
     var mobile: String? = null
+    var otp:Int?= null;
     private val loginViewModel: LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +55,10 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
                 binding.tvOtpText.setTextColor(getColor(R.color.error))
                 binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
             } else {
-                login(mobile)
+                val r = Random(System.currentTimeMillis())
+                val randomNumber = 1 + r.nextInt(2) * 10000 + r.nextInt(10000)
+
+                sendOTP(mobile, binding.tvCountryCode.text.toString().toInt(), randomNumber)
             }
         }
         binding.clCountry.setOnClickListener {
@@ -93,29 +98,21 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             override fun afterTextChanged(s: Editable) {
             }
         })
-        loginViewModel.loginResponseLiveData.observe(this, Observer {
+        loginViewModel.sendOTPResponseLiveData.observe(this, Observer {
             binding.btnLogin.isEnabled = true
             if (it.success) {
                 val intent = Intent(this, VerifyOTPActivity::class.java)
                 intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
-
-                it.data?.let { it1 -> BaseApplication.getInstance()?.getPrefs()?.setUserData(it1) }
-                BaseApplication.getInstance()?.getPrefs()?.setIsRegistered(it.registered)
-                intent.putExtra(DConstants.REGISTERED, it.registered)
-                startActivity(intent)
+                intent.putExtra(DConstants.OTP, otp)
             } else {
-                binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
+                binding.tvOtpText.text = it.message
                 binding.tvOtpText.setTextColor(getColor(R.color.error))
                 binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
             }
         })
-        loginViewModel.loginErrorLiveData.observe(this, Observer {
+        loginViewModel.sendOTPErrorLiveData.observe(this, Observer {
             binding.btnLogin.isEnabled = true
-            if (it.equals(DConstants.LOGIN_ERROR)) {
-                binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
-            } else {
-                binding.tvOtpText.text = getString(R.string.please_try_again_later)
-            }
+            binding.tvOtpText.text = getString(R.string.please_try_again_later)
             binding.tvOtpText.setTextColor(getColor(R.color.error))
             binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
         })
@@ -123,9 +120,9 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         setMessageWithClickableLink()
     }
 
-    private fun login(mobile: String) {
+    private fun sendOTP(mobile: String, countryCode:Int, otp:Int) {
         this.mobile = mobile
-        loginViewModel.login(mobile)
+        loginViewModel.sendOTP(mobile, countryCode, otp)
     }
 
     private fun setMessageWithClickableLink() {
@@ -156,4 +153,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         binding.tvTermsAndConditions.text = spannableString
         binding.tvTermsAndConditions.movementMethod = LinkMovementMethod.getInstance()
     }
+
+    override val number: Country
+        get() = TODO("Not yet implemented")
 }
