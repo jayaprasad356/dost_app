@@ -76,7 +76,6 @@
                     android:layout_height="0dp"
                     app:layout_constraintWidth_default="percent"
                     app:layout_constraintWidth_percent="0.45"
-                    android:scaleType="fitXY"
                     app:layout_constraintHeight_default="percent"
                     app:layout_constraintHeight_percent="0.28"
                     app:layout_constraintStart_toStartOf="parent"

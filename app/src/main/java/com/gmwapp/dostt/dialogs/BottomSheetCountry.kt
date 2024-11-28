@@ -64,7 +64,7 @@ class BottomSheetCountry : BottomSheetDialogFragment() {
             Country(getString(R.string.oman), R.drawable.oman, "+968"),
             Country(getString(R.string.uae), R.drawable.uae, "+971"),
             Country(getString(R.string.kuwait), R.drawable.kuwait, "+965"),
-            Country(getString(R.string.srilanka), R.drawable.srilanka, "+94"),
+            Country(getString(R.string.srilanka), R.drawable.sri_lanka, "+94"),
             Country(getString(R.string.malaysia), R.drawable.malaysia, "+60"),
         )
         val countryAdapter = CountryAdapter(countries, object : OnItemSelectionListener<Country> {
