@@ -2,6 +2,7 @@ package com.gmwapp.dostt.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -32,7 +33,9 @@ class SelectLanguageActivity : BaseActivity() {
     private fun initUI() {
         val layoutManager = GridLayoutManager(this, 2)
         binding.rvLanguages.addItemDecoration(SpacesItemDecoration(20))
-
+        binding.ivBack.setOnClickListener(View.OnClickListener {
+            finish()
+        })
         profileViewModel.registerLiveData.observe(this, Observer {
             if(it.success) {
                 val intent = Intent(this, MainActivity::class.java)

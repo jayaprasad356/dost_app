@@ -30,6 +30,13 @@
         app:layout_constraintGuide_percent="0.19" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_back_top_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_gender_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +63,7 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/right_arrow"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gl_back_top_margin"
         app:tint="#feffff"
         tools:ignore="MissingConstraints" />
 
