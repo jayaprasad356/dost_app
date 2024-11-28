@@ -274,19 +274,6 @@
                 app:tint="@color/white"
                 tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/iv_logout_right_arrow"
-                android:layout_width="10dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="13dp"
-                android:contentDescription="@string/edit"
-                android:src="@drawable/logout_right_arrow"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
-                app:layout_constraintStart_toStartOf="@+id/iv_logout"
-                app:layout_constraintTop_toTopOf="@+id/iv_logout"
-                app:tint="@color/white"
-                tools:ignore="MissingConstraints" />
-
             <TextView
                 android:id="@+id/tv_logout"
                 android:layout_width="wrap_content"
@@ -296,7 +283,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
-                app:layout_constraintStart_toEndOf="@+id/iv_logout_right_arrow"
+                app:layout_constraintStart_toEndOf="@+id/iv_logout"
                 app:layout_constraintTop_toTopOf="@+id/iv_logout" />
 
             <ImageView
