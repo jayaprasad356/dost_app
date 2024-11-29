@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.LanguageAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
@@ -41,6 +42,7 @@ class SelectLanguageActivity : BaseActivity() {
         });
         profileViewModel.registerLiveData.observe(this, Observer {
             if(it.success) {
+                BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra(DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0))
                 intent.putExtra(DConstants.LANGUAGE, selectedLanguage)

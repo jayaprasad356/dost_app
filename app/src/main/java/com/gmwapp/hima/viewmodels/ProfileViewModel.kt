@@ -22,6 +22,7 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     val registerLiveData = MutableLiveData<RegisterResponse>()
     val registerErrorLiveData = MutableLiveData<String>()
     val updateProfileLiveData = MutableLiveData<UpdateProfileResponse>()
+    val updateProfileErrorLiveData = MutableLiveData<String>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -80,9 +81,11 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
+                    registerErrorLiveData.postValue(t.message);
                 }
 
                 override fun onNoNetwork() {
+                    registerErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
                 }
             })
         }

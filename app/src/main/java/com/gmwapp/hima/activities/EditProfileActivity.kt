@@ -118,6 +118,7 @@ class EditProfileActivity : BaseActivity() {
         profileViewModel.updateProfileLiveData.observe(this, Observer {
             if (it.data != null) {
                 Toast.makeText(this@EditProfileActivity,getString(R.string.profile_updated), Toast.LENGTH_LONG).show()
+                BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
                 finish()
             }
         })
