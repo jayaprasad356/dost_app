@@ -44,6 +44,9 @@ class WalletActivity : BaseActivity() {
                         binding.btnAddCoins.text = getString(R.string.add_quantity_coins, coin.coins)
                         binding.btnAddCoins.visibility = View.VISIBLE
                     }
+
+                    override val number: CoinsResponseData?
+                        get() = TODO("Not yet implemented")
                 })
                 binding.rvPlans.setAdapter(coinAdapter)
 

@@ -70,6 +70,9 @@ class SelectLanguageActivity : BaseActivity() {
                 selectedLanguage = language.name
                 binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
             }
+
+            override val number: Language?
+                get() = TODO("Not yet implemented")
         }
 
         )

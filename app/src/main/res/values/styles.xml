@@ -7,6 +7,8 @@
         <item name="android:navigationBarColor">@color/dark_blue</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">
+            @style/activityTransition</item>
     </style>
     <!-- Theme for dark mode -->
     <style name="AppTheme.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -16,6 +18,20 @@
         <item name="android:navigationBarColor">@color/dark_blue</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">
+            @style/activityTransition</item>
+    </style>
+
+    <style name="activityTransition"
+        parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">
+            @anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">
+            @anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">
+            @anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">
+            @anim/slide_out_right</item>
     </style>
 
     <style name="ShapeAppearanceOverlayExtended" parent="">

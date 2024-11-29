@@ -72,6 +72,9 @@ class BottomSheetCountry : BottomSheetDialogFragment() {
                 onItemSelectionListener?.onItemSelected(country)
                 dismiss()
             }
+
+            override val number: Country?
+                get() = TODO("Not yet implemented")
         })
         binding.rvCountries.setAdapter(countryAdapter)
         binding.ivClose.setOnClickListener(View.OnClickListener {

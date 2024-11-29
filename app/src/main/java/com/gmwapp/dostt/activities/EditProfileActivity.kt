@@ -91,6 +91,9 @@ class EditProfileActivity : BaseActivity() {
                     binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
                 }
             }
+
+            override val number: Interests?
+                get() = TODO("Not yet implemented")
         })
         binding.btnUpdate.setOnClickListener(View.OnClickListener {
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
