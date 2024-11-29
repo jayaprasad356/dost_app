@@ -100,6 +100,8 @@ class EditProfileActivity : BaseActivity() {
                 profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
             userData?.let { it1 ->
                 avatarId?.let { it2 ->
+                    binding.pbUpdateLoader.visibility = View.VISIBLE
+                    binding.btnUpdate.setText("")
                     profileViewModel.updateProfile(
                         it1.id, it2, binding.etUserName.text.toString(), selectedInterests
                     )
@@ -114,6 +116,9 @@ class EditProfileActivity : BaseActivity() {
         setCenterLayoutManager(binding.rvAvatars)
         profileViewModel.getAvatarsList("male")
         profileViewModel.updateProfileErrorLiveData.observe(this, Observer {
+            binding.pbUpdateLoader.visibility = View.GONE
+            binding.btnUpdate.setText(getString(R.string.send_otp))
+            binding.btnUpdate.isEnabled = true
             Toast.makeText(
                 this@EditProfileActivity,
                 getString(R.string.please_try_again_later),
@@ -121,6 +126,9 @@ class EditProfileActivity : BaseActivity() {
             ).show()
         })
         profileViewModel.updateProfileLiveData.observe(this, Observer {
+            binding.pbUpdateLoader.visibility = View.GONE
+            binding.btnUpdate.setText(getString(R.string.send_otp))
+            binding.btnUpdate.isEnabled = true
             if (it.data != null) {
                 Toast.makeText(
                     this@EditProfileActivity,

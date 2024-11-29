@@ -164,6 +164,7 @@
                         android:id="@+id/et_user_name"
                         style="@style/EditTextStyle"
                         android:imeOptions="actionDone"
+                        android:singleLine="true"
                         android:textColor="@color/white"
                         android:textCursorDrawable="@drawable/color_cursor" />
                 </LinearLayout>
@@ -340,4 +341,19 @@
         app:layout_constraintHeight_percent="0.06"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintTop_toTopOf="@+id/gl_bottom_margin" />
+    <ProgressBar
+        android:id="@+id/pb_update_loader"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.05"
+        android:elevation="8dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:indeterminateTint="#321a56"
+        android:indeterminateTintMode="src_in"
+        app:layout_constraintTop_toTopOf="@+id/btn_update"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_update"
+        app:layout_constraintStart_toStartOf="@+id/btn_update"
+        app:layout_constraintEnd_toEndOf="@+id/btn_update"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
