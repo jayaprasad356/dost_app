@@ -47,8 +47,8 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
     private fun initUI() {
         binding.cvLogin.setBackgroundResource(R.drawable.card_view_border)
 
-        binding.btnLogin.setOnClickListener {
-            binding.btnLogin.isEnabled = false
+        binding.btnSendOtp.setOnClickListener {
+            binding.btnSendOtp.isEnabled = false
             var mobile = binding.etMobileNumber.text.toString()
             if (TextUtils.isEmpty(mobile) || mobile.length < 10) {
                 binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
@@ -73,11 +73,11 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         }
         binding.cbTermsAndConditions.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg_white)
-                binding.btnLogin.isEnabled = true
+                binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg_white)
+                binding.btnSendOtp.isEnabled = true
             } else {
-                binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg)
-                binding.btnLogin.isEnabled = false
+                binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg)
+                binding.btnSendOtp.isEnabled = false
             }
         }
         binding.etMobileNumber.addTextChangedListener(object : TextWatcher {
@@ -87,11 +87,11 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 window.statusBarColor = resources.getColor(R.color.dark_blue)
                 if (!binding.cbTermsAndConditions.isChecked || TextUtils.isEmpty(s)) {
-                    binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg)
-                    binding.btnLogin.isEnabled = false
+                    binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg)
+                    binding.btnSendOtp.isEnabled = false
                 } else {
-                    binding.btnLogin.setBackgroundResource(R.drawable.d_button_bg_white)
-                    binding.btnLogin.isEnabled = true
+                    binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg_white)
+                    binding.btnSendOtp.isEnabled = true
                 }
             }
 
@@ -99,7 +99,9 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             }
         })
         loginViewModel.sendOTPResponseLiveData.observe(this, Observer {
-            binding.btnLogin.isEnabled = true
+            binding.pbSendOtpLoader.visibility = View.GONE
+            binding.btnSendOtp.setText(getString(R.string.send_otp))
+            binding.btnSendOtp.isEnabled = true
             if (it.success) {
                 val intent = Intent(this, VerifyOTPActivity::class.java)
                 intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
@@ -113,7 +115,9 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             }
         })
         loginViewModel.sendOTPErrorLiveData.observe(this, Observer {
-            binding.btnLogin.isEnabled = true
+            binding.pbSendOtpLoader.visibility = View.GONE
+            binding.btnSendOtp.setText(getString(R.string.send_otp))
+            binding.btnSendOtp.isEnabled = true
             binding.tvOtpText.text = getString(R.string.please_try_again_later)
             binding.tvOtpText.setTextColor(getColor(R.color.error))
             binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
@@ -124,7 +128,11 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
 
     private fun sendOTP(mobile: String, countryCode:Int) {
         this.mobile = mobile
-        otp?.let { loginViewModel.sendOTP(mobile, countryCode, it) }
+        otp?.let {
+            binding.pbSendOtpLoader.visibility = View.VISIBLE
+            binding.btnSendOtp.setText("")
+            loginViewModel.sendOTP(mobile, countryCode, it)
+        }
     }
 
     private fun setMessageWithClickableLink() {
