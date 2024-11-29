@@ -41,6 +41,7 @@ class EditProfileActivity : BaseActivity() {
 
     private fun initUI() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        binding.etUserName.setText(userData?.name)
         binding.tvGender.setText(userData?.gender)
         binding.tvPreferredLanguage.setText(userData?.language)
         binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
