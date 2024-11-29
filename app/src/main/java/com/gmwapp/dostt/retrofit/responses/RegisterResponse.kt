@@ -3,7 +3,7 @@ package com.gmwapp.dostt.retrofit.responses
 data class RegisterResponse(
     val success: Boolean,
     val message: String,
-    val data: ArrayList<RegisterResponseData?>?,
+    val data: RegisterResponseData,
 )
 
 data class RegisterResponseData(
@@ -11,7 +11,7 @@ data class RegisterResponseData(
     val name: String,
     val mobile: String,
     val language: String,
-    val avatar_id: String,
+    val avatar_id: Int,
     val updated_at: String,
     val created_at: String,
 )
