@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils.circleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.activities.AccountPrivacyActivity
@@ -28,8 +29,8 @@ class ProfileFragment : BaseFragment() {
 
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         binding.tvName.text = userData?.name
-        Glide.with(this).load(userData?.image)
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(14))).into(binding.ivProfile)
+        Glide.with(this).load(userData?.image).
+        apply(RequestOptions.circleCropTransform()).into(binding.ivProfile)
 
         binding.clWallet.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, WalletActivity::class.java)

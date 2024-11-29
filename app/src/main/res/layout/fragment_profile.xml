@@ -24,6 +24,13 @@
             android:layout_margin="4dp"
             android:orientation="horizontal">
 
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_image_top_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.16" />
             <ImageView
                 android:id="@+id/iv_edit_profile"
                 android:layout_width="30dp"
@@ -39,16 +46,18 @@
 
             <ImageView
                 android:id="@+id/iv_profile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="12dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:contentDescription="@string/profile"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.25"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.5"
                 android:scaleType="center"
                 android:src="@drawable/star"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorAccent"
+                app:layout_constraintTop_toTopOf="@+id/gl_image_top_margin"
                 tools:ignore="MissingConstraints" />
 
             <TextView
@@ -57,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="name"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 app:layout_constraintEnd_toEndOf="@+id/iv_profile"
                 app:layout_constraintStart_toStartOf="@+id/iv_profile"
                 app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
