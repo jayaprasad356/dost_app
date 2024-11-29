@@ -324,7 +324,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_update"
         android:layout_width="0dp"
         android:layout_height="0dp"

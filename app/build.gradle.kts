@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.gmwapp.dostt"
+    namespace = "com.gmwapp.hima"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.gmwapp.dostt"
+        applicationId = "com.gmwapp.hima"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -30,15 +30,15 @@ android {
         }
     }
 
-    flavorDimensions += "dostt"
+    flavorDimensions += "hima"
     productFlavors {
         create("development") {
-            dimension = "dostt"
+            dimension = "hima"
             applicationIdSuffix = ".dev"
             buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com\"")
         }
         create("production") {
-            dimension = "dostt"
+            dimension = "hima"
             buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com\"")
         }
     }

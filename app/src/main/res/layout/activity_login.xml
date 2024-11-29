@@ -165,7 +165,7 @@
         app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
         app:layout_constraintBottom_toTopOf="@+id/btn_send_otp"/>
 
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_send_otp"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -25,15 +25,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.gmwapp.dostt.activities.VerifyOTPActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.MainActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.WalletActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.TransactionsActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.AccountPrivacyActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.DeleteAccountActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.EditProfileActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.SelectGenderActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.SelectLanguageActivity" />
+        <activity android:name="com.gmwapp.hima.activities.VerifyOTPActivity" />
+        <activity android:name="com.gmwapp.hima.activities.MainActivity" />
+        <activity android:name="com.gmwapp.hima.activities.WalletActivity" />
+        <activity android:name="com.gmwapp.hima.activities.TransactionsActivity" />
+        <activity android:name="com.gmwapp.hima.activities.AccountPrivacyActivity" />
+        <activity android:name="com.gmwapp.hima.activities.DeleteAccountActivity" />
+        <activity android:name="com.gmwapp.hima.activities.EditProfileActivity" />
+        <activity android:name="com.gmwapp.hima.activities.SelectGenderActivity" />
+        <activity android:name="com.gmwapp.hima.activities.SelectLanguageActivity" />
     </application>
 
 </manifest>

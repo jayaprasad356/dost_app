@@ -118,7 +118,7 @@
         android:layout_marginEnd="4dp"
         android:text="@string/used_by_text"
         android:textColor="#e0d8ef" />
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_add_coins"
         android:layout_width="match_parent"
         android:layout_height="45dp"

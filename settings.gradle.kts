@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Dostt"
+rootProject.name = "hima"
 include(":app")
  

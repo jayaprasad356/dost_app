@@ -172,7 +172,7 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_bonus"
         app:layout_constraintBottom_toTopOf="@+id/btn_add_coins" />
 
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_add_coins"
         android:layout_width="0dp"
         android:layout_height="0dp"

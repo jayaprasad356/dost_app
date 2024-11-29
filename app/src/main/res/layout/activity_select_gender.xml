@@ -125,7 +125,7 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.985" />
 
-            <com.gmwapp.dostt.widgets.DButton
+            <com.gmwapp.hima.widgets.DButton
                 android:id="@+id/btn_male"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -144,7 +144,7 @@
                 android:textStyle="bold"
                 android:textColor="#fffbff"/>
 
-            <com.gmwapp.dostt.widgets.DButton
+            <com.gmwapp.hima.widgets.DButton
                 android:id="@+id/btn_female"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -188,7 +188,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_continue" />
 
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_continue"
         android:layout_width="0dp"
         android:layout_height="0dp"

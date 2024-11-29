@@ -122,7 +122,7 @@
         app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin" />
 
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_resend_otp"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
@@ -156,7 +156,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/btn_resend_otp"
         app:layout_constraintStart_toStartOf="@+id/btn_resend_otp"
         app:layout_constraintEnd_toEndOf="@+id/btn_resend_otp"/>
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_verify_otp"
         android:layout_width="0dp"
         android:layout_height="45dp"
