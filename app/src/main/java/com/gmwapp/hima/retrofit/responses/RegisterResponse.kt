@@ -9,6 +9,8 @@ data class RegisterResponse(
 data class RegisterResponseData(
     val id: Int,
     val name: String,
+    val gender: String,
+    val image: String,
     val mobile: String,
     val language: String,
     val avatar_id: Int,

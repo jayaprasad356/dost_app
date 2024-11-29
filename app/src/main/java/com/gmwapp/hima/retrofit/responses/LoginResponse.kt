@@ -11,6 +11,7 @@ data class UserData (
     val id: Int,
     val name: String,
     val gender: String,
+    val image: String,
     val language: String,
     val mobile: String,
     val avatar_id: Int,
