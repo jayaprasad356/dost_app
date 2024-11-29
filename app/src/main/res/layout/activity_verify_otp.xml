@@ -50,6 +50,18 @@
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/tl_title" />
 
+    <ImageView
+        android:id="@+id/iv_edit"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_margin="4dp"
+        android:src="@drawable/edit"
+        app:layout_constraintStart_toEndOf="@+id/tv_otp_mobile_number"
+        app:layout_constraintTop_toTopOf="@+id/tv_otp_mobile_number"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_otp_mobile_number"
+        app:tint="@color/white"
+        tools:ignore="MissingConstraints" />
+
     <TextView
         android:id="@+id/tv_enter_otp"
         android:layout_width="wrap_content"
@@ -146,7 +158,7 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_resend_otp"/>
     <com.gmwapp.dostt.widgets.DButton
         android:id="@+id/btn_verify_otp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="2dp"
         android:layout_marginTop="4dp"

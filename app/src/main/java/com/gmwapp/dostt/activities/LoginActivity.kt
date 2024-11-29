@@ -56,7 +56,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
                 binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
             } else {
                 val r = Random(System.currentTimeMillis())
-                val randomNumber = 1 + r.nextInt(2) * 100000 + r.nextInt(100000)
+                val randomNumber = r.nextInt(100000,999999)
 
                 sendOTP(mobile, binding.tvCountryCode.text.toString().toInt(), randomNumber)
             }

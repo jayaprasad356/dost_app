@@ -38,6 +38,9 @@ class VerifyOTPActivity : BaseActivity() {
         val countryCode = intent.getIntExtra(DConstants.COUNTRY_CODE, 0)
         binding.tvOtpMobileNumber.text =
             getString(R.string.please_enter_otp_sent_to, mobileNumber)
+        binding.ivEdit.setOnClickListener(View.OnClickListener {
+            finish()
+        })
         loginViewModel.sendOTPResponseLiveData.observe(this, Observer {
             binding.pbLoader.visibility = View.GONE
             binding.btnResendOtp.setText(getString(R.string.resend_otp))
