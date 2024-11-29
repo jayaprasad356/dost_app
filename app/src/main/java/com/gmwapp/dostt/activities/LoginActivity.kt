@@ -58,7 +58,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
                 val r = Random(System.currentTimeMillis())
                 otp = r.nextInt(100000,999999)
 
-                sendOTP(mobile, binding.tvCountryCode.text.toString().toInt(), otp)
+                sendOTP(mobile, binding.tvCountryCode.text.toString().toInt())
             }
         }
         binding.clCountry.setOnClickListener {
@@ -122,9 +122,9 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         setMessageWithClickableLink()
     }
 
-    private fun sendOTP(mobile: String, countryCode:Int, otp:Int) {
+    private fun sendOTP(mobile: String, countryCode:Int) {
         this.mobile = mobile
-        loginViewModel.sendOTP(mobile, countryCode, otp)
+        otp?.let { loginViewModel.sendOTP(mobile, countryCode, it) }
     }
 
     private fun setMessageWithClickableLink() {
