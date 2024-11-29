@@ -147,8 +147,10 @@ class EditProfileActivity : BaseActivity() {
                     this, it.data
                 )
                 binding.rvAvatars.setAdapter(avatarsListAdapter)
-                val index = it.data.indexOfFirst { it?.id == userData?.avatar_id }
-                binding.rvAvatars.smoothScrollToPosition(index)
+                val index = it.data.find { it?.id == userData?.avatar_id }
+                it.data.remove(index)
+                it.data.add(0, index);
+                binding.rvAvatars.smoothScrollToPosition(0)
             }
         })
     }
