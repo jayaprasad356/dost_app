@@ -88,4 +88,5 @@
     <string name="srilanka">Sri Lanka (+94)</string>
     <string name="malaysia">Malaysia (+60)</string>
     <string name="search_for_country">Search for Country</string>
+    <string name="retry_in">Retry in: 00:%s</string>
 </resources>

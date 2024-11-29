@@ -2,7 +2,7 @@ package com.gmwapp.dostt.constants
 
 
 object DConstants {
-    const val REGISTERED: String = "registered"
+    const val COUNTRY_CODE: String = "country_code"
     const val MOBILE_NUMBER: String = "mobile_number"
     const val OTP: String = "otp"
     const val GENDER: String = "gender"

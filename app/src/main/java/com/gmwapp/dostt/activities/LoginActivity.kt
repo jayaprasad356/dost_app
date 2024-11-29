@@ -103,6 +103,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             if (it.success) {
                 val intent = Intent(this, VerifyOTPActivity::class.java)
                 intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
+                intent.putExtra(DConstants.COUNTRY_CODE, binding.tvCountryCode.text.toString().toInt())
                 intent.putExtra(DConstants.OTP, otp)
                 startActivity(intent)
             } else {

@@ -6,9 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_blue"
-    android:padding="16dp"
     tools:context=".activities.LoginActivity">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_left_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_right_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_top_margin"
         android:layout_width="wrap_content"
@@ -25,7 +36,7 @@
         android:textColor="@color/white"
         android:textSize="26sp"
         android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
         app:layout_constraintTop_toTopOf="@+id/gl_top_margin" />
 
     <TextView
@@ -36,7 +47,7 @@
         android:layout_marginTop="14dp"
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/tl_title" />
 
     <TextView
@@ -47,7 +58,7 @@
         android:layout_marginTop="14dp"
         android:textColor="@color/white"
         android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/tv_otp_mobile_number" />
 
     <com.chaos.view.PinView
@@ -67,11 +78,11 @@
         android:cursorVisible="true"
         app:hideLineWhenFilled="true"
         app:itemRadius="13dp"
-        app:lineColor="@color/white"
+        app:lineColor="@color/pin_color"
         app:lineWidth="1dp"
         style="@style/PinWidget.PinView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
+        app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
         app:layout_constraintTop_toBottomOf="@+id/tv_enter_otp" />
 
     <TextView
@@ -87,6 +98,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pv_otp" />
 
+    <TextView
+        android:id="@+id/tv_didnt_received_otp_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/didnt_receive_the_otp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_didnt_received_otp"
+        app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
+        app:layout_constraintStart_toStartOf="@+id/gl_left_margin" />
+
     <com.gmwapp.dostt.widgets.DButton
         android:id="@+id/btn_resend_otp"
         android:layout_width="0dp"
@@ -97,16 +120,32 @@
         android:textSize="12sp"
         android:background="@drawable/d_button_bg_white"
         android:padding="8dp"
+        android:visibility="gone"
         android:text="@string/resend_otp"
         android:textAllCaps="false"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/tv_didnt_received_otp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
+        app:layout_constraintStart_toStartOf="@+id/gl_left_margin" />
 
+    <ProgressBar
+        android:id="@+id/pb_loader"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.05"
+        android:elevation="8dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:indeterminateTint="#321a56"
+        android:indeterminateTintMode="src_in"
+        app:layout_constraintTop_toTopOf="@+id/btn_resend_otp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_resend_otp"
+        app:layout_constraintStart_toStartOf="@+id/btn_resend_otp"
+        app:layout_constraintEnd_toEndOf="@+id/btn_resend_otp"/>
     <com.gmwapp.dostt.widgets.DButton
         android:id="@+id/btn_verify_otp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginStart="2dp"
         android:layout_marginTop="4dp"
@@ -118,6 +157,6 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
+        app:layout_constraintStart_toStartOf="@+id/gl_left_margin" />
 </androidx.constraintlayout.widget.ConstraintLayout>
