@@ -49,7 +49,15 @@ class VerifyOTPActivity : BaseActivity() {
             startTimer()
         })
 
+        loginViewModel.loginErrorLiveData.observe(this, Observer {
+            binding.pbVerifyOtpLoader.visibility = View.GONE
+            binding.btnVerifyOtp.setText(getString(R.string.verify_otp))
+            binding.btnVerifyOtp.isEnabled = true
+        })
         loginViewModel.loginResponseLiveData.observe(this, Observer {
+            binding.pbVerifyOtpLoader.visibility = View.GONE
+            binding.btnVerifyOtp.setText(getString(R.string.verify_otp))
+            binding.btnVerifyOtp.isEnabled = true
             if (it.success) {
                 if (it.registered) {
                     it.data?.let { it1 ->
@@ -90,6 +98,8 @@ class VerifyOTPActivity : BaseActivity() {
         binding.btnVerifyOtp.setOnClickListener {
             val enteredOTP = binding.pvOtp.text.toString().toInt()
             if (enteredOTP == otp) {
+                binding.pbVerifyOtpLoader.visibility = View.VISIBLE
+                binding.btnVerifyOtp.setText("")
                 login(mobileNumber)
             }
         }

@@ -173,4 +173,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin" />
+
+    <ProgressBar
+        android:id="@+id/pb_verify_otp_loader"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.05"
+        android:elevation="8dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:indeterminateTint="#321a56"
+        android:indeterminateTintMode="src_in"
+        app:layout_constraintTop_toTopOf="@+id/btn_verify_otp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_verify_otp"
+        app:layout_constraintStart_toStartOf="@+id/btn_verify_otp"
+        app:layout_constraintEnd_toEndOf="@+id/btn_verify_otp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
