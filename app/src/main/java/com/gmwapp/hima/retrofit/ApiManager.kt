@@ -140,7 +140,7 @@ interface ApiInterface {
     fun getTransactions(@Field("user_id") userId: Int): Call<TransactionsResponse>
 
     @FormUrlEncoded
-    @POST("api/transaction_list")
+    @POST("api/update_profile")
     fun updateProfile(
         @Field("user_id") userId: Int,
         @Field("avatar_id") avatarId: Int,
