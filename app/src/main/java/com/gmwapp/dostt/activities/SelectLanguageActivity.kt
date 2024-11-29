@@ -36,6 +36,9 @@ class SelectLanguageActivity : BaseActivity() {
         binding.ivBack.setOnClickListener(View.OnClickListener {
             finish()
         })
+        profileViewModel.registerErrorLiveData.observe(this, Observer {
+            Toast.makeText(this@SelectLanguageActivity,it, Toast.LENGTH_LONG).show()
+        });
         profileViewModel.registerLiveData.observe(this, Observer {
             if(it.success) {
                 val intent = Intent(this, MainActivity::class.java)
