@@ -77,8 +77,8 @@
         style="@style/CardViewStyle.Spacing"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/warning_background"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="#881c1c"
         app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/gl_warning_card_top_margin">
@@ -109,7 +109,7 @@
                 android:layout_marginLeft="14dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/delete_warning_1"
-                android:textColor="@color/white"
+                android:textColor="#ffe0e0"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_hint_1"
@@ -124,6 +124,30 @@
                 app:layout_constraintBottom_toBottomOf="@id/tv_hint_1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_hint_1"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_hint_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/delete_warning_2"
+                android:textColor="#ffe0e0"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_hint_2"
+                app:layout_constraintTop_toBottomOf="@+id/tv_hint_1" />
+
+            <ImageView
+                android:id="@+id/iv_hint_2"
+                android:layout_width="13dp"
+                android:layout_height="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hint_arrow"
+                app:layout_constraintBottom_toBottomOf="@id/tv_hint_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_hint_2"
                 app:tint="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
