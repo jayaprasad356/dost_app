@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/wallet"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_wallet"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/transactions"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_transactions"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -226,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/account_privacy"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_account_privacy"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -282,7 +282,7 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/logout"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintStart_toEndOf="@+id/iv_logout"
                 app:layout_constraintTop_toTopOf="@+id/iv_logout" />
