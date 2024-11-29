@@ -34,7 +34,7 @@ class VerifyOTPActivity : BaseActivity() {
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         val mobileNumber: String = intent.getStringExtra(DConstants.MOBILE_NUMBER).toString()
-        val otp = intent.getIntExtra(DConstants.MOBILE_NUMBER, 0)
+        val otp = intent.getIntExtra(DConstants.OTP, 0)
         val countryCode = intent.getIntExtra(DConstants.COUNTRY_CODE, 0)
         binding.tvOtpMobileNumber.text =
             getString(R.string.please_enter_otp_sent_to, mobileNumber)
@@ -91,17 +91,6 @@ class VerifyOTPActivity : BaseActivity() {
             val enteredOTP = binding.pvOtp.text.toString().toInt()
             if (enteredOTP == otp) {
                 login(mobileNumber)
-            }
-
-            if (BaseApplication.getInstance()?.getPrefs()?.isRegistered == true) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            } else {
-                val intent = Intent(this, SelectGenderActivity::class.java)
-                intent.putExtra(
-                    DConstants.MOBILE_NUMBER, getIntent().getStringExtra(DConstants.MOBILE_NUMBER)
-                )
-                startActivity(intent)
             }
         }
     }
