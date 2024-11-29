@@ -81,11 +81,11 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
-                    registerErrorLiveData.postValue(t.message);
+                    updateProfileErrorLiveData.postValue(t.message);
                 }
 
                 override fun onNoNetwork() {
-                    registerErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                    updateProfileErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
                 }
             })
         }

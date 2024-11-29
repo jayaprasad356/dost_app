@@ -42,8 +42,8 @@ class EditProfileActivity : BaseActivity() {
     private fun initUI() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         binding.etUserName.setText(userData?.name)
-        binding.tvGender.setText(userData?.gender)
-        binding.tvPreferredLanguage.setText(userData?.language)
+        binding.tvGender.text = userData?.gender
+        binding.tvPreferredLanguage.text = userData?.language
         binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         binding.ivBack.setOnClickListener(View.OnClickListener {
             finish()
@@ -91,19 +91,17 @@ class EditProfileActivity : BaseActivity() {
                 }
             }
 
-            override val number: Interests?
+            override val number: Interests
                 get() = TODO("Not yet implemented")
         })
         binding.btnUpdate.setOnClickListener(View.OnClickListener {
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
-            val avatarId = profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
+            val avatarId =
+                profileViewModel.avatarsListLiveData.value?.data?.get(layoutManager.findFirstCompletelyVisibleItemPosition())?.id
             userData?.let { it1 ->
                 avatarId?.let { it2 ->
                     profileViewModel.updateProfile(
-                        it1.id,
-                        it2,
-                        binding.etUserName.text.toString(),
-                        selectedInterests
+                        it1.id, it2, binding.etUserName.text.toString(), selectedInterests
                     )
                 }
             }
@@ -115,11 +113,24 @@ class EditProfileActivity : BaseActivity() {
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
         profileViewModel.getAvatarsList("male")
+        profileViewModel.updateProfileErrorLiveData.observe(this, Observer {
+            Toast.makeText(
+                this@EditProfileActivity,
+                getString(R.string.please_try_again_later),
+                Toast.LENGTH_LONG
+            ).show()
+        })
         profileViewModel.updateProfileLiveData.observe(this, Observer {
             if (it.data != null) {
-                Toast.makeText(this@EditProfileActivity,getString(R.string.profile_updated), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@EditProfileActivity,
+                    getString(R.string.profile_updated),
+                    Toast.LENGTH_LONG
+                ).show()
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
                 finish()
+            } else {
+                Toast.makeText(this@EditProfileActivity, it.message, Toast.LENGTH_LONG).show()
             }
         })
         profileViewModel.avatarsListLiveData.observe(this, Observer {
@@ -128,8 +139,9 @@ class EditProfileActivity : BaseActivity() {
                     this, it.data
                 )
                 binding.rvAvatars.setAdapter(avatarsListAdapter)
+                val index = it.data.indexOfFirst { it?.id == userData?.avatar_id }
+                binding.rvAvatars.smoothScrollToPosition(index)
             }
-            binding.rvAvatars.smoothScrollToPosition(0)
         })
     }
 }
