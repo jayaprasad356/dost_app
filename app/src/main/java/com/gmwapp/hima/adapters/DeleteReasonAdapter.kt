@@ -36,7 +36,7 @@ class DeleteReasonAdapter(
             onItemSelectionListener.onItemSelected(reason)
             if (reason.name == "Other") {
                 isOther = reason.isSelected != true
-                reasons.find { it.name != "Other" }?.isSelected = false
+                reasons.filter { it.name != "Other" }.forEach{it.isSelected = false}
             }
             reason.isSelected = reason.isSelected == null || reason.isSelected == false
             reasons[position] = reason
