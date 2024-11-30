@@ -149,6 +149,9 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
             override fun onItemSelected(reason: Reason) {
                 if (reason.name == "Other") {
                     selectedReasons.clear()
+                    binding.btnDeleteAccount.isEnabled = false
+                    binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
+                    binding.etDescription.setText("");
                     if (reason.isSelected == true) {
                         binding.tvRemainingText.visibility = View.GONE
                         binding.tvDescription.visibility = View.GONE
