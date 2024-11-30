@@ -63,6 +63,9 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
     private fun initUI() {
         binding.cvDeleteAccount.setBackgroundResource(R.drawable.warning_background)
         binding.cvDescription.setBackgroundResource(R.drawable.d_button_bg_user_name)
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
         binding.clViewMore.setOnClickListener({
             if (isMoreWarnings == true) {
                 changeWarningHints(View.GONE)
