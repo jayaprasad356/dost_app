@@ -443,30 +443,35 @@
                 app:layout_constraintTop_toBottomOf="@+id/cv_description" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
 
-    <TextView
-        android:id="@+id/tv_need_help"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="@string/contact_support_mail"
-        android:textColor="@color/white"
-        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_delete_account"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <TextView
-        android:id="@+id/tv_support_mail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_delete_account"
-        app:layout_constraintStart_toEndOf="@+id/tv_need_help" />
+        <TextView
+            android:id="@+id/tv_need_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_support_mail"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_support_mail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_need_help" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_delete_account"

@@ -68,7 +68,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
             finish()
         }
         binding.tvSupportMail.paintFlags =
-            binding.tvSupportMail.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            binding.tvSupportMail.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.tvSupportMail.text =
             BaseApplication.getInstance()?.getPrefs()?.getSettingsData()?.support_mail
         binding.clViewMore.setOnClickListener({
