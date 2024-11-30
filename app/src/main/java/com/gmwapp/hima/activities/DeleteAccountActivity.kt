@@ -117,6 +117,10 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         binding.rvReasons.addItemDecoration(itemDecoration)
         binding.rvReasons.setLayoutManager(staggeredGridLayoutManager)
 
+        binding.etDescription.setOnTouchListener { v, _ ->
+            binding.cvDescription.setBackgroundResource(R.drawable.card_view_border_active)
+            false
+        }
         binding.etDescription.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
