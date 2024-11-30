@@ -162,7 +162,4 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         binding.tvTermsAndConditions.text = spannableString
         binding.tvTermsAndConditions.movementMethod = LinkMovementMethod.getInstance()
     }
-
-    override val number: Country
-        get() = TODO("Not yet implemented")
 }

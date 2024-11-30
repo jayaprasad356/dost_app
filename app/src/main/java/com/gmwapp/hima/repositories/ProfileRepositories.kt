@@ -3,6 +3,7 @@ package com.gmwapp.hima.repositories
 import com.gmwapp.hima.retrofit.ApiManager
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
+import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import javax.inject.Inject
@@ -23,5 +24,10 @@ class ProfileRepositories @Inject constructor(private val apiManager: ApiManager
                name: String,
                interests: ArrayList<String>?, callback: NetworkCallback<UpdateProfileResponse>) {
         apiManager.updateProfile(userId,avatarId, name, interests, callback)
+    }
+
+  fun deleteUsers(userId: Int,
+                    deleteReason: String, callback: NetworkCallback<DeleteUserResponse>) {
+        apiManager.deleteUsers(userId,deleteReason, callback)
     }
 }

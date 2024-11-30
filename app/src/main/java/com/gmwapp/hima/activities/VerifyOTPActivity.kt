@@ -63,6 +63,7 @@ class VerifyOTPActivity : BaseActivity() {
                         BaseApplication.getInstance()?.getPrefs()?.setUserData(it1)
                     }
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
                 } else {
                     val intent = Intent(this, SelectGenderActivity::class.java)

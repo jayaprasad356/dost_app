@@ -23,6 +23,14 @@ class DPreferences(context: Context) {
         }
     }
 
+    fun clearUserData(){
+        try {
+            mPrefsWrite.clear()
+            mPrefsWrite.apply()
+        } catch (e: Exception) {
+            e.message?.let { Log.e("Dpreferences", it) }
+        }
+    }
     fun getUserData(): UserData? {
         try {
             return Gson().fromJson(mPrefsRead.getString(USER_DATA, ""), UserData::class.java)

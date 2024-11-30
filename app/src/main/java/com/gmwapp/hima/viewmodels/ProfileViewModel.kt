@@ -7,6 +7,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.repositories.ProfileRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
+import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,8 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     val registerErrorLiveData = MutableLiveData<String>()
     val updateProfileLiveData = MutableLiveData<UpdateProfileResponse>()
     val updateProfileErrorLiveData = MutableLiveData<String>()
+    val deleteUserLiveData = MutableLiveData<DeleteUserResponse>()
+    val deleteUserErrorLiveData = MutableLiveData<String>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -86,6 +89,29 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
 
                 override fun onNoNetwork() {
                     updateProfileErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                }
+            })
+        }
+    }
+
+    fun deleteUsers(userId: Int,
+                      deleteReason: String,
+                      ) {
+        viewModelScope.launch {
+            profileRepositories.deleteUsers(userId,deleteReason, object:NetworkCallback<DeleteUserResponse> {
+                override fun onResponse(
+                    call: Call<DeleteUserResponse>,
+                    response: Response<DeleteUserResponse>
+                ) {
+                    deleteUserLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<DeleteUserResponse>, t: Throwable) {
+                    deleteUserErrorLiveData.postValue(t.message);
+                }
+
+                override fun onNoNetwork() {
+                    deleteUserErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
                 }
             })
         }
