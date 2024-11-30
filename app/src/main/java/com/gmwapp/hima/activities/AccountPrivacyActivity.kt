@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.R
 import com.gmwapp.hima.databinding.ActivityAccountPrivacyBinding
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,6 +39,9 @@ class AccountPrivacyActivity : BaseActivity() {
                 i.setData(Uri.parse(prefs?.getSettingsData()?.privacy_policy))
                 startActivity(i)
             } catch (e: Exception) {
+                Toast.makeText(
+                    this@AccountPrivacyActivity, e.message, Toast.LENGTH_LONG
+                ).show()
                 e.message?.let { it1 -> Log.e("AccountPrivacyActivity", it1) }
             }
         }
