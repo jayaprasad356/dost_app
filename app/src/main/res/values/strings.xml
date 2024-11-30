@@ -107,4 +107,5 @@
     <string name="tell_us_about_your_issue">Tell us about your issue</string>
     <string name="delete_account_text">Are you sure you want to delete your profile?</string>
     <string name="give_us_a_description">Give us a description:</string>
+    <string name="description_remaining_text">%d/250</string>
 </resources>

@@ -65,7 +65,6 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
     private fun initUI() {
         binding.cvDeleteAccount.setBackgroundResource(R.drawable.warning_background)
         binding.cvDescription.setBackgroundResource(R.drawable.d_button_bg_user_name)
-
         binding.clViewMore.setOnClickListener({
             if (isMoreWarnings == true) {
                 changeWarningHints(View.GONE)
@@ -118,7 +117,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         binding.rvReasons.setLayoutManager(staggeredGridLayoutManager)
 
         binding.etDescription.setOnTouchListener { v, _ ->
-            binding.cvDescription.setBackgroundResource(R.drawable.card_view_border_active)
+            binding.cvDescription.setBackgroundResource(R.drawable.card_view_border_country_selected)
             false
         }
         binding.etDescription.addTextChangedListener(object : TextWatcher {
@@ -130,6 +129,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                     binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
                     binding.btnDeleteAccount.isEnabled = false
                 } else {
+                    binding.tvRemainingText.setText(getString(R.string.description_remaining_text, s.length))
                     binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
                     binding.btnDeleteAccount.isEnabled = true
                 }
@@ -150,9 +150,13 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                 if (reason.name == "Other") {
                     selectedReasons.clear()
                     if (reason.isSelected == true) {
+                        binding.tvRemainingText.visibility = View.GONE
                         binding.tvDescription.visibility = View.GONE
                         binding.cvDescription.visibility = View.GONE
                     } else {
+                        binding.tvRemainingText.text =
+                            getString(R.string.description_remaining_text, 0)
+                        binding.tvRemainingText.visibility = View.VISIBLE
                         binding.tvDescription.visibility = View.VISIBLE
                         binding.cvDescription.visibility = View.VISIBLE
                     }
