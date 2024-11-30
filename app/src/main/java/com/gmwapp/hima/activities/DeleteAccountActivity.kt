@@ -64,6 +64,8 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
 
     private fun initUI() {
         binding.cvDeleteAccount.setBackgroundResource(R.drawable.warning_background)
+        binding.cvDescription.setBackgroundResource(R.drawable.d_button_bg_user_name)
+
         binding.clViewMore.setOnClickListener({
             if (isMoreWarnings == true) {
                 changeWarningHints(View.GONE)
@@ -183,8 +185,10 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         binding.ivHint7.visibility = visibility
         if (visibility == View.VISIBLE) {
             binding.tvViewMore.text = getString(R.string.view_less)
+            binding.ivViewMore.rotation = 180F
         } else {
             binding.tvViewMore.text = getString(R.string.view_more)
+            binding.ivViewMore.rotation = 0F
         }
     }
 }
