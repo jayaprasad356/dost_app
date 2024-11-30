@@ -49,9 +49,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
     override fun onButtonClick() {
         var reason = ""
         if (selectedReasons.size > 0) {
-            for (selectedReason in selectedReasons) {
-                reason += selectedReason
-            }
+            reason = selectedReasons.joinToString (separator = ","){ it  }
         } else {
             reason = binding.etDescription.text.toString()
         }
@@ -127,10 +125,12 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (TextUtils.isEmpty(s)) {
                     binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
+                    binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
                     binding.btnDeleteAccount.isEnabled = false
                 } else {
                     binding.tvRemainingText.setText(getString(R.string.description_remaining_text, s.length))
                     binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
+                    binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
                     binding.btnDeleteAccount.isEnabled = true
                 }
             }
@@ -171,9 +171,11 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                     }
                     if (selectedReasons.size > 0) {
                         binding.btnDeleteAccount.isEnabled = true
+                        binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
                         binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
                     } else {
                         binding.btnDeleteAccount.isEnabled = false
+                        binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
                         binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
                     }
                 }
