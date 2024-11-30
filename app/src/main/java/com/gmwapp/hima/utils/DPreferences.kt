@@ -3,6 +3,7 @@ package com.gmwapp.hima.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.gmwapp.hima.retrofit.responses.SettingsResponseData
 import com.gmwapp.hima.retrofit.responses.UserData
 import com.google.gson.Gson
 
@@ -23,7 +24,7 @@ class DPreferences(context: Context) {
         }
     }
 
-    fun clearUserData(){
+    fun clearUserData() {
         try {
             mPrefsWrite.clear()
             mPrefsWrite.apply()
@@ -31,6 +32,7 @@ class DPreferences(context: Context) {
             e.message?.let { Log.e("Dpreferences", it) }
         }
     }
+
     fun getUserData(): UserData? {
         try {
             return Gson().fromJson(mPrefsRead.getString(USER_DATA, ""), UserData::class.java)
@@ -39,8 +41,27 @@ class DPreferences(context: Context) {
         }
     }
 
+    fun setSettingsData(settingsData: SettingsResponseData) {
+        try {
+            mPrefsWrite.putString(
+                SETTINGS_DATA, Gson().toJson(settingsData)
+            )
+            mPrefsWrite.apply()
+        } catch (e: Exception) {
+            e.message?.let { Log.e("Dpreferences", it) }
+        }
+    }
+
+    fun getSettingsData(): SettingsResponseData? {
+        try {
+            return Gson().fromJson(mPrefsRead.getString(SETTINGS_DATA, ""), SettingsResponseData::class.java)
+        } catch (e: Exception) {
+            return null
+        }
+    }
+
     companion object {
-        private const val REGISTERED = "registered"
+        private const val SETTINGS_DATA = "settings_data"
         private const val USER_DATA = "user_data"
         private const val PREFS = "Hima"
     }

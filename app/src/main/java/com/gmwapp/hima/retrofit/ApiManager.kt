@@ -7,6 +7,7 @@ import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
+import com.gmwapp.hima.retrofit.responses.SettingsResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import com.gmwapp.hima.utils.Helper
@@ -120,6 +121,18 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
             callback.onNoNetwork()
         }
     }
+
+    fun getSettings(
+        userId: Int,
+        callback: NetworkCallback<SettingsResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<SettingsResponse> = getApiInterface().getSettings(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 
 interface ApiInterface {
@@ -169,4 +182,8 @@ interface ApiInterface {
     @POST("api/delete_users")
     fun deleteUsers(@Field("user_id") userId: Int,
                  @Field("delete_reason") deleteReason: String): Call<DeleteUserResponse>
+
+    @FormUrlEncoded
+    @POST("api/settings_list")
+    fun getSettings(@Field("user_id") userId: Int): Call<SettingsResponse>
 }
