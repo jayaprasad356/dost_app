@@ -2,7 +2,9 @@ package com.gmwapp.hima.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import android.view.MenuItem
+import android.widget.Toast
 import com.gmwapp.hima.R
 import com.gmwapp.hima.databinding.ActivityMainBinding
 import com.gmwapp.hima.dialogs.BottomSheetWelcomeBonus
@@ -15,49 +17,57 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 
 
-class MainActivity : BaseActivity(), BottomNavigationView
-.OnNavigationItemSelectedListener  {
+class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityMainBinding
     var bottomNavigationView: BottomNavigationView? = null
+    var isBackPressedAlready = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val bottomSheet: BottomSheetWelcomeBonus =
-            BottomSheetWelcomeBonus()
+        val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
         bottomSheet.show(
-            supportFragmentManager,
-            "BottomSheetWelcomeBonus"
+            supportFragmentManager, "BottomSheetWelcomeBonus"
         )
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
         binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
+    }
+
+    override fun onBackPressed() {
+        if (isBackPressedAlready) {
+            super.onBackPressed()
+        } else {
+            Toast.makeText(
+                this@MainActivity,
+                getString(R.string.press_back_again_to_exit),
+                Toast.LENGTH_SHORT
+            ).show()
+            isBackPressedAlready = true
+            Handler().postDelayed({
+                isBackPressedAlready = false
+            }, 3000)
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home -> {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.flFragment, HomeFragment())
+                supportFragmentManager.beginTransaction().replace(R.id.flFragment, HomeFragment())
                     .commit()
                 return true
             }
 
             R.id.recent -> {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.flFragment, RecentFragment())
+                supportFragmentManager.beginTransaction().replace(R.id.flFragment, RecentFragment())
                     .commit()
                 return true
             }
 
             R.id.profile -> {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.flFragment, ProfileFragment())
-                    .commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.flFragment, ProfileFragment()).commit()
                 return true
             }
         }
@@ -66,7 +76,7 @@ class MainActivity : BaseActivity(), BottomNavigationView
 
     @SuppressLint("RestrictedApi")
     fun removeShiftMode() {
-        binding.bottomNavigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+        binding.bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
         val menuView = binding.bottomNavigationView.getChildAt(0) as BottomNavigationMenuView
         for (i in 0 until menuView.childCount) {
             val item = menuView.getChildAt(i) as BottomNavigationItemView
