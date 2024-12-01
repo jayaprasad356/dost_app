@@ -218,7 +218,8 @@ class EditProfileActivity : BaseActivity() {
     private fun updateButton() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         val interests = userData?.interests?.split(",")
-        if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || interests != selectedInterests)) {
+        val sameInterests = interests?.containsAll(selectedInterests) == true && interests.size == selectedInterests.size
+        if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || !sameInterests)) {
             binding.btnUpdate.isEnabled = true
             binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
