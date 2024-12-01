@@ -195,6 +195,7 @@
                         android:layout_marginEnd="16dp"
                         android:contentDescription="@string/edit"
                         android:src="@drawable/warning"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -209,13 +210,13 @@
                         android:layout_height="20dp"
                         android:layout_marginEnd="16dp"
                         android:contentDescription="@string/edit"
+                        android:visibility="gone"
                         android:src="@drawable/ic_tick_inside_circle"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintWidth_default="percent"
                         app:layout_constraintWidth_percent="0.05"
-                        app:tint="@android:color/holo_green_dark"
                         tools:ignore="MissingConstraints" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

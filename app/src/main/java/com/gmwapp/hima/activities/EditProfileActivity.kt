@@ -59,15 +59,14 @@ class EditProfileActivity : BaseActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                Log.e("siva", "onTextChanged")
-
                 val text = s.toString()
                 if (text.length < 4) {
-                    binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_red)
+                    binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_error)
                     binding.pbUserNameLoader.visibility = View.GONE
                     binding.ivSuccess.visibility = View.GONE
                     binding.ivWarning.visibility = View.VISIBLE
                     binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                    binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
                 } else {
                     userData?.id?.let {
                         binding.pbUserNameLoader.visibility = View.VISIBLE
@@ -77,7 +76,6 @@ class EditProfileActivity : BaseActivity() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                Log.e("siva", "afterTextChanged")
             }
         })
 
@@ -150,13 +148,15 @@ class EditProfileActivity : BaseActivity() {
                 binding.ivSuccess.visibility = View.VISIBLE
                 binding.ivWarning.visibility = View.GONE
                 binding.tvUserNameHint.setTextColor(getColor(R.color.user_name_hint_text))
+                binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
             } else {
-                binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_red)
+                binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_error)
                 binding.pbUserNameLoader.visibility = View.GONE
-                binding.ivSuccess.visibility = View.VISIBLE
-                binding.ivWarning.visibility = View.GONE
+                binding.ivSuccess.visibility = View.GONE
+                binding.ivWarning.visibility = View.VISIBLE
                 binding.tvUserNameHint.text = it.message
                 binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
             }
         })
         profileViewModel.userValidationErrorLiveData.observe(this, Observer {
@@ -167,12 +167,13 @@ class EditProfileActivity : BaseActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_red)
+                binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_error)
                 binding.pbUserNameLoader.visibility = View.GONE
-                binding.ivSuccess.visibility = View.VISIBLE
-                binding.ivWarning.visibility = View.GONE
+                binding.ivSuccess.visibility = View.GONE
+                binding.ivWarning.visibility = View.VISIBLE
                 binding.tvUserNameHint.text = it
                 binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
             }
         })
         profileViewModel.updateProfileErrorLiveData.observe(this, Observer {
