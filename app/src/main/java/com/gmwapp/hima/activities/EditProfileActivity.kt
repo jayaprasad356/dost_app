@@ -27,7 +27,6 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class EditProfileActivity : BaseActivity() {
     private var interestsListAdapter: InterestsListAdapter? = null
@@ -35,6 +34,7 @@ class EditProfileActivity : BaseActivity() {
     lateinit var binding: ActivityEditProfileBinding
     private val profileViewModel: ProfileViewModel by viewModels()
     private val selectedInterests: ArrayList<String> = ArrayList()
+    private var isValidUserName = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,12 +61,14 @@ class EditProfileActivity : BaseActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = s.toString()
                 if (text.length < 4) {
+                    isValidUserName = false
                     binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_error)
                     binding.pbUserNameLoader.visibility = View.GONE
                     binding.ivSuccess.visibility = View.GONE
                     binding.ivWarning.visibility = View.VISIBLE
+                    binding.tvUserNameHint.text = getString(R.string.user_name_hint)
                     binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
-                    binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+                    updateButton()
                 } else {
                     userData?.id?.let {
                         binding.pbUserNameLoader.visibility = View.VISIBLE
@@ -92,17 +94,18 @@ class EditProfileActivity : BaseActivity() {
         binding.rvInterests.addItemDecoration(itemDecoration)
         binding.rvInterests.setLayoutManager(staggeredGridLayoutManager)
 
+        val interests = userData?.interests?.split(",")
         interestsListAdapter = InterestsListAdapter(this, arrayListOf(
-            Interests(getString(R.string.politics), R.drawable.politics, false),
-            Interests(getString(R.string.art), R.drawable.art, false),
-            Interests(getString(R.string.sports), R.drawable.sports, false),
-            Interests(getString(R.string.movies), R.drawable.movie, false),
-            Interests(getString(R.string.music), R.drawable.music, false),
-            Interests(getString(R.string.foodie), R.drawable.foodie, false),
-            Interests(getString(R.string.travel), R.drawable.travel, false),
-            Interests(getString(R.string.photography), R.drawable.photography, false),
-            Interests(getString(R.string.love), R.drawable.love, false),
-            Interests(getString(R.string.cooking), R.drawable.cooking, false),
+            Interests(getString(R.string.politics), R.drawable.politics, interests?.contains(getString(R.string.politics))),
+            Interests(getString(R.string.art), R.drawable.art, interests?.contains(getString(R.string.art))),
+            Interests(getString(R.string.sports), R.drawable.sports, interests?.contains(getString(R.string.sports))),
+            Interests(getString(R.string.movies), R.drawable.movie, interests?.contains(getString(R.string.movies))),
+            Interests(getString(R.string.music), R.drawable.music, interests?.contains(getString(R.string.music))),
+            Interests(getString(R.string.foodie), R.drawable.foodie, interests?.contains(getString(R.string.foodie))),
+            Interests(getString(R.string.travel), R.drawable.travel, interests?.contains(getString(R.string.travel))),
+            Interests(getString(R.string.photography), R.drawable.photography, interests?.contains(getString(R.string.photography))),
+            Interests(getString(R.string.love), R.drawable.love, interests?.contains(getString(R.string.love))),
+            Interests(getString(R.string.cooking), R.drawable.cooking, interests?.contains(getString(R.string.cooking))),
         ), false, object : OnItemSelectionListener<Interests> {
             override fun onItemSelected(interest: Interests) {
                 if (interest.isSelected == true) {
@@ -111,13 +114,7 @@ class EditProfileActivity : BaseActivity() {
                     selectedInterests.add(interest.name)
                 }
                 interestsListAdapter?.updateLimitReached(selectedInterests.size == 4)
-                if (selectedInterests.size > 0) {
-                    binding.btnUpdate.isEnabled = true
-                    binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
-                } else {
-                    binding.btnUpdate.isEnabled = false
-                    binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
-                }
+                updateButton()
             }
         })
         binding.btnUpdate.setOnClickListener(View.OnClickListener {
@@ -143,21 +140,23 @@ class EditProfileActivity : BaseActivity() {
         profileViewModel.getAvatarsList("male")
         profileViewModel.userValidationLiveData.observe(this, Observer {
             if (it.success) {
+                isValidUserName = true
                 binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_user_name)
                 binding.pbUserNameLoader.visibility = View.GONE
                 binding.ivSuccess.visibility = View.VISIBLE
                 binding.ivWarning.visibility = View.GONE
+                binding.tvUserNameHint.text = getString(R.string.user_name_hint)
                 binding.tvUserNameHint.setTextColor(getColor(R.color.user_name_hint_text))
-                binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
             } else {
+                isValidUserName = false
                 binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_error)
                 binding.pbUserNameLoader.visibility = View.GONE
                 binding.ivSuccess.visibility = View.GONE
                 binding.ivWarning.visibility = View.VISIBLE
                 binding.tvUserNameHint.text = it.message
                 binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
-                binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
             }
+            updateButton()
         })
         profileViewModel.userValidationErrorLiveData.observe(this, Observer {
             if (it == DConstants.NO_NETWORK) {
@@ -167,13 +166,14 @@ class EditProfileActivity : BaseActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             } else {
+                isValidUserName = false
                 binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_error)
                 binding.pbUserNameLoader.visibility = View.GONE
                 binding.ivSuccess.visibility = View.GONE
                 binding.ivWarning.visibility = View.VISIBLE
                 binding.tvUserNameHint.text = it
                 binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
-                binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+                updateButton()
             }
         })
         profileViewModel.updateProfileErrorLiveData.observe(this, Observer {
@@ -212,6 +212,18 @@ class EditProfileActivity : BaseActivity() {
                 binding.rvAvatars.smoothScrollToPosition(0)
             }
         })
+    }
+
+    private fun updateButton() {
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        val interests = userData?.interests?.split(",")
+        if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || interests != selectedInterests)) {
+            binding.btnUpdate.isEnabled = true
+            binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
+        } else {
+            binding.btnUpdate.isEnabled = false
+            binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+        }
     }
 }
 

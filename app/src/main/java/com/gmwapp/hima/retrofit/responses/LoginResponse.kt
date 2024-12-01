@@ -13,6 +13,7 @@ data class UserData (
     val gender: String,
     val image: String,
     val language: String,
+    val interests: String?,
     val mobile: String,
     val avatar_id: Int,
     val datetime: String,
