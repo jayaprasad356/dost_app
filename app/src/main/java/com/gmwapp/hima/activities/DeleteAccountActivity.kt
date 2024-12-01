@@ -2,27 +2,28 @@ package com.gmwapp.hima.activities
 
 import android.content.Intent
 import android.graphics.Paint
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.Html
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.DeleteReasonAdapter
-import com.gmwapp.hima.adapters.InterestsListAdapter
 import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
-import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityDeleteAccountBinding
 import com.gmwapp.hima.dialogs.BottomSheetDeleteAccount
-import com.gmwapp.hima.dialogs.BottomSheetLogout
-import com.gmwapp.hima.retrofit.responses.Country
-import com.gmwapp.hima.retrofit.responses.Interests
 import com.gmwapp.hima.retrofit.responses.Reason
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.google.android.flexbox.AlignItems
@@ -32,6 +33,7 @@ import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
@@ -61,16 +63,36 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         }
     }
 
+    fun String.fromHtml(): Spanned {
+        return Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+    }
+
     private fun initUI() {
         binding.cvDeleteAccount.setBackgroundResource(R.drawable.warning_background)
         binding.cvDescription.setBackgroundResource(R.drawable.d_button_bg_user_name)
         binding.ivBack.setOnClickListener {
             finish()
         }
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        val supportMail = prefs?.getSettingsData()?.support_mail
+        val userData = prefs?.getUserData()
+        val subject = getString(R.string.mail_subject, userData?.mobile)
+
+        val body = getString(R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,
+            BuildConfig.VERSION_CODE
+        )
+        binding.tvSupportMail.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+
+            val data = Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")
+            intent.setData(data)
+
+            startActivity(intent)
+        }
         binding.tvSupportMail.paintFlags =
             binding.tvSupportMail.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.tvSupportMail.text =
-            BaseApplication.getInstance()?.getPrefs()?.getSettingsData()?.support_mail
+            supportMail
         binding.clViewMore.setOnClickListener({
             if (isMoreWarnings == true) {
                 changeWarningHints(View.GONE)
@@ -95,7 +117,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         })
         profileViewModel.deleteUserLiveData.observe(this, Observer {
             if (it.success) {
-                BaseApplication.getInstance()?.getPrefs()?.clearUserData()
+                prefs?.clearUserData()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
