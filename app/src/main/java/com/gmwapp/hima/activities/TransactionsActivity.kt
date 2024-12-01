@@ -1,5 +1,6 @@
 package com.gmwapp.hima.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -27,6 +28,10 @@ class TransactionsActivity : BaseActivity() {
             finish()
         }
 
+        binding.btnAddCoins.setOnClickListener({
+            val intent = Intent(this, WalletActivity::class.java)
+            startActivity(intent)
+        })
         BaseApplication.getInstance()?.getPrefs()?.getUserData()
             ?.let { transactionsViewModel.getTransactions(it.id) }
         transactionsViewModel.transactionsResponseLiveData.observe(this, Observer {
