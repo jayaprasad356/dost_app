@@ -23,7 +23,7 @@ class ProfileRepositories @Inject constructor(private val apiManager: ApiManager
   fun updateProfile(userId: Int,
                avatarId: Int,
                name: String,
-               interests: ArrayList<String>?, callback: NetworkCallback<UpdateProfileResponse>) {
+               interests: String?, callback: NetworkCallback<UpdateProfileResponse>) {
         apiManager.updateProfile(userId,avatarId, name, interests, callback)
     }
 

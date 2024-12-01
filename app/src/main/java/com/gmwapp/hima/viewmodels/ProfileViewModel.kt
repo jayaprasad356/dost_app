@@ -78,7 +78,7 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                       name: String,
                       interests: ArrayList<String>?) {
         viewModelScope.launch {
-            profileRepositories.updateProfile(userId,avatarId,name, interests, object:NetworkCallback<UpdateProfileResponse> {
+            profileRepositories.updateProfile(userId,avatarId,name, interests?.joinToString(separator = ",") { it }, object:NetworkCallback<UpdateProfileResponse> {
                 override fun onResponse(
                     call: Call<UpdateProfileResponse>,
                     response: Response<UpdateProfileResponse>

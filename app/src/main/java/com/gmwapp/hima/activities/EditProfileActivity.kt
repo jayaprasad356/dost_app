@@ -95,6 +95,7 @@ class EditProfileActivity : BaseActivity() {
         binding.rvInterests.setLayoutManager(staggeredGridLayoutManager)
 
         val interests = userData?.interests?.split(",")
+        interests?.let { selectedInterests.addAll(it) }
         interestsListAdapter = InterestsListAdapter(this, arrayListOf(
             Interests(getString(R.string.politics), R.drawable.politics, interests?.contains(getString(R.string.politics))),
             Interests(getString(R.string.art), R.drawable.art, interests?.contains(getString(R.string.art))),

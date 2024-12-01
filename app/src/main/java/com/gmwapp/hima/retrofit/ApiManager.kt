@@ -88,7 +88,7 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         userId: Int,
         avatarId: Int,
         name: String,
-        interests: ArrayList<String>?,
+        interests: String?,
         callback: NetworkCallback<UpdateProfileResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
@@ -184,7 +184,7 @@ interface ApiInterface {
         @Field("user_id") userId: Int,
         @Field("avatar_id") avatarId: Int,
         @Field("name") name: String,
-        @Field("interests") interests: ArrayList<String>?
+        @Field("interests") interests: String?
     ): Call<UpdateProfileResponse>
 
     @FormUrlEncoded
