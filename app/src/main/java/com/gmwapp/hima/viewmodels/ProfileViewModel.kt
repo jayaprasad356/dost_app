@@ -10,6 +10,7 @@ import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
+import com.gmwapp.hima.retrofit.responses.UserValidationResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -26,6 +27,8 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     val updateProfileErrorLiveData = MutableLiveData<String>()
     val deleteUserLiveData = MutableLiveData<DeleteUserResponse>()
     val deleteUserErrorLiveData = MutableLiveData<String>()
+    val userValidationLiveData = MutableLiveData<UserValidationResponse>()
+    val userValidationErrorLiveData = MutableLiveData<String>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -64,7 +67,7 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onNoNetwork() {
-                    registerErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                    registerErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }
@@ -88,7 +91,7 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onNoNetwork() {
-                    updateProfileErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                    updateProfileErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }
@@ -111,7 +114,30 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                 }
 
                 override fun onNoNetwork() {
-                    deleteUserErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                    deleteUserErrorLiveData.postValue(DConstants.NO_NETWORK);
+                }
+            })
+        }
+    }
+
+    fun userValidation(userId: Int,
+                      name: String,
+                      ) {
+        viewModelScope.launch {
+            profileRepositories.userValidation(userId,name, object:NetworkCallback<UserValidationResponse> {
+                override fun onResponse(
+                    call: Call<UserValidationResponse>,
+                    response: Response<UserValidationResponse>
+                ) {
+                    userValidationLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<UserValidationResponse>, t: Throwable) {
+                    userValidationErrorLiveData.postValue(t.message);
+                }
+
+                override fun onNoNetwork() {
+                    userValidationErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }

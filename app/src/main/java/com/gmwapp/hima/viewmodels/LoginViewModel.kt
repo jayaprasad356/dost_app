@@ -39,7 +39,7 @@ class LoginViewModel @Inject constructor(private val loginRepositories: LoginRep
                 }
 
                 override fun onNoNetwork() {
-                    loginErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                    loginErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }
@@ -60,7 +60,7 @@ class LoginViewModel @Inject constructor(private val loginRepositories: LoginRep
                 }
 
                 override fun onNoNetwork() {
-                    sendOTPErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                    sendOTPErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }

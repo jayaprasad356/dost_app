@@ -6,6 +6,7 @@ import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
+import com.gmwapp.hima.retrofit.responses.UserValidationResponse
 import javax.inject.Inject
 
 class ProfileRepositories @Inject constructor(private val apiManager: ApiManager) {
@@ -29,5 +30,10 @@ class ProfileRepositories @Inject constructor(private val apiManager: ApiManager
   fun deleteUsers(userId: Int,
                     deleteReason: String, callback: NetworkCallback<DeleteUserResponse>) {
         apiManager.deleteUsers(userId,deleteReason, callback)
+    }
+
+  fun userValidation(userId: Int,
+                    name: String, callback: NetworkCallback<UserValidationResponse>) {
+        apiManager.userValidation(userId,name, callback)
     }
 }

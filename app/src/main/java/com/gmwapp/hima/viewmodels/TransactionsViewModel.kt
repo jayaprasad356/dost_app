@@ -35,7 +35,7 @@ class TransactionsViewModel @Inject constructor(private val transactionsReposito
                 }
 
                 override fun onNoNetwork() {
-                    transactionsErrorLiveData.postValue(DConstants.LOGIN_NO_NETWORK);
+                    transactionsErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }

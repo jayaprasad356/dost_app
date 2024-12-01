@@ -1,6 +1,9 @@
 package com.gmwapp.hima.activities
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -12,6 +15,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.AvatarsListAdapter
 import com.gmwapp.hima.adapters.InterestsListAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityEditProfileBinding
 import com.gmwapp.hima.retrofit.responses.Interests
 import com.gmwapp.hima.viewmodels.ProfileViewModel
@@ -49,6 +53,33 @@ class EditProfileActivity : BaseActivity() {
             finish()
         })
         window.navigationBarColor = getColor(R.color.black_background)
+
+        binding.etUserName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                Log.e("siva", "onTextChanged")
+
+                val text = s.toString()
+                if (text.length < 4) {
+                    binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_red)
+                    binding.pbUserNameLoader.visibility = View.GONE
+                    binding.ivSuccess.visibility = View.GONE
+                    binding.ivWarning.visibility = View.VISIBLE
+                    binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                } else {
+                    userData?.id?.let {
+                        binding.pbUserNameLoader.visibility = View.VISIBLE
+                        profileViewModel.userValidation(it, text)
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                Log.e("siva", "afterTextChanged")
+            }
+        })
 
         val staggeredGridLayoutManager = FlexboxLayoutManager(this).apply {
             flexWrap = FlexWrap.WRAP
@@ -98,7 +129,7 @@ class EditProfileActivity : BaseActivity() {
             userData?.let { it1 ->
                 avatarId?.let { it2 ->
                     binding.pbUpdateLoader.visibility = View.VISIBLE
-                    binding.btnUpdate.setText("")
+                    binding.btnUpdate.text = ""
                     profileViewModel.updateProfile(
                         it1.id, it2, binding.etUserName.text.toString(), selectedInterests
                     )
@@ -112,9 +143,41 @@ class EditProfileActivity : BaseActivity() {
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
         profileViewModel.getAvatarsList("male")
+        profileViewModel.userValidationLiveData.observe(this, Observer {
+            if (it.success) {
+                binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_user_name)
+                binding.pbUserNameLoader.visibility = View.GONE
+                binding.ivSuccess.visibility = View.VISIBLE
+                binding.ivWarning.visibility = View.GONE
+                binding.tvUserNameHint.setTextColor(getColor(R.color.user_name_hint_text))
+            } else {
+                binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_red)
+                binding.pbUserNameLoader.visibility = View.GONE
+                binding.ivSuccess.visibility = View.VISIBLE
+                binding.ivWarning.visibility = View.GONE
+                binding.tvUserNameHint.text = it.message
+                binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+            }
+        })
+        profileViewModel.userValidationErrorLiveData.observe(this, Observer {
+            if (it == DConstants.NO_NETWORK) {
+                Toast.makeText(
+                    this@EditProfileActivity,
+                    getString(R.string.please_try_again_later),
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_red)
+                binding.pbUserNameLoader.visibility = View.GONE
+                binding.ivSuccess.visibility = View.VISIBLE
+                binding.ivWarning.visibility = View.GONE
+                binding.tvUserNameHint.text = it
+                binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+            }
+        })
         profileViewModel.updateProfileErrorLiveData.observe(this, Observer {
             binding.pbUpdateLoader.visibility = View.GONE
-            binding.btnUpdate.setText(getString(R.string.send_otp))
+            binding.btnUpdate.text = getString(R.string.send_otp)
             binding.btnUpdate.isEnabled = true
             Toast.makeText(
                 this@EditProfileActivity,
@@ -124,13 +187,11 @@ class EditProfileActivity : BaseActivity() {
         })
         profileViewModel.updateProfileLiveData.observe(this, Observer {
             binding.pbUpdateLoader.visibility = View.GONE
-            binding.btnUpdate.setText(getString(R.string.send_otp))
+            binding.btnUpdate.text = getString(R.string.send_otp)
             binding.btnUpdate.isEnabled = true
             if (it.data != null) {
                 Toast.makeText(
-                    this@EditProfileActivity,
-                    getString(R.string.profile_updated),
-                    Toast.LENGTH_LONG
+                    this@EditProfileActivity, getString(R.string.profile_updated), Toast.LENGTH_LONG
                 ).show()
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
                 finish()
@@ -146,7 +207,7 @@ class EditProfileActivity : BaseActivity() {
                 binding.rvAvatars.setAdapter(avatarsListAdapter)
                 val index = it.data.find { it?.id == userData?.avatar_id }
                 it.data.remove(index)
-                it.data.add(0, index);
+                it.data.add(0, index)
                 binding.rvAvatars.smoothScrollToPosition(0)
             }
         })

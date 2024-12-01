@@ -3,6 +3,7 @@
     <color name="colorAccent">#9C27B0</color>
     <color name="colorPrimaryDark">#161a1d</color>
     <color name="dark_blue">#1a0042</color>
+    <color name="user_name_hint_text">#a5a6aa</color>
     <color name="black_background">#161a1d</color>
     <color name="blue_background">#1a0042</color>
     <color name="interest_text_color">#f4f5f9</color>

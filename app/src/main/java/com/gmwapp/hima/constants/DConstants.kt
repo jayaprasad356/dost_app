@@ -7,7 +7,7 @@ object DConstants {
     const val OTP: String = "otp"
     const val GENDER: String = "gender"
     const val LOGIN_ERROR = "login_error"
-    const val LOGIN_NO_NETWORK = "login_no_network"
+    const val NO_NETWORK = "no_network"
     const val AVATAR_ID = "avatar_id"
     const val LANGUAGE = "language"
 }
