@@ -1,6 +1,7 @@
 package com.gmwapp.hima.activities
 
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -35,8 +36,9 @@ class VerifyOTPActivity : BaseActivity() {
         val mobileNumber: String = intent.getStringExtra(DConstants.MOBILE_NUMBER).toString()
         val otp = intent.getIntExtra(DConstants.OTP, 0)
         val countryCode = intent.getIntExtra(DConstants.COUNTRY_CODE, 0)
-        binding.tvOtpMobileNumber.text =
-            getString(R.string.please_enter_otp_sent_to, mobileNumber)
+        binding.tvOtpMobileNumber.text = mobileNumber
+        binding.tvOtpMobileNumber.paintFlags =
+            binding.tvOtpMobileNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.ivEdit.setOnClickListener(View.OnClickListener {
             finish()
         })

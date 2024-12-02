@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="@+id/gl_top_margin" />
 
     <TextView
-        android:id="@+id/tv_otp_mobile_number"
+        android:id="@+id/tv_otp_mobile_number_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/please_enter_otp_sent_to"
@@ -48,6 +48,16 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
+        app:layout_constraintTop_toBottomOf="@+id/tl_title" />
+
+    <TextView
+        android:id="@+id/tv_otp_mobile_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/tv_otp_mobile_number_title"
         app:layout_constraintTop_toBottomOf="@+id/tl_title" />
 
     <ImageView
@@ -71,7 +81,7 @@
         android:textColor="@color/white"
         android:textSize="11sp"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
-        app:layout_constraintTop_toBottomOf="@+id/tv_otp_mobile_number" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_otp_mobile_number_title" />
 
     <com.chaos.view.PinView
         android:id="@+id/pv_otp"
