@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tl_title_details"
         android:background="@drawable/d_button_bg_white"
         android:padding="8dp"
-        android:text="@string/connect_with_a_dost"
+        android:text="@string/connect_with_a_hima"
         android:textColor="@color/black"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
