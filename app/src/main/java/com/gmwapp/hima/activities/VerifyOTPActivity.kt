@@ -36,7 +36,7 @@ class VerifyOTPActivity : BaseActivity() {
         val mobileNumber: String = intent.getStringExtra(DConstants.MOBILE_NUMBER).toString()
         val otp = intent.getIntExtra(DConstants.OTP, 0)
         val countryCode = intent.getIntExtra(DConstants.COUNTRY_CODE, 0)
-        binding.tvOtpMobileNumber.text = mobileNumber
+        binding.tvOtpMobileNumber.text = " $mobileNumber"
         binding.tvOtpMobileNumber.paintFlags =
             binding.tvOtpMobileNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.ivEdit.setOnClickListener(View.OnClickListener {
