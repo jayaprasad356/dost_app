@@ -1,6 +1,7 @@
 package com.gmwapp.hima.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
@@ -19,13 +20,16 @@ import com.google.android.material.navigation.NavigationBarView
 
 class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityMainBinding
-    var bottomNavigationView: BottomNavigationView? = null
     var isBackPressedAlready = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initUI()
+    }
+
+    private fun initUI(){
         val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
         bottomSheet.show(
             supportFragmentManager, "BottomSheetWelcomeBonus"

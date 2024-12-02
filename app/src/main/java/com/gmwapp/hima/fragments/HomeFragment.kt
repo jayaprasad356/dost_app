@@ -1,9 +1,11 @@
 package com.gmwapp.hima.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.databinding.FragmentHomeBinding
 
 
@@ -18,8 +20,16 @@ class HomeFragment : BaseFragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
-        initFab()
+        initUI()
         return binding.root
+    }
+
+    private fun initUI(){
+        binding.clCoins.setOnClickListener({
+            val intent = Intent(context, WalletActivity::class.java)
+            startActivity(intent)
+        })
+        initFab()
     }
 
     fun initFab(){
