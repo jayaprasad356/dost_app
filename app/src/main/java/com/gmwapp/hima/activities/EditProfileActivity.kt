@@ -97,16 +97,56 @@ class EditProfileActivity : BaseActivity() {
         val interests = userData?.interests?.split(",")
         interests?.let { selectedInterests.addAll(it) }
         interestsListAdapter = InterestsListAdapter(this, arrayListOf(
-            Interests(getString(R.string.politics), R.drawable.politics, interests?.contains(getString(R.string.politics))),
-            Interests(getString(R.string.art), R.drawable.art, interests?.contains(getString(R.string.art))),
-            Interests(getString(R.string.sports), R.drawable.sports, interests?.contains(getString(R.string.sports))),
-            Interests(getString(R.string.movies), R.drawable.movie, interests?.contains(getString(R.string.movies))),
-            Interests(getString(R.string.music), R.drawable.music, interests?.contains(getString(R.string.music))),
-            Interests(getString(R.string.foodie), R.drawable.foodie, interests?.contains(getString(R.string.foodie))),
-            Interests(getString(R.string.travel), R.drawable.travel, interests?.contains(getString(R.string.travel))),
-            Interests(getString(R.string.photography), R.drawable.photography, interests?.contains(getString(R.string.photography))),
-            Interests(getString(R.string.love), R.drawable.love, interests?.contains(getString(R.string.love))),
-            Interests(getString(R.string.cooking), R.drawable.cooking, interests?.contains(getString(R.string.cooking))),
+            Interests(
+                getString(R.string.politics),
+                R.drawable.politics,
+                interests?.contains(getString(R.string.politics))
+            ),
+            Interests(
+                getString(R.string.art),
+                R.drawable.art,
+                interests?.contains(getString(R.string.art))
+            ),
+            Interests(
+                getString(R.string.sports),
+                R.drawable.sports,
+                interests?.contains(getString(R.string.sports))
+            ),
+            Interests(
+                getString(R.string.movies),
+                R.drawable.movie,
+                interests?.contains(getString(R.string.movies))
+            ),
+            Interests(
+                getString(R.string.music),
+                R.drawable.music,
+                interests?.contains(getString(R.string.music))
+            ),
+            Interests(
+                getString(R.string.foodie),
+                R.drawable.foodie,
+                interests?.contains(getString(R.string.foodie))
+            ),
+            Interests(
+                getString(R.string.travel),
+                R.drawable.travel,
+                interests?.contains(getString(R.string.travel))
+            ),
+            Interests(
+                getString(R.string.photography),
+                R.drawable.photography,
+                interests?.contains(getString(R.string.photography))
+            ),
+            Interests(
+                getString(R.string.love),
+                R.drawable.love,
+                interests?.contains(getString(R.string.love))
+            ),
+            Interests(
+                getString(R.string.cooking),
+                R.drawable.cooking,
+                interests?.contains(getString(R.string.cooking))
+            ),
         ), false, object : OnItemSelectionListener<Interests> {
             override fun onItemSelected(interest: Interests) {
                 if (interest.isSelected == true) {
@@ -117,6 +157,9 @@ class EditProfileActivity : BaseActivity() {
                 interestsListAdapter?.updateLimitReached(selectedInterests.size == 4)
                 updateButton()
             }
+        })
+        binding.rvAvatars.setOnScrollChangeListener(View.OnScrollChangeListener { view: View, i: Int, i1: Int, i2: Int, i3: Int ->
+            updateButton()
         })
         binding.btnUpdate.setOnClickListener(View.OnClickListener {
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
@@ -219,8 +262,13 @@ class EditProfileActivity : BaseActivity() {
     private fun updateButton() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         val interests = userData?.interests?.split(",")
-        val sameInterests = interests?.containsAll(selectedInterests) == true && interests.size == selectedInterests.size
-        if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || !sameInterests)) {
+        val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
+        val index = layoutManager.findLastCompletelyVisibleItemPosition()
+        if(index < 0) return
+        val sameInterests =
+            interests?.containsAll(selectedInterests) == true && interests.size == selectedInterests.size
+
+        if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || !sameInterests || profileViewModel.avatarsListLiveData.value?.data?.get(index)?.id != userData.avatar_id)) {
             binding.btnUpdate.isEnabled = true
             binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
