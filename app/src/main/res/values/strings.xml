@@ -3,7 +3,7 @@
     <string name="login_to_get_started">Login to get started</string>
     <string name="you_will_receive_an_otp_on_this_number">You will receive an OTP on this number.</string>
     <string name="send_otp">Send OTP</string>
-    <string name="terms_and_conditions_text"><![CDATA[I accept terms & conditions of Dostt. I also agree to receiving updates on WhatsApp/SMS.]]></string>
+    <string name="terms_and_conditions_text"><![CDATA[I accept terms & conditions of Hi ma. I also agree to receiving updates on WhatsApp/SMS.]]></string>
     <string name="please_enter_otp_sent_to">Please enter OTP sent to </string>
     <string name="enter_otp">Enter OTP</string>
     <string name="verify_otp">Verify OTP</string>
