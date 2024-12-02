@@ -179,7 +179,7 @@ class EditProfileActivity : BaseActivity() {
         })
         profileViewModel.updateProfileErrorLiveData.observe(this, Observer {
             binding.pbUpdateLoader.visibility = View.GONE
-            binding.btnUpdate.text = getString(R.string.send_otp)
+            binding.btnUpdate.text = getString(R.string.update)
             binding.btnUpdate.isEnabled = true
             Toast.makeText(
                 this@EditProfileActivity,
@@ -189,7 +189,7 @@ class EditProfileActivity : BaseActivity() {
         })
         profileViewModel.updateProfileLiveData.observe(this, Observer {
             binding.pbUpdateLoader.visibility = View.GONE
-            binding.btnUpdate.text = getString(R.string.send_otp)
+            binding.btnUpdate.text = getString(R.string.update)
             binding.btnUpdate.isEnabled = true
             if (it.data != null) {
                 Toast.makeText(
