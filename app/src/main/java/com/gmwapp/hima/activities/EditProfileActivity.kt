@@ -196,6 +196,7 @@ class EditProfileActivity : BaseActivity() {
                     this@EditProfileActivity, getString(R.string.profile_updated), Toast.LENGTH_LONG
                 ).show()
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
+                setResult(RESULT_OK)
                 finish()
             } else {
                 Toast.makeText(this@EditProfileActivity, it.message, Toast.LENGTH_LONG).show()

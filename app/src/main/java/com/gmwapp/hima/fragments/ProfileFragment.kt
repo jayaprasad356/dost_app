@@ -1,5 +1,6 @@
 package com.gmwapp.hima.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,18 +20,33 @@ import com.gmwapp.hima.dialogs.BottomSheetLogout
 
 class ProfileFragment : BaseFragment() {
     lateinit var binding: FragmentProfileBinding
-
+    private val EDIT_PROFILE_REQUEST_CODE = 1
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater)
+        initUI()
+        return binding.root
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK && requestCode == EDIT_PROFILE_REQUEST_CODE){
+            updateValues()
+        }
+    }
+
+    private fun updateValues(){
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         binding.tvName.text = userData?.name
         Glide.with(this).load(userData?.image).
         apply(RequestOptions.circleCropTransform()).into(binding.ivProfile)
+    }
+
+    private fun initUI(){
+        updateValues()
 
         binding.clWallet.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, WalletActivity::class.java)
@@ -38,7 +54,7 @@ class ProfileFragment : BaseFragment() {
         })
         binding.ivEditProfile.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, EditProfileActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE)
         })
         binding.clTransactions.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, TransactionsActivity::class.java)
@@ -54,11 +70,9 @@ class ProfileFragment : BaseFragment() {
             fragmentManager?.let { it1 ->
                 bottomSheet.show(
                     it1,
-                    "BottomSheetLogout"
+                    "ProfileFragment"
                 )
             }
         })
-
-        return binding.root
     }
 }
