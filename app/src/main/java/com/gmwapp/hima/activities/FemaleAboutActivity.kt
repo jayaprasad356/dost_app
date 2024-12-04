@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.adapters.FemaleInterestsListAdapter
 import com.gmwapp.hima.adapters.InterestsListAdapter
 import com.gmwapp.hima.adapters.LanguageAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
@@ -35,7 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FemaleAboutActivity : BaseActivity() {
     lateinit var binding: ActivityFemaleAboutBinding
-    private var interestsListAdapter: InterestsListAdapter? = null
+    private var interestsListAdapter: FemaleInterestsListAdapter? = null
     private var selectedInterests: ArrayList<String> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +46,11 @@ class FemaleAboutActivity : BaseActivity() {
     }
 
     private fun initUI() {
+        binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border)
+        binding.cvSummary.setBackgroundResource(R.drawable.card_view_border)
+
         binding.etEnterYourAge.setOnTouchListener { v, _ ->
-            binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_country_selected)
+            binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_age_selected)
             false
         }
         binding.etEnterYourAge.addTextChangedListener(object : TextWatcher {
@@ -101,7 +105,7 @@ class FemaleAboutActivity : BaseActivity() {
         }
         binding.rvInterests.addItemDecoration(itemDecoration)
         binding.rvInterests.setLayoutManager(staggeredGridLayoutManager)
-        interestsListAdapter = InterestsListAdapter(this, arrayListOf(
+        interestsListAdapter = FemaleInterestsListAdapter(this, arrayListOf(
             Interests(
                 getString(R.string.politics), R.drawable.politics, false
             ),
@@ -143,6 +147,7 @@ class FemaleAboutActivity : BaseActivity() {
                 updateButton()
             }
         })
+        binding.rvInterests.setAdapter(interestsListAdapter)
 
     }
 
