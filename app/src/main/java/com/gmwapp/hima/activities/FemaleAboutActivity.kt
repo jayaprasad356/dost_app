@@ -84,6 +84,10 @@ class FemaleAboutActivity : BaseActivity() {
             override fun afterTextChanged(s: Editable) {
             }
         })
+        binding.tvRemainingText.text = getString(
+            R.string.description_remaining_text,
+            0
+        )
         binding.etSummary.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
