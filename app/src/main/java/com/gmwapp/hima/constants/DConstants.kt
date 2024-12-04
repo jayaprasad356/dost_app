@@ -8,6 +8,7 @@ object DConstants {
     const val GENDER: String = "gender"
     const val LOGIN_ERROR = "login_error"
     const val NO_NETWORK = "no_network"
+    const val TEXT = "text"
     const val AVATAR_ID = "avatar_id"
     const val LANGUAGE = "language"
 }

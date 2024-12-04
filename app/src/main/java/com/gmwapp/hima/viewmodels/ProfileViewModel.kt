@@ -9,10 +9,13 @@ import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
+import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import com.gmwapp.hima.retrofit.responses.UserValidationResponse
+import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response
 import javax.inject.Inject
@@ -29,6 +32,10 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     val deleteUserErrorLiveData = MutableLiveData<String>()
     val userValidationLiveData = MutableLiveData<UserValidationResponse>()
     val userValidationErrorLiveData = MutableLiveData<String>()
+    val speechTextLiveData = MutableLiveData<SpeechTextResponse>()
+    val speechTextErrorLiveData = MutableLiveData<String>()
+    val voiceUpdateLiveData = MutableLiveData<VoiceUpdateResponse>()
+    val voiceUpdateErrorLiveData = MutableLiveData<String>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -138,6 +145,52 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
 
                 override fun onNoNetwork() {
                     userValidationErrorLiveData.postValue(DConstants.NO_NETWORK);
+                }
+            })
+        }
+    }
+
+   fun getSpeechText(userId: Int,
+                      language: String,
+                      ) {
+        viewModelScope.launch {
+            profileRepositories.getSpeechText(userId,language, object:NetworkCallback<SpeechTextResponse> {
+                override fun onResponse(
+                    call: Call<SpeechTextResponse>,
+                    response: Response<SpeechTextResponse>
+                ) {
+                    speechTextLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<SpeechTextResponse>, t: Throwable) {
+                    speechTextErrorLiveData.postValue(t.message);
+                }
+
+                override fun onNoNetwork() {
+                    speechTextErrorLiveData.postValue(DConstants.NO_NETWORK);
+                }
+            })
+        }
+    }
+
+   fun updateVoice(userId: Int,
+                   voice : MultipartBody.Part,
+                      ) {
+        viewModelScope.launch {
+            profileRepositories.updateVoice(userId,voice, object:NetworkCallback<VoiceUpdateResponse> {
+                override fun onResponse(
+                    call: Call<VoiceUpdateResponse>,
+                    response: Response<VoiceUpdateResponse>
+                ) {
+                    voiceUpdateLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<VoiceUpdateResponse>, t: Throwable) {
+                    voiceUpdateErrorLiveData.postValue(t.message);
+                }
+
+                override fun onNoNetwork() {
+                    voiceUpdateErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }

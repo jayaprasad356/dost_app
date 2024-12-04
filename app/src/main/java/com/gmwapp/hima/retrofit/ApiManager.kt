@@ -8,15 +8,20 @@ import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
 import com.gmwapp.hima.retrofit.responses.SettingsResponse
+import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import com.gmwapp.hima.retrofit.responses.UserValidationResponse
+import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
 import com.gmwapp.hima.utils.Helper
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import javax.inject.Inject
 
 class ApiManager @Inject constructor(private val retrofit: Retrofit) {
@@ -146,6 +151,32 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
             callback.onNoNetwork()
         }
     }
+
+    fun getSpeechText(
+        userId: Int,
+        language: String,
+        callback: NetworkCallback<SpeechTextResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<SpeechTextResponse> = getApiInterface().getSpeechText(userId, language)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun updateVoice(
+        userId: Int,
+        voice : MultipartBody.Part,
+        callback: NetworkCallback<VoiceUpdateResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<VoiceUpdateResponse> = getApiInterface().updateVoice(userId, voice)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 
 interface ApiInterface {
@@ -200,6 +231,17 @@ interface ApiInterface {
     @POST("api/user_validations")
     fun userValidation(@Field("user_id") userId: Int,
                  @Field("name") name: String): Call<UserValidationResponse>
+
+    @FormUrlEncoded
+    @POST("api/speech_text")
+    fun getSpeechText(@Field("user_id") userId: Int,
+                 @Field("language") language: String): Call<SpeechTextResponse>
+
+    @FormUrlEncoded
+    @Multipart
+    @POST("api/update_voice")
+    fun updateVoice(@Field("user_id") userId: Int,
+                    @Part voice : MultipartBody.Part): Call<VoiceUpdateResponse>
 
     @FormUrlEncoded
     @POST("api/settings_list")
