@@ -58,6 +58,22 @@ class FemaleAboutActivity : BaseActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.toString().toInt() < 18) {
+                    binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
+                    binding.tvEnterYourAgeHint.text =
+                        getString(R.string.you_must_be_at_least_18_years_old)
+                    binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                } else if (s.toString().toInt() > 99) {
+                    binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
+                    binding.tvEnterYourAgeHint.text =
+                        getString(R.string.you_must_be_below_100_years_old)
+                    binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                } else{
+                    binding.cvEnterYourAge.setBackgroundResource(R.drawable.d_button_bg_user_name)
+                    binding.tvEnterYourAgeHint.text =
+                        getString(R.string.enter_your_age_hint)
+                    binding.tvEnterYourAgeHint.setTextColor(getColor(R.color.user_name_hint_text))
+                }
                 updateButton()
             }
 

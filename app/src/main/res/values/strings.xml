@@ -121,4 +121,7 @@
     <string name="voice_identification">Voice Identification</string>
     <string name="voice_identification_hint">To confirm your identity, please record yourself saying the following sentence</string>
     <string name="tap_and_hold_to_speak">Tap and hold to speak</string>
+    <string name="summary_hint_text">Ex:\"I like moview, my favourite one is DDLJ\"</string>
+    <string name="you_must_be_at_least_18_years_old">You must be at least 18 years old</string>
+    <string name="you_must_be_below_100_years_old">You must be below 100 years old</string>
 </resources>
