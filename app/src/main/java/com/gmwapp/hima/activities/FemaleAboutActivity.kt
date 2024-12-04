@@ -76,6 +76,18 @@ class FemaleAboutActivity : BaseActivity() {
             override fun afterTextChanged(s: Editable) {
             }
         })
+        binding.btnContinue.setOnClickListener {
+            val intent = Intent(this, SelectLanguageActivity::class.java)
+            intent.putExtra(DConstants.AVATAR_ID, getIntent().getStringExtra(DConstants.AVATAR_ID))
+            intent.putExtra(
+                DConstants.MOBILE_NUMBER, getIntent().getStringExtra(DConstants.MOBILE_NUMBER)
+            )
+            intent.putExtra(DConstants.GENDER, getIntent().getStringExtra(DConstants.GENDER))
+            intent.putExtra(DConstants.AGE, binding.etEnterYourAge.text)
+            intent.putExtra(DConstants.INTERESTS, selectedInterests)
+            intent.putExtra(DConstants.SUMMARY, binding.etSummary.text)
+            startActivity(intent)
+        }
 
         val staggeredGridLayoutManager = FlexboxLayoutManager(this).apply {
             flexWrap = FlexWrap.WRAP

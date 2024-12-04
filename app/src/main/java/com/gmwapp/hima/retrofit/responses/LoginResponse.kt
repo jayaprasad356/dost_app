@@ -19,4 +19,9 @@ data class UserData (
     val datetime: String,
     val updated_at: String,
     val created_at: String,
+    val age:Int?,
+    val describe_yourself:String?,
+    val voice:String?,
+    val status:String?,
+
 )
