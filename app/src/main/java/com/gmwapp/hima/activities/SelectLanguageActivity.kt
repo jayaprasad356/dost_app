@@ -43,14 +43,31 @@ class SelectLanguageActivity : BaseActivity() {
         profileViewModel.registerLiveData.observe(this, Observer {
             if (it.success) {
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra(
-                    DConstants.AVATAR_ID,
-                    getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
-                )
-                intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
+                if (it.data?.gender == DConstants.MALE) {
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra(
+                        DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
+                    )
+                    intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                } else {
+                    if(it.data?.status == 2){
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra(
+                            DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
+                        )
+                        intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                    } else if(it.data?.status == 1){
+                        //TODO details screen
+                    } else{
+                        val intent = Intent(this, VoiceIdentificationActivity::class.java)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                    }
+                }
             } else {
                 Toast.makeText(this@SelectLanguageActivity, it.message, Toast.LENGTH_LONG).show()
             }
@@ -74,7 +91,7 @@ class SelectLanguageActivity : BaseActivity() {
                     intent.getStringExtra(DConstants.AGE).toString(),
                     intent.getStringExtra(DConstants.INTERESTS).toString(),
                     intent.getStringExtra(DConstants.SUMMARY).toString()
-                    )
+                )
             }
         }
         binding.rvLanguages.setLayoutManager(layoutManager)

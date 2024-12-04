@@ -22,6 +22,6 @@ data class UserData (
     val age:Int?,
     val describe_yourself:String?,
     val voice:String?,
-    val status:String?,
+    val status:Int?,
 
 )

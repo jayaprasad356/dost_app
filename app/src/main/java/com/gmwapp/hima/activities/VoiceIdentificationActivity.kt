@@ -16,6 +16,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityFemaleAboutBinding
+import com.gmwapp.hima.databinding.ActivityVoiceIdentificationBinding
 import com.gmwapp.hima.dialogs.BottomSheetVoiceIdentification
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,12 +27,12 @@ import java.io.File
 
 @AndroidEntryPoint
 class VoiceIdentificationActivity : BaseActivity(), OnButtonClickListener {
-    lateinit var binding: ActivityFemaleAboutBinding
+    lateinit var binding: ActivityVoiceIdentificationBinding
     private val profileViewModel: ProfileViewModel by viewModels()
     private val REQUEST_AUDIO_PERMISSION_CODE: Int = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFemaleAboutBinding.inflate(layoutInflater)
+        binding = ActivityVoiceIdentificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
     }
