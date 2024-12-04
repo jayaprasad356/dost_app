@@ -157,7 +157,7 @@ class FemaleAboutActivity : BaseActivity() {
             binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
             binding.btnContinue.isEnabled = false
-            binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_disabled)
+            binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_female_button_disabled)
         }
     }
 
