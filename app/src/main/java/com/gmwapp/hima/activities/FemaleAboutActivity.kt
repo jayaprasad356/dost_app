@@ -111,9 +111,12 @@ class FemaleAboutActivity : BaseActivity() {
                 DConstants.MOBILE_NUMBER, getIntent().getStringExtra(DConstants.MOBILE_NUMBER)
             )
             intent.putExtra(DConstants.GENDER, getIntent().getStringExtra(DConstants.GENDER))
-            intent.putExtra(DConstants.AGE, binding.etEnterYourAge.text)
-            intent.putExtra(DConstants.INTERESTS, selectedInterests)
-            intent.putExtra(DConstants.SUMMARY, binding.etSummary.text)
+            val age = binding.etEnterYourAge.text.toString()
+            val interests = selectedInterests.toString()
+            val summary = binding.etSummary.text.toString()
+            intent.putExtra(DConstants.AGE, age)
+            intent.putExtra(DConstants.INTERESTS, interests)
+            intent.putExtra(DConstants.SUMMARY, summary)
             startActivity(intent)
         }
 
