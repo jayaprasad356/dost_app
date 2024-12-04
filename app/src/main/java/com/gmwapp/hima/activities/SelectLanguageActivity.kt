@@ -38,28 +38,44 @@ class SelectLanguageActivity : BaseActivity() {
             finish()
         })
         profileViewModel.registerErrorLiveData.observe(this, Observer {
-            Toast.makeText(this@SelectLanguageActivity,it, Toast.LENGTH_LONG).show()
-        });
+            Toast.makeText(this@SelectLanguageActivity, it, Toast.LENGTH_LONG).show()
+        })
         profileViewModel.registerLiveData.observe(this, Observer {
-            if(it.success) {
+            if (it.success) {
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
                 val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra(DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0))
+                intent.putExtra(
+                    DConstants.AVATAR_ID,
+                    getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
+                )
                 intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
-            } else{
-                Toast.makeText(this@SelectLanguageActivity,it.message, Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this@SelectLanguageActivity, it.message, Toast.LENGTH_LONG).show()
             }
         })
         binding.btnContinue.setOnClickListener {
-            profileViewModel.register(
-                intent.getStringExtra(DConstants.MOBILE_NUMBER).toString(),
-                selectedLanguage.toString(),
-                intent.getIntExtra(DConstants.AVATAR_ID, 0),
-                intent.getStringExtra(DConstants.GENDER).toString(),
+            val gender = intent.getStringExtra(DConstants.GENDER).toString()
+            if (gender == DConstants.MALE) {
+                profileViewModel.register(
+                    intent.getStringExtra(DConstants.MOBILE_NUMBER).toString(),
+                    selectedLanguage.toString(),
+                    intent.getIntExtra(DConstants.AVATAR_ID, 0),
+                    gender,
 
-            )
+                    )
+            } else {
+                profileViewModel.registerFemale(
+                    intent.getStringExtra(DConstants.MOBILE_NUMBER).toString(),
+                    selectedLanguage.toString(),
+                    intent.getIntExtra(DConstants.AVATAR_ID, 0),
+                    gender,
+                    intent.getStringExtra(DConstants.AGE).toString(),
+                    intent.getStringExtra(DConstants.INTERESTS).toString(),
+                    intent.getStringExtra(DConstants.SUMMARY).toString()
+                    )
+            }
         }
         binding.rvLanguages.setLayoutManager(layoutManager)
         val interestsListAdapter = LanguageAdapter(this, arrayListOf(
@@ -76,7 +92,7 @@ class SelectLanguageActivity : BaseActivity() {
                 binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
             }
 
-      }
+        }
 
         )
         binding.rvLanguages.setAdapter(interestsListAdapter)

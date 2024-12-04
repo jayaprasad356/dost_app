@@ -13,40 +13,66 @@ import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class ProfileRepositories @Inject constructor(private val apiManager: ApiManager) {
-  fun getAvatarsList(gender: String, callback: NetworkCallback<AvatarsListResponse>) {
+    fun getAvatarsList(gender: String, callback: NetworkCallback<AvatarsListResponse>) {
         apiManager.getAvatarsList(gender, callback)
     }
 
-  fun register(mobile: String,
-               language: String,
-               avatarId: Int,gender:String, callback: NetworkCallback<RegisterResponse>) {
-        apiManager.register(mobile,language, avatarId,gender, callback)
+    fun register(
+        mobile: String,
+        language: String,
+        avatarId: Int,
+        gender: String,
+        callback: NetworkCallback<RegisterResponse>
+    ) {
+        apiManager.register(mobile, language, avatarId, gender, callback)
     }
 
-  fun updateProfile(userId: Int,
-               avatarId: Int,
-               name: String,
-               interests: String?, callback: NetworkCallback<UpdateProfileResponse>) {
-        apiManager.updateProfile(userId,avatarId, name, interests, callback)
+    fun registerFemale(
+        mobile: String,
+        language: String,
+        avatarId: Int,
+        gender: String,
+        age: String,
+        interests: String,
+        describe_yourself: String,
+        callback: NetworkCallback<RegisterResponse>
+    ) {
+        apiManager.registerFemale(
+            mobile, language, avatarId, gender, age, interests, describe_yourself, callback
+        )
     }
 
-  fun deleteUsers(userId: Int,
-                    deleteReason: String, callback: NetworkCallback<DeleteUserResponse>) {
-        apiManager.deleteUsers(userId,deleteReason, callback)
+    fun updateProfile(
+        userId: Int,
+        avatarId: Int,
+        name: String,
+        interests: String?,
+        callback: NetworkCallback<UpdateProfileResponse>
+    ) {
+        apiManager.updateProfile(userId, avatarId, name, interests, callback)
     }
 
-  fun userValidation(userId: Int,
-                    name: String, callback: NetworkCallback<UserValidationResponse>) {
-        apiManager.userValidation(userId,name, callback)
+    fun deleteUsers(
+        userId: Int, deleteReason: String, callback: NetworkCallback<DeleteUserResponse>
+    ) {
+        apiManager.deleteUsers(userId, deleteReason, callback)
     }
 
-  fun getSpeechText(userId: Int,
-                     language: String, callback: NetworkCallback<SpeechTextResponse>) {
-        apiManager.getSpeechText(userId,language, callback)
+    fun userValidation(
+        userId: Int, name: String, callback: NetworkCallback<UserValidationResponse>
+    ) {
+        apiManager.userValidation(userId, name, callback)
     }
 
-  fun updateVoice(userId: Int,
-                    voice : MultipartBody.Part, callback: NetworkCallback<VoiceUpdateResponse>) {
-        apiManager.updateVoice(userId,voice, callback)
+    fun getSpeechText(
+        userId: Int, language: String, callback: NetworkCallback<SpeechTextResponse>
+    ) {
+        apiManager.getSpeechText(userId, language, callback)
+    }
+
+    fun updateVoice(
+        userId: Int, voice: MultipartBody.Part, callback: NetworkCallback<VoiceUpdateResponse>
+    ) {
+        apiManager.updateVoice(userId, voice, callback)
     }
 }

@@ -78,6 +78,32 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         }
     }
 
+    fun registerFemale(
+        mobile: String,
+        language: String,
+        avatarId: Int,
+        gender: String,
+        age: String,
+        interests: String,
+        describe_yourself: String,
+        callback: NetworkCallback<RegisterResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<RegisterResponse> = getApiInterface().registerFemale(
+                mobile,
+                language,
+                avatarId,
+                gender,
+                age,
+                interests,
+                describe_yourself
+            )
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
     fun getTransactions(
         userId: Int, callback: NetworkCallback<TransactionsResponse>
     ) {
@@ -117,11 +143,11 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     }
 
     fun deleteUsers(
-        userId: Int,
-        deleteReason: String, callback: NetworkCallback<DeleteUserResponse>
+        userId: Int, deleteReason: String, callback: NetworkCallback<DeleteUserResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
-            val apiCall: Call<DeleteUserResponse> = getApiInterface().deleteUsers(userId,deleteReason)
+            val apiCall: Call<DeleteUserResponse> =
+                getApiInterface().deleteUsers(userId, deleteReason)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -129,11 +155,11 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     }
 
     fun userValidation(
-        userId: Int,
-        name: String, callback: NetworkCallback<UserValidationResponse>
+        userId: Int, name: String, callback: NetworkCallback<UserValidationResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
-            val apiCall: Call<UserValidationResponse> = getApiInterface().userValidation(userId,name)
+            val apiCall: Call<UserValidationResponse> =
+                getApiInterface().userValidation(userId, name)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -141,8 +167,7 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     }
 
     fun getSettings(
-        userId: Int,
-        callback: NetworkCallback<SettingsResponse>
+        userId: Int, callback: NetworkCallback<SettingsResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<SettingsResponse> = getApiInterface().getSettings(userId)
@@ -153,12 +178,11 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     }
 
     fun getSpeechText(
-        userId: Int,
-        language: String,
-        callback: NetworkCallback<SpeechTextResponse>
+        userId: Int, language: String, callback: NetworkCallback<SpeechTextResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
-            val apiCall: Call<SpeechTextResponse> = getApiInterface().getSpeechText(userId, language)
+            val apiCall: Call<SpeechTextResponse> =
+                getApiInterface().getSpeechText(userId, language)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -166,9 +190,7 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     }
 
     fun updateVoice(
-        userId: Int,
-        voice : MultipartBody.Part,
-        callback: NetworkCallback<VoiceUpdateResponse>
+        userId: Int, voice: MultipartBody.Part, callback: NetworkCallback<VoiceUpdateResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<VoiceUpdateResponse> = getApiInterface().updateVoice(userId, voice)
@@ -206,6 +228,19 @@ interface ApiInterface {
     ): Call<RegisterResponse>
 
     @FormUrlEncoded
+    @POST("api/register")
+    fun registerFemale(
+        @Field("mobile") mobile: String,
+        @Field("language") language: String,
+        @Field("avatar_id") avatarId: Int,
+        @Field("gender") gender: String,
+        @Field("age") age: String,
+        @Field("interests") interests: String,
+        @Field("describe_yourself") describe_yourself: String,
+
+        ): Call<RegisterResponse>
+
+    @FormUrlEncoded
     @POST("api/transaction_list")
     fun getTransactions(@Field("user_id") userId: Int): Call<TransactionsResponse>
 
@@ -224,24 +259,28 @@ interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/delete_users")
-    fun deleteUsers(@Field("user_id") userId: Int,
-                 @Field("delete_reason") deleteReason: String): Call<DeleteUserResponse>
+    fun deleteUsers(
+        @Field("user_id") userId: Int, @Field("delete_reason") deleteReason: String
+    ): Call<DeleteUserResponse>
 
     @FormUrlEncoded
     @POST("api/user_validations")
-    fun userValidation(@Field("user_id") userId: Int,
-                 @Field("name") name: String): Call<UserValidationResponse>
+    fun userValidation(
+        @Field("user_id") userId: Int, @Field("name") name: String
+    ): Call<UserValidationResponse>
 
     @FormUrlEncoded
     @POST("api/speech_text")
-    fun getSpeechText(@Field("user_id") userId: Int,
-                 @Field("language") language: String): Call<SpeechTextResponse>
+    fun getSpeechText(
+        @Field("user_id") userId: Int, @Field("language") language: String
+    ): Call<SpeechTextResponse>
 
     @FormUrlEncoded
     @Multipart
     @POST("api/update_voice")
-    fun updateVoice(@Field("user_id") userId: Int,
-                    @Part voice : MultipartBody.Part): Call<VoiceUpdateResponse>
+    fun updateVoice(
+        @Field("user_id") userId: Int, @Part voice: MultipartBody.Part
+    ): Call<VoiceUpdateResponse>
 
     @FormUrlEncoded
     @POST("api/settings_list")
