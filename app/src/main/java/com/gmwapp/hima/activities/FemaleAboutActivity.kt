@@ -38,6 +38,7 @@ class FemaleAboutActivity : BaseActivity() {
     lateinit var binding: ActivityFemaleAboutBinding
     private var interestsListAdapter: FemaleInterestsListAdapter? = null
     private var selectedInterests: ArrayList<String> = ArrayList()
+    private var isValidAge = false;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFemaleAboutBinding.inflate(layoutInflater)
@@ -58,17 +59,20 @@ class FemaleAboutActivity : BaseActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.toString().toInt() < 18) {
+                if (s.toString().isNotEmpty() && s.toString().toInt() < 18) {
+                    isValidAge = false
                     binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
                     binding.tvEnterYourAgeHint.text =
                         getString(R.string.you_must_be_at_least_18_years_old)
                     binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.holo_red_dark))
-                } else if (s.toString().toInt() > 99) {
+                } else if (s.toString().isNotEmpty() && s.toString().toInt() > 99) {
+                    isValidAge = false
                     binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
                     binding.tvEnterYourAgeHint.text =
                         getString(R.string.you_must_be_below_100_years_old)
                     binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.holo_red_dark))
                 } else{
+                    isValidAge = true
                     binding.cvEnterYourAge.setBackgroundResource(R.drawable.d_button_bg_user_name)
                     binding.tvEnterYourAgeHint.text =
                         getString(R.string.enter_your_age_hint)
@@ -168,7 +172,7 @@ class FemaleAboutActivity : BaseActivity() {
     }
 
     private fun updateButton() {
-        if (binding.etEnterYourAge.text.isNotEmpty() && selectedInterests.size > 0 && binding.etSummary.text.isNotEmpty()) {
+        if (isValidAge && selectedInterests.size > 0 && binding.etSummary.text.isNotEmpty()) {
             binding.btnContinue.isEnabled = true
             binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
