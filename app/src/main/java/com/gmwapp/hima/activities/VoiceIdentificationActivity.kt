@@ -97,6 +97,7 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
         }
         profileViewModel.voiceUpdateLiveData.observe(this, Observer {
             if (it.success) {
+                BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
                 val intent = Intent(this, AlmostDoneActivity::class.java)
                 startActivity(intent)
             } else {
