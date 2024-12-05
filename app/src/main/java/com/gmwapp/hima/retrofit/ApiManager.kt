@@ -275,11 +275,10 @@ interface ApiInterface {
         @Field("user_id") userId: Int, @Field("language") language: String
     ): Call<SpeechTextResponse>
 
-    @FormUrlEncoded
     @Multipart
     @POST("api/update_voice")
     fun updateVoice(
-        @Field("user_id") userId: Int, @Part voice: MultipartBody.Part
+        @Part("user_id") userId: Int, @Part voice: MultipartBody.Part
     ): Call<VoiceUpdateResponse>
 
     @FormUrlEncoded

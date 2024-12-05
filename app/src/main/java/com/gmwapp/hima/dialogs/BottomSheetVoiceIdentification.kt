@@ -1,6 +1,5 @@
 package com.gmwapp.hima.dialogs
 
-import android.R.attr.button
 import android.app.Dialog
 import android.content.Context
 import android.media.MediaRecorder
@@ -15,34 +14,32 @@ import android.view.ViewGroup
 import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
-import com.gmwapp.hima.databinding.BottomSheetLogoutBinding
 import com.gmwapp.hima.databinding.BottomSheetVoiceIdentificationBinding
-import com.gmwapp.hima.retrofit.responses.Country
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.io.File
 import java.io.IOException
 
 
 class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
-    private var onButtonClickListener: OnButtonClickListener? = null
+    private var audiofile: File? = null
+    private var onItemSelectionListener: OnItemSelectionListener<String?>? = null
     private var mRecorder: MediaRecorder? = null
-    var mFileName: String? =
-        Environment.getExternalStorageDirectory().absolutePath + "/AudioRecording.3gp"
     lateinit var binding: BottomSheetVoiceIdentificationBinding
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, bundle: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = BottomSheetVoiceIdentificationBinding.inflate(layoutInflater)
 
         initUI()
-        binding.tvSpeechText.text = bundle?.getString(DConstants.TEXT)
+        binding.tvSpeechText.text = arguments?.getString(DConstants.TEXT)
         return binding.root
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
-            onButtonClickListener = activity as OnButtonClickListener
+            onItemSelectionListener = activity as OnItemSelectionListener<String?>
         } catch (e: ClassCastException) {
             Log.e("BottomSheetCountry", "onAttach: ClassCastException: " + e.message)
         }
@@ -54,11 +51,11 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         BottomSheetDialog(requireContext(), theme)
 
     private fun initUI() {
-        binding.ivSpeech.setOnTouchListener(OnTouchListener { v, event ->
+        binding.clMicrophone.setOnTouchListener(OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
             } else if (event.action == MotionEvent.ACTION_UP) {
-                onButtonClickListener?.onButtonClick()
+                onItemSelectionListener?.onItemSelected(audiofile.toString())
                 mRecorder?.release()
             }
             true
@@ -66,20 +63,26 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
     }
 
     private fun startRecording() {
-        mFileName = Environment.getExternalStorageDirectory().absolutePath
-        mFileName += "/AudioRecording.3gp"
+        val dir = context?.cacheDir;
+        try {
+            audiofile = File.createTempFile(DConstants.AUDIO_FILE, ".mp3", dir)
+        } catch (e: IOException) {
+            Log.e("TAG", "external storage access error"+e.stackTraceToString())
+
+            return
+        }
 
         mRecorder = MediaRecorder()
 
         mRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
         mRecorder?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
         mRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-        mRecorder?.setOutputFile(mFileName)
+        mRecorder?.setOutputFile(audiofile?.getAbsolutePath())
         try {
             mRecorder?.prepare()
+            mRecorder?.start()
         } catch (e: IOException) {
-            Log.e("TAG", "prepare() failed")
+            Log.e("TAG", "prepare() failed"+e.stackTraceToString())
         }
-        mRecorder?.start()
     }
 }

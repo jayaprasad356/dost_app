@@ -8,6 +8,7 @@ object DConstants {
     const val GENDER: String = "gender"
     const val AGE: String = "age"
     const val INTERESTS: String = "interests"
+    const val AUDIO_FILE: String = "audio"
     const val SUMMARY: String = "summary"
     const val MALE: String = "male"
     const val FEMALE: String = "female"
