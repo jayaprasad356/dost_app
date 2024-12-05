@@ -56,7 +56,7 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
 
     private fun openVoiceIdentificationPopup() {
         BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
-            "Tamil".let { it1 ->
+            intent.getStringExtra(DConstants.LANGUAGE)?.let { it1 ->
                 profileViewModel.getSpeechText(
                     it, it1
                 )
