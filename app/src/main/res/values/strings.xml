@@ -127,4 +127,5 @@
     <string name="play_to_listen">Play to Listen</string>
     <string name="record_again">Record Again</string>
     <string name="submit">Submit</string>
+    <string name="release_to_stop">Release to stop</string>
 </resources>

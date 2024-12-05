@@ -25,10 +25,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tl_speech_text_hint_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/user_name_hint_text"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tl_speech_text_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <TextView
         android:id="@+id/tl_speech_text_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tap_and_hold_to_speak"
+        android:layout_marginBottom="8dp"
         android:textColor="@color/user_name_hint_text"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -43,11 +55,11 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.16"
+        app:layout_constraintHeight_percent="0.17"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_speech_text"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.22"
+        app:layout_constraintWidth_percent="0.23"
         app:rb_color="#473066"
         app:rb_duration="1500"
         app:rb_radius="15dp"

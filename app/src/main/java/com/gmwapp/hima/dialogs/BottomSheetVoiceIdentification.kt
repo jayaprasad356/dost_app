@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
@@ -55,9 +56,28 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         BottomSheetDialog(requireContext(), theme)
 
     private fun initUI() {
+        var timer:CountDownTimer?=null;
         binding.clMicrophone.setOnTouchListener(OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
+                binding.tlSpeechTextHintTimer.text = "00:00"
+                binding.tlSpeechTextHintTimer.visibility = View.VISIBLE
+                var secs=0;
+                timer = object : CountDownTimer(60 * 60000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        secs++;
+                        val mins = secs/60;
+                        val remainingSecs = secs%60;
+                        val result = (if(mins>9) mins.toString() else "0"+mins)+":"+(if(remainingSecs>9) remainingSecs.toString() else "0"+remainingSecs)
+                        binding.tlSpeechTextHintTimer.text = result
+                    }
+
+                    override fun onFinish() {
+                    }
+                }.start()
+
                 binding.content.startRippleAnimation()
+                binding.tvPlayToListen.text = getString(R.string.release_to_stop)
+                binding.ivMicroPhoneCircle.setImageDrawable(resources.getDrawable(R.drawable.ic_microphone_circle_selected))
                 val mConstrainLayout = binding.content
                 val lp = mConstrainLayout.layoutParams as ConstraintLayout.LayoutParams
                 lp.matchConstraintPercentHeight = 0.35.toFloat()
@@ -65,7 +85,11 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
                 mConstrainLayout.layoutParams = lp
                 startRecording()
             } else if (event.action == MotionEvent.ACTION_UP) {
+                timer?.cancel()
+                binding.tlSpeechTextHintTimer.visibility = View.GONE
+                binding.tvPlayToListen.text = getString(R.string.tap_and_hold_to_speak)
                 binding.content.stopRippleAnimation()
+                binding.ivMicroPhoneCircle.setImageDrawable(resources.getDrawable(R.drawable.ic_microphone_circle))
 
                 try {
                     mRecorder?.release()
