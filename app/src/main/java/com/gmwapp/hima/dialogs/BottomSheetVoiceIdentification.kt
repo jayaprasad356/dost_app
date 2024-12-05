@@ -76,7 +76,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
                 }.start()
 
                 binding.content.startRippleAnimation()
-                binding.tvPlayToListen.text = getString(R.string.release_to_stop)
+                binding.tlSpeechTextHint.text = getString(R.string.release_to_stop)
                 binding.ivMicroPhoneCircle.setImageDrawable(resources.getDrawable(R.drawable.ic_microphone_circle_selected))
                 val mConstrainLayout = binding.content
                 val lp = mConstrainLayout.layoutParams as ConstraintLayout.LayoutParams
@@ -87,7 +87,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
             } else if (event.action == MotionEvent.ACTION_UP) {
                 timer?.cancel()
                 binding.tlSpeechTextHintTimer.visibility = View.GONE
-                binding.tvPlayToListen.text = getString(R.string.tap_and_hold_to_speak)
+                binding.tlSpeechTextHint.text = getString(R.string.tap_and_hold_to_speak)
                 binding.content.stopRippleAnimation()
                 binding.ivMicroPhoneCircle.setImageDrawable(resources.getDrawable(R.drawable.ic_microphone_circle))
 
@@ -124,6 +124,8 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
             isPlaying = !isPlaying
         })
         binding.clRecordAgain.setOnClickListener({
+            mediaPlayer?.release()
+            mediaPlayer?.reset()
             binding.tvPlayToListen.visibility = View.GONE
             binding.clPlayer.visibility = View.GONE
             binding.clRecordAgain.visibility = View.GONE
