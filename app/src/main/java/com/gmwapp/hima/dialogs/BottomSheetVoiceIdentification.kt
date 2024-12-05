@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -12,17 +13,19 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import androidx.core.content.PackageManagerCompat.LOG_TAG
+import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.BottomSheetVoiceIdentificationBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 
 
 class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
+    private var isPlaying = false;
     private var audiofile: File? = null
     private var mediaPlayer:MediaPlayer? = null
     private var onItemSelectionListener: OnItemSelectionListener<String?>? = null
@@ -53,13 +56,16 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         BottomSheetDialog(requireContext(), theme)
 
     private fun initUI() {
-        mediaPlayer = MediaPlayer()
         binding.clMicrophone.setOnTouchListener(OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
             } else if (event.action == MotionEvent.ACTION_UP) {
 
                 try {
+                    mRecorder?.release()
+                    mediaPlayer = MediaPlayer()
+
+
                     mediaPlayer?.setDataSource(audiofile?.absolutePath)
                     mediaPlayer?.prepare()
                 } catch (e: Exception) {
@@ -72,20 +78,19 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
                 binding.btnSubmit.visibility = View.VISIBLE
                 binding.tlSpeechTextHint.visibility = View.GONE
                 binding.clMicrophone.visibility = View.GONE
-                mRecorder?.release()
             }
             true
         })
         binding.ivPlay.setOnClickListener({
-            binding.ivPlay.visibility = View.GONE
-            binding.ivPause.visibility = View.VISIBLE
-            mediaPlayer?.start()
-            setAudioProgress()
-        })
-        binding.ivPause.setOnClickListener({
-            binding.ivPlay.visibility = View.VISIBLE
-            binding.ivPause.visibility = View.GONE
-            mediaPlayer?.pause()
+            if(isPlaying) {
+                binding.ivPlay.setBackgroundResource(R.drawable.play)
+                mediaPlayer?.pause()
+                setAudioProgress()
+            }else{
+                binding.ivPlay.setBackgroundResource(R.drawable.play)
+                mediaPlayer?.start()
+                setAudioProgress()
+            }
         })
         binding.clRecordAgain.setOnClickListener({
             binding.tvPlayToListen.visibility = View.GONE
@@ -101,10 +106,24 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
 
     }
 
+    private fun getTempFile(url: String): String? {
+        var file: File? = null;
+        try {
+            val fileName = Uri.parse(url).lastPathSegment
+            file = File.createTempFile(
+                fileName, null,
+                context?.cacheDir
+            )
+        } catch (e: IOException) {
+            // Error while creating file
+        }
+        return file?.absolutePath
+    }
+
     fun setAudioProgress() {
         val totalDuration = mediaPlayer?.getDuration()
 
-        binding.pbProgress.setMax(totalDuration as Int)
+        binding.pbProgress.max = totalDuration as Int
 
         val handlerProgressBar = Handler();
         var runnable = object : Runnable {
@@ -112,7 +131,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
                 try {
                     val currentPos = mediaPlayer?.getCurrentPosition()
                     binding.pbProgress.setProgress(currentPos as Int)
-                    handlerProgressBar.postDelayed(this, 1000)
+                    handlerProgressBar.postDelayed(this, 100)
 
                 } catch (ed: IllegalStateException) {
                     ed.printStackTrace()
@@ -125,6 +144,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         val dir = context?.cacheDir
         try {
             audiofile = File.createTempFile(DConstants.AUDIO_FILE, ".mp3", dir)
+            audiofile?.setReadable(true, false);
         } catch (e: IOException) {
             Log.e("TAG", "external storage access error" + e.stackTraceToString())
 

@@ -11,7 +11,7 @@
     <item android:id="@android:id/progress">
         <scale android:scaleWidth="100%">
             <shape>
-                <gradient android:angle="270" android:endColor="#473066" android:startColor="#473066" />
+                <gradient android:angle="270" android:endColor="@color/white" android:startColor="#473066" />
                 <corners android:radius="10dp" />
             </shape>
         </scale>
