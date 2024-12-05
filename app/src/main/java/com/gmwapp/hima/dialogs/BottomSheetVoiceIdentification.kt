@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -13,6 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
@@ -20,14 +20,13 @@ import com.gmwapp.hima.databinding.BottomSheetVoiceIdentificationBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
 
 
 class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
-    private var isPlaying = false;
+    private var isPlaying = false
     private var audiofile: File? = null
-    private var mediaPlayer:MediaPlayer? = null
+    private var mediaPlayer: MediaPlayer? = null
     private var onItemSelectionListener: OnItemSelectionListener<String?>? = null
     private var mRecorder: MediaRecorder? = null
     lateinit var binding: BottomSheetVoiceIdentificationBinding
@@ -51,15 +50,22 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
     }
 
 
-    override fun getTheme(): Int = com.gmwapp.hima.R.style.BottomSheetDialogTheme
+    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         BottomSheetDialog(requireContext(), theme)
 
     private fun initUI() {
         binding.clMicrophone.setOnTouchListener(OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
+                binding.content.startRippleAnimation()
+                val mConstrainLayout = binding.content
+                val lp = mConstrainLayout.layoutParams as ConstraintLayout.LayoutParams
+                lp.matchConstraintPercentHeight = 0.35.toFloat()
+                lp.matchConstraintPercentWidth = 0.49.toFloat()
+                mConstrainLayout.layoutParams = lp
                 startRecording()
             } else if (event.action == MotionEvent.ACTION_UP) {
+                binding.content.stopRippleAnimation()
 
                 try {
                     mRecorder?.release()
@@ -82,15 +88,16 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
             true
         })
         binding.ivPlay.setOnClickListener({
-            if(isPlaying) {
+            if (isPlaying) {
                 binding.ivPlay.setBackgroundResource(R.drawable.play)
                 mediaPlayer?.pause()
                 setAudioProgress()
-            }else{
+            } else {
                 binding.ivPlay.setBackgroundResource(R.drawable.play)
                 mediaPlayer?.start()
                 setAudioProgress()
             }
+            isPlaying = !isPlaying
         })
         binding.clRecordAgain.setOnClickListener({
             binding.tvPlayToListen.visibility = View.GONE
@@ -106,31 +113,17 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
 
     }
 
-    private fun getTempFile(url: String): String? {
-        var file: File? = null;
-        try {
-            val fileName = Uri.parse(url).lastPathSegment
-            file = File.createTempFile(
-                fileName, null,
-                context?.cacheDir
-            )
-        } catch (e: IOException) {
-            // Error while creating file
-        }
-        return file?.absolutePath
-    }
-
     fun setAudioProgress() {
-        val totalDuration = mediaPlayer?.getDuration()
+        val totalDuration = mediaPlayer?.duration
 
         binding.pbProgress.max = totalDuration as Int
 
-        val handlerProgressBar = Handler();
+        val handlerProgressBar = Handler()
         var runnable = object : Runnable {
             override fun run() {
                 try {
-                    val currentPos = mediaPlayer?.getCurrentPosition()
-                    binding.pbProgress.setProgress(currentPos as Int)
+                    val currentPos = mediaPlayer?.currentPosition
+                    binding.pbProgress.progress = currentPos as Int
                     handlerProgressBar.postDelayed(this, 100)
 
                 } catch (ed: IllegalStateException) {
@@ -140,11 +133,12 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         }
         handlerProgressBar.postDelayed(runnable, 1000)
     }
+
     private fun startRecording() {
         val dir = context?.cacheDir
         try {
             audiofile = File.createTempFile(DConstants.AUDIO_FILE, ".mp3", dir)
-            audiofile?.setReadable(true, false);
+            audiofile?.setReadable(true, false)
         } catch (e: IOException) {
             Log.e("TAG", "external storage access error" + e.stackTraceToString())
 

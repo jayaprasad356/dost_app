@@ -5,9 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="550dp"
+    android:background="#260e4c"
     android:maxHeight="550dp"
     android:minHeight="550dp"
-    android:background="#260e4c"
     android:padding="16dp"
     tools:context=".activities.LoginActivity">
 
@@ -28,54 +28,73 @@
         android:id="@+id/tl_speech_text_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:text="@string/tap_and_hold_to_speak"
         android:textColor="@color/user_name_hint_text"
         android:textSize="12sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/cl_microphone" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_microphone"
+    <com.skyfishjy.library.RippleBackground
+        android:id="@+id/content"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@string/voice_identification_hint"
-        android:src="@drawable/ic_microphone_inside_circle"
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHeight_percent="0.16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_speech_text"
-        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.22">
+        app:layout_constraintWidth_percent="0.22"
+        app:rb_color="#473066"
+        app:rb_duration="1500"
+        app:rb_radius="15dp"
+        app:rb_rippleAmount="3"
+        app:rb_scale="6">
 
-        <ImageView
-            android:id="@+id/iv_micro_phone_circle"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_microphone_circle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/iv_micro_phone"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/microphone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.5" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_microphone"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:contentDescription="@string/voice_identification_hint"
+                android:src="@drawable/ic_microphone_inside_circle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_micro_phone_circle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_microphone_circle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_micro_phone"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/microphone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_default="percent"
+                    app:layout_constraintHeight_percent="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.5" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.skyfishjy.library.RippleBackground>
 
     <TextView
         android:id="@+id/tv_play_to_listen"
@@ -87,24 +106,24 @@
         android:textSize="12sp"
         android:textStyle="bold"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/cl_player"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/cl_player" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_player"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/d_button_player_bg"
-        android:visibility="gone"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_speech_text"
-        app:layout_constraintBottom_toTopOf="@+id/btn_submit">
+        app:layout_constraintTop_toBottomOf="@+id/tv_speech_text">
 
         <ImageView
             android:id="@+id/iv_play"
@@ -122,11 +141,11 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:progressDrawable="@drawable/progress"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.41"
             app:layout_constraintStart_toEndOf="@+id/iv_play"
@@ -137,18 +156,18 @@
         android:id="@+id/cl_record_again"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:layout_marginTop="16dp"
         android:background="@drawable/d_button__record_again_bg"
         android:drawableStart="@drawable/again"
+        android:padding="3dp"
         android:textAllCaps="false"
-        android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cl_player"
         app:layout_constraintWidth_default="percent"
-        android:padding="3dp"
         app:layout_constraintWidth_percent="0.45">
 
         <ImageView
@@ -179,18 +198,18 @@
         android:id="@+id/btn_submit"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.09"
         android:layout_marginBottom="8dp"
-        android:textAllCaps="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/d_button_bg_white"
         android:text="@string/submit"
+        android:textAllCaps="false"
+        android:textColor="#1e152a"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="#1e152a"/>
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

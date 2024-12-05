@@ -100,6 +100,7 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:$glideVersion")
 
     implementation ("com.google.android.flexbox:flexbox:3.0.0")
+    implementation ("com.skyfishjy.ripplebackground:library:1.0.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
