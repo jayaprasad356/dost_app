@@ -128,4 +128,7 @@
     <string name="record_again">Record Again</string>
     <string name="submit">Submit</string>
     <string name="release_to_stop">Release to stop</string>
+    <string name="almost_done">Almost done...</string>
+    <string name="almost_done_hint">Our team will reach out to you within 24hrs via phone call. This is to explain about safety procedures on the platform.</string>
+    <string name="for_any_queries">"For any queries please contact "</string>
 </resources>
