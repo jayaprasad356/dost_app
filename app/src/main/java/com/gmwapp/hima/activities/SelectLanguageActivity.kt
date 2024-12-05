@@ -64,6 +64,7 @@ class SelectLanguageActivity : BaseActivity() {
                         //TODO details screen
                     } else{
                         val intent = Intent(this, VoiceIdentificationActivity::class.java)
+                        intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                     }
