@@ -2,6 +2,7 @@ package com.gmwapp.hima.activities
 
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -69,6 +70,7 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
                 val bundle = Bundle()
                 bundle.putString(DConstants.TEXT, data[0].text)
                 bottomSheet.arguments = bundle
+                bottomSheet.isCancelable = false
                 bottomSheet.show(
                     supportFragmentManager, "BottomSheetVoiceIdentification"
                 )
@@ -93,6 +95,16 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
         } else {
             requestPermissions()
         }
+        profileViewModel.voiceUpdateLiveData.observe(this, Observer {
+            if (it.success) {
+                val intent = Intent(this, AlmostDoneActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(
+                    this@VoiceIdentificationActivity, it.message, Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
     private fun checkPermissions(): Boolean {
@@ -119,8 +131,7 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
     }
 
     override fun onItemSelected(path: String?) {
-        val file: File? =
-            path?.let { File(it) }
+        val file: File? = path?.let { File(it) }
         BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
             file?.asRequestBody()?.let { it1 ->
                 MultipartBody.Part.createFormData(
