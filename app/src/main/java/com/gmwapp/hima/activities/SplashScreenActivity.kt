@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.MenuItem
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityMainBinding
 import com.gmwapp.hima.databinding.ActivitySplashScreenBinding
 import com.gmwapp.hima.dialogs.BottomSheetWelcomeBonus
@@ -31,14 +32,35 @@ class SplashScreenActivity : BaseActivity() {
 
     private fun initUI() {
         var intent: Intent? = null
-        if (BaseApplication.getInstance()?.getPrefs()?.getUserData() == null) {
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        if (userData == null) {
             intent = Intent(
                 this@SplashScreenActivity, LoginActivity::class.java
             )
         } else {
-            intent = Intent(
-                this@SplashScreenActivity, MainActivity::class.java
-            )
+            if(userData.gender == DConstants.MALE) {
+                intent = Intent(
+                    this@SplashScreenActivity, MainActivity::class.java
+                )
+            }else{
+                if(userData.status == 2){
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra(
+                        DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
+                    )
+                    intent.putExtra(DConstants.LANGUAGE, userData.language)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                } else if(userData.status == 1){
+                    val intent = Intent(this, AlmostDoneActivity::class.java)
+                    startActivity(intent)
+                } else{
+                    val intent = Intent(this, VoiceIdentificationActivity::class.java)
+                    intent.putExtra(DConstants.LANGUAGE, userData.language)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
+            }
         }
         Handler().postDelayed({
             startActivity(intent)
