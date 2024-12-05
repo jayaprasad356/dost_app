@@ -44,21 +44,18 @@ class SplashScreenActivity : BaseActivity() {
                 )
             }else{
                 if(userData.status == 2){
-                    val intent = Intent(this, MainActivity::class.java)
+                    intent = Intent(this, MainActivity::class.java)
                     intent.putExtra(
                         DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
                     )
                     intent.putExtra(DConstants.LANGUAGE, userData.language)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    startActivity(intent)
                 } else if(userData.status == 1){
-                    val intent = Intent(this, AlmostDoneActivity::class.java)
-                    startActivity(intent)
+                    intent = Intent(this, AlmostDoneActivity::class.java)
                 } else{
-                    val intent = Intent(this, VoiceIdentificationActivity::class.java)
+                    intent = Intent(this, VoiceIdentificationActivity::class.java)
                     intent.putExtra(DConstants.LANGUAGE, userData.language)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    startActivity(intent)
                 }
             }
         }
