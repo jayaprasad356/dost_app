@@ -2,7 +2,10 @@ package com.gmwapp.hima.activities
 
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Paint
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -11,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
@@ -46,6 +50,22 @@ class AlmostDoneActivity : BaseActivity() {
                         val supportMail = prefs?.getSettingsData()?.support_mail
                         binding.tvSupportMail.text =
                             supportMail
+                        val userData = prefs?.getUserData()
+                        val subject = getString(R.string.mail_subject, userData?.mobile)
+
+                        val body = getString(R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,
+                            BuildConfig.VERSION_CODE
+                        )
+                        binding.tvSupportMail.setOnClickListener {
+                            val intent = Intent(Intent.ACTION_VIEW)
+
+                            val data = Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")
+                            intent.setData(data)
+
+                            startActivity(intent)
+                        }
+                        binding.tvSupportMail.paintFlags =
+                            binding.tvSupportMail.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                     }
                 }
             }
