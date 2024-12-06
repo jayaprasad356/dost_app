@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.adapters.EarningsAdapter
 import com.gmwapp.hima.adapters.TransactionAdapter
+import com.gmwapp.hima.databinding.ActivityEarningsBinding
 import com.gmwapp.hima.databinding.ActivityTransactionsBinding
 import com.gmwapp.hima.viewmodels.EarningsViewModel
 import com.gmwapp.hima.viewmodels.TransactionsViewModel
@@ -15,12 +16,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EarningsActivity : BaseActivity() {
-    lateinit var binding: ActivityTransactionsBinding
+    lateinit var binding: ActivityEarningsBinding
     private val earningsViewModel: EarningsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTransactionsBinding.inflate(layoutInflater)
+        binding = ActivityEarningsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
     }
@@ -30,15 +31,11 @@ class EarningsActivity : BaseActivity() {
             finish()
         }
 
-        binding.btnAddCoins.setOnClickListener({
-            val intent = Intent(this, WalletActivity::class.java)
-            startActivity(intent)
-        })
         BaseApplication.getInstance()?.getPrefs()?.getUserData()
             ?.let { earningsViewModel.getEarnings(it.id) }
         earningsViewModel.earningsResponseLiveData.observe(this, Observer {
             if (it.data != null) {
-                binding.rvTransactions.setLayoutManager(
+                binding.rvEarnings.setLayoutManager(
                     LinearLayoutManager(
                         this,
                         LinearLayoutManager.VERTICAL,
@@ -46,7 +43,7 @@ class EarningsActivity : BaseActivity() {
                     ))
 
                 var earningsAdapter = EarningsAdapter(this, it.data)
-                binding.rvTransactions.setAdapter(earningsAdapter)
+                binding.rvEarnings.setAdapter(earningsAdapter)
             }
         })
 
