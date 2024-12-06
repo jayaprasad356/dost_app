@@ -12,6 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils.circleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.activities.AccountPrivacyActivity
+import com.gmwapp.hima.activities.EarningsActivity
 import com.gmwapp.hima.activities.EditProfileActivity
 import com.gmwapp.hima.activities.TransactionsActivity
 import com.gmwapp.hima.activities.WalletActivity
@@ -50,7 +51,7 @@ class ProfileFemaleFragment : BaseFragment() {
         updateValues()
 
         binding.clEarnings.setOnClickListener(View.OnClickListener {
-            val intent = Intent(context, WalletActivity::class.java)
+            val intent = Intent(context, EarningsActivity::class.java)
             startActivity(intent)
         })
         binding.ivEditProfile.setOnClickListener(View.OnClickListener {
