@@ -42,6 +42,7 @@
         <activity android:name="com.gmwapp.hima.activities.FemaleAboutActivity" />
         <activity android:name="com.gmwapp.hima.activities.AlmostDoneActivity" />
         <activity android:name="com.gmwapp.hima.activities.VoiceIdentificationActivity" />
+        <activity android:name="com.gmwapp.hima.activities.EarningsActivity" />
     </application>
 
 </manifest>

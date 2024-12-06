@@ -16,6 +16,7 @@
     <string name="view_more_plans">View more plans ></string>
     <string name="random">Random</string>
     <string name="rupee_text">\u20B9%d</string>
+    <string name="rupee_symbol">\u20B9</string>
     <string name="home">Home</string>
     <string name="recent">Recent</string>
     <string name="profile">Profile</string>
@@ -131,4 +132,11 @@
     <string name="almost_done">Almost done...</string>
     <string name="almost_done_hint">Our team will reach out to you within 24hrs via phone call. This is to explain about safety procedures on the platform.</string>
     <string name="for_any_queries">"For any queries please contact "</string>
+    <string name="earnings">Earnings</string>
+    <string name="current_balance">Current balance</string>
+    <string name="balance_hint_text">Balance should be at least u20B950 to withdraw</string>
+    <string name="pending">Pending</string>
+    <string name="withdrawn">Withdrawn</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="transaction_id">Transaction ID:%s</string>
 </resources>

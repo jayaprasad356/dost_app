@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
 import android.widget.Toast
+import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityMainBinding
 import com.gmwapp.hima.dialogs.BottomSheetWelcomeBonus
 import com.gmwapp.hima.fragments.HomeFragment
+import com.gmwapp.hima.fragments.ProfileFemaleFragment
 import com.gmwapp.hima.fragments.ProfileFragment
 import com.gmwapp.hima.fragments.RecentFragment
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
@@ -29,7 +32,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         initUI()
     }
 
-    private fun initUI(){
+    private fun initUI() {
         val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
         bottomSheet.show(
             supportFragmentManager, "BottomSheetWelcomeBonus"
@@ -44,9 +47,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             super.onBackPressed()
         } else {
             Toast.makeText(
-                this@MainActivity,
-                getString(R.string.press_back_again_to_exit),
-                Toast.LENGTH_SHORT
+                this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT
             ).show()
             isBackPressedAlready = true
             Handler().postDelayed({
@@ -70,8 +71,15 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             }
 
             R.id.profile -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.flFragment, ProfileFragment()).commit()
+                if (BaseApplication.getInstance()?.getPrefs()
+                        ?.getUserData()?.gender == DConstants.MALE
+                ) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.flFragment, ProfileFragment()).commit()
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.flFragment, ProfileFemaleFragment()).commit()
+                }
                 return true
             }
         }
@@ -80,7 +88,8 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     @SuppressLint("RestrictedApi")
     fun removeShiftMode() {
-        binding.bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
+        binding.bottomNavigationView.labelVisibilityMode =
+            NavigationBarView.LABEL_VISIBILITY_LABELED
         val menuView = binding.bottomNavigationView.getChildAt(0) as BottomNavigationMenuView
         for (i in 0 until menuView.childCount) {
             val item = menuView.getChildAt(i) as BottomNavigationItemView

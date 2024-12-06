@@ -4,6 +4,7 @@ import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.CoinsResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
+import com.gmwapp.hima.retrofit.responses.EarningsResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
@@ -109,6 +110,17 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<TransactionsResponse> = getApiInterface().getTransactions(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun getEarnings(
+        userId: Int, callback: NetworkCallback<EarningsResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<EarningsResponse> = getApiInterface().getEarnings(userId)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -243,6 +255,10 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/transaction_list")
     fun getTransactions(@Field("user_id") userId: Int): Call<TransactionsResponse>
+
+    @FormUrlEncoded
+    @POST("api/withdrawals_list")
+    fun getEarnings(@Field("user_id") userId: Int): Call<EarningsResponse>
 
     @FormUrlEncoded
     @POST("api/update_profile")
