@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="#161a1d"
+    android:background="@drawable/welcome_bonus_background"
     android:layout_height="550dp"
     android:maxHeight="550dp"
     android:minHeight="550dp"
