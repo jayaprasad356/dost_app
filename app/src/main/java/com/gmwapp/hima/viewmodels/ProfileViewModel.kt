@@ -26,6 +26,7 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     ViewModel() {
 
     val registerLiveData = MutableLiveData<RegisterResponse>()
+    val getUserLiveData = MutableLiveData<RegisterResponse>()
     val registerErrorLiveData = MutableLiveData<String>()
     val updateProfileLiveData = MutableLiveData<UpdateProfileResponse>()
     val updateProfileErrorLiveData = MutableLiveData<String>()
@@ -80,6 +81,28 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
 
                     override fun onNoNetwork() {
                         registerErrorLiveData.postValue(DConstants.NO_NETWORK)
+                    }
+                })
+        }
+    }
+
+    fun getUsers(
+        userId: Int
+    ) {
+        viewModelScope.launch {
+            profileRepositories.getUser(
+                userId,
+                object : NetworkCallback<RegisterResponse> {
+                    override fun onResponse(
+                        call: Call<RegisterResponse>, response: Response<RegisterResponse>
+                    ) {
+                        getUserLiveData.postValue(response.body())
+                    }
+
+                    override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                    }
+
+                    override fun onNoNetwork() {
                     }
                 })
         }

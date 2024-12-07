@@ -80,6 +80,19 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         }
     }
 
+    fun getUser(
+        userId: Int,
+        callback: NetworkCallback<RegisterResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<RegisterResponse> =
+                getApiInterface().getUser(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
     fun registerFemale(
         mobile: String,
         language: String,
@@ -249,6 +262,12 @@ interface ApiInterface {
         @Field("language") language: String,
         @Field("avatar_id") avatarId: Int,
         @Field("gender") gender: String
+    ): Call<RegisterResponse>
+
+    @FormUrlEncoded
+    @POST("api/userdetails")
+    fun getUser(
+        @Field("user_id") user_id: Int,
     ): Call<RegisterResponse>
 
     @FormUrlEncoded
