@@ -116,7 +116,7 @@
     <string name="tell_us_about_yourself">Tell us about yourself</string>
     <string name="tell_us_about_yourself_hint">The information you share will be visible to all your hi mas</string>
     <string name="enter_your_age">Enter your Age</string>
-    <string name="enter_your_age_hint">This info will not be shared with Hi mas</string>
+    <string name="enter_your_age_hint">This info will not be shared with Hi ma</string>
     <string name="select_maximum_and_minimum">Select minimum 1 interest, maximum of 4</string>
     <string name="summary_text">Give us a quick summary about you</string>
     <string name="voice_identification">Voice Identification</string>
