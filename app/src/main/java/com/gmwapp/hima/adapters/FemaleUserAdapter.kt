@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
@@ -42,7 +43,9 @@ class FemaleUserAdapter(
     override fun onBindViewHolder(holderParent: RecyclerView.ViewHolder, position: Int) {
         val holder: ItemHolder = holderParent as ItemHolder
         val femaleUser: FemaleUsersResponseData = femaleUsers[position]
-        Glide.with(activity).load(femaleUser.image).apply(RequestOptions.circleCropTransform()).into(holder.binding.ivProfile)
+        Glide.with(activity).load(femaleUser.image).apply(RequestOptions.bitmapTransform(
+            RoundedCorners(28)
+        )).into(holder.binding.ivProfile)
 
         holder.binding.tvName.text = femaleUser.name
         holder.binding.tvLanguage.text = femaleUser.language
@@ -63,7 +66,7 @@ class FemaleUserAdapter(
         interestsAsString.forEach({
             interests.add(Helper.getInterestObject(activity, it))
         })
-        var interestsListAdapter = InterestsListAdapter(activity, interests, false, object :
+        var interestsListAdapter = InterestsFemaleListAdapter(activity, interests, false, object :
             OnItemSelectionListener<Interests> {
             override fun onItemSelected(interest: Interests) {
             }

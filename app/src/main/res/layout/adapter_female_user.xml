@@ -8,32 +8,35 @@
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
+    android:paddingBottom="8dp"
     android:background="@drawable/card_view_border_country"
     tools:context=".activities.LoginActivity">
 
+
     <ImageView
         android:id="@+id/iv_profile"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:contentDescription="@string/profile"
-        android:scaleType="center"
+        android:scaleType="fitXY"
         android:src="@drawable/star"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.25"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="monospace"
         android:text="xxx"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
 
@@ -41,20 +44,20 @@
         android:id="@+id/tv_language"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="xxx"
         android:textColor="#e2e3e7"
-        android:textSize="12sp"
+        android:textSize="11sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_interests"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.1875"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_language" />
 
@@ -62,8 +65,9 @@
         android:id="@+id/tv_summary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="xxx"
-        android:textColor="#97989c"
+        android:textColor="#e2e3e7"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_interests" />
@@ -80,12 +84,13 @@
         style="@style/CardViewStyle.Spacing"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/black_light"
+        app:cardBackgroundColor="#383c3f"
+        app:layout_constraintEnd_toEndOf="@+id/gl_horizontal_center"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/gl_horizontal_center"
         app:layout_constraintTop_toBottomOf="@+id/tv_summary"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.4">
@@ -98,9 +103,9 @@
 
             <ImageView
                 android:id="@+id/iv_audio_coin"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="4dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/coin_d"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +116,7 @@
                 android:id="@+id/tv_iv_audio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:text="10/min"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -132,17 +137,19 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_video"
         style="@style/CardViewStyle.Spacing"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/gl_horizontal_center"
-        app:cardBackgroundColor="@color/black_light"
+        android:layout_marginEnd="8dp"
+        app:cardBackgroundColor="#383c3f"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="@+id/gl_horizontal_center"
         app:layout_constraintTop_toBottomOf="@+id/tv_summary"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.4">
@@ -155,9 +162,9 @@
 
             <ImageView
                 android:id="@+id/iv_video_coin"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="4dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/coin_d"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -168,7 +175,7 @@
                 android:id="@+id/tv_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:text="60/min"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -181,7 +188,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginEnd="16dp"
-                android:src="@drawable/audio"
+                android:src="@drawable/video"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
