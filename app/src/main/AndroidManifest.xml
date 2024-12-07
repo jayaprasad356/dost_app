@@ -39,7 +39,8 @@
         <activity android:name="com.gmwapp.hima.activities.SelectGenderActivity" />
         <activity android:name="com.gmwapp.hima.activities.SelectLanguageActivity" />
         <activity android:name="com.gmwapp.hima.activities.LoginActivity" />
-        <activity android:name="com.gmwapp.hima.activities.FemaleAboutActivity" />
+        <activity android:name="com.gmwapp.hima.activities.FemaleAboutActivity"
+            android:resizeableActivity="true"/>
         <activity android:name="com.gmwapp.hima.activities.AlmostDoneActivity" />
         <activity android:name="com.gmwapp.hima.activities.VoiceIdentificationActivity" />
         <activity android:name="com.gmwapp.hima.activities.EarningsActivity" />
