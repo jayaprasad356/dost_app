@@ -11,12 +11,9 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.EarningsAdapter
-import com.gmwapp.hima.adapters.TransactionAdapter
 import com.gmwapp.hima.databinding.ActivityEarningsBinding
-import com.gmwapp.hima.databinding.ActivityTransactionsBinding
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.gmwapp.hima.viewmodels.EarningsViewModel
-import com.gmwapp.hima.viewmodels.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,7 +50,7 @@ class EarningsActivity : BaseActivity() {
                         binding.tvSupportMail.text =
                             supportMail
                         val userData = prefs?.getUserData()
-                        val subject = getString(R.string.mail_subject, userData?.mobile)
+                        val subject = getString(R.string.delete_account_mail_subject, userData?.mobile,  userData?.language)
 
                         val body = getString(
                             R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,

@@ -3,7 +3,6 @@ package com.gmwapp.hima.activities
 import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
@@ -14,7 +13,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.BuildConfig
@@ -76,7 +74,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val supportMail = prefs?.getSettingsData()?.support_mail
         val userData = prefs?.getUserData()
-        val subject = getString(R.string.mail_subject, userData?.mobile, userData?.language)
+        val subject = getString(R.string.delete_account_mail_subject, userData?.mobile, userData?.language)
 
         val body = getString(R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,
             BuildConfig.VERSION_CODE
