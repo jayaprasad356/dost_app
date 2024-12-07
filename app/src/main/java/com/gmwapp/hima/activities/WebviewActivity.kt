@@ -39,14 +39,18 @@ class WebviewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityWebviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.wvPrivacyPolicy.getSettings().setJavaScriptEnabled(true);
+
         val prefs = BaseApplication.getInstance()?.getPrefs()
-        prefs?.getSettingsData()?.privacy_policy?.let { binding.wvPrivacyPolicy.loadUrl(it) }
+        prefs?.getSettingsData()?.privacy_policy?.let { binding.wvPrivacyPolicy.loadData(it,  "text/html; charset=utf-8", "UTF-8") }
 
         accountViewModel.settingsLiveData.observe(this, Observer {
             if (it.success) {
                 if (it.data != null) {
                     if (it.data.size > 0) {
                         prefs?.setSettingsData(it.data.get(0))
+                        val prefs = BaseApplication.getInstance()?.getPrefs()
+                        prefs?.getSettingsData()?.privacy_policy?.let { binding.wvPrivacyPolicy.loadData(it,  "text/html; charset=utf-8", "UTF-8") }
                     }
                 }
             }
