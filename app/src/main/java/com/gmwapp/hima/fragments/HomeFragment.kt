@@ -15,6 +15,7 @@ import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.adapters.FemaleUserAdapter
 import com.gmwapp.hima.adapters.TransactionAdapter
 import com.gmwapp.hima.databinding.FragmentHomeBinding
+import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,8 +49,9 @@ class HomeFragment : BaseFragment() {
                 it
             )
         }
+
         femaleUsersViewModel.femaleUsersResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.data != null) {
+            if (it?.data != null) {
                 binding.rvProfiles.setLayoutManager(
                     LinearLayoutManager(
                         activity,

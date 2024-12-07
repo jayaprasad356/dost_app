@@ -38,9 +38,8 @@ class AccountPrivacyActivity : BaseActivity() {
         }
         binding.cvPrivacyPolicy.setOnClickListener {
             try {
-                val i = Intent(Intent.ACTION_VIEW)
-                i.setData(Uri.parse(prefs?.getSettingsData()?.privacy_policy))
-                startActivity(i)
+                val intent = Intent(this, WebviewActivity::class.java)
+                startActivity(intent)
             } catch (e: Exception) {
                 Toast.makeText(
                     this@AccountPrivacyActivity, e.message, Toast.LENGTH_LONG

@@ -43,6 +43,7 @@
         <activity android:name="com.gmwapp.hima.activities.AlmostDoneActivity" />
         <activity android:name="com.gmwapp.hima.activities.VoiceIdentificationActivity" />
         <activity android:name="com.gmwapp.hima.activities.EarningsActivity" />
+        <activity android:name="com.gmwapp.hima.activities.WebviewActivity" />
     </application>
 
 </manifest>
