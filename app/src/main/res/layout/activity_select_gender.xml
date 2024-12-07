@@ -160,7 +160,7 @@
                 android:text="@string/female"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#9587ab"/>
+                android:textColor="#fffbff"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
