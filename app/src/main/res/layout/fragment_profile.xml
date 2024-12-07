@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.16" />
+
             <ImageView
                 android:id="@+id/iv_edit_profile"
                 android:layout_width="30dp"
@@ -49,15 +50,15 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:contentDescription="@string/profile"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.25"
-                app:layout_constraintHeight_default="percent"
-                app:layout_constraintHeight_percent="0.5"
                 android:scaleType="center"
                 android:src="@drawable/star"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/gl_image_top_margin"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.25"
                 tools:ignore="MissingConstraints" />
 
             <TextView
@@ -199,6 +200,7 @@
                     app:tint="@color/white" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -309,17 +311,36 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/tv_help"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="55dp"
-        android:text="@string/need_help"
-        android:textColor="@color/white"
-        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_logout" />
+        app:layout_constraintTop_toBottomOf="@+id/cv_logout">
+
+        <TextView
+            android:id="@+id/tv_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/need_help"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_support_mail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginStart="2dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_help"
+            app:layout_constraintStart_toEndOf="@+id/tv_help"
+            app:layout_constraintTop_toTopOf="@+id/tv_help" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/tv_version"

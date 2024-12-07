@@ -31,7 +31,7 @@
     <string name="transactions">Transactions</string>
     <string name="account_privacy">Account Privacy</string>
     <string name="logout">Logout</string>
-    <string name="need_help">Need Help? Please contact support@dostt.in</string>
+    <string name="need_help">Need Help? Please contact </string>
     <string name="version">version 1.0.0</string>
     <string name="welcome_bonus">Welcome Bonus!</string>
     <string name="recent_calls">Recent Calls</string>
