@@ -7,8 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.activities.WalletActivity
+import com.gmwapp.hima.adapters.FemaleUserAdapter
+import com.gmwapp.hima.adapters.TransactionAdapter
 import com.gmwapp.hima.databinding.FragmentHomeBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.viewmodels.LoginViewModel
@@ -32,10 +37,30 @@ class HomeFragment : BaseFragment() {
         return binding.root
     }
 
+
     private fun initUI(){
         binding.clCoins.setOnClickListener({
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
+        })
+        BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
+            femaleUsersViewModel.getFemaleUsers(
+                it
+            )
+        }
+        femaleUsersViewModel.femaleUsersResponseLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.data != null) {
+                binding.rvProfiles.setLayoutManager(
+                    LinearLayoutManager(
+                        activity,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
+                )
+
+                var transactionAdapter = activity?.let { it1 -> FemaleUserAdapter(it1, it.data) }
+                binding.rvProfiles.setAdapter(transactionAdapter)
+            }
         })
 
         initFab()
