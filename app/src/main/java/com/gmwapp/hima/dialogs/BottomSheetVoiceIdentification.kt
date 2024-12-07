@@ -125,7 +125,6 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         })
         binding.clRecordAgain.setOnClickListener({
             mediaPlayer?.release()
-            mediaPlayer?.reset()
             binding.tvPlayToListen.visibility = View.GONE
             binding.clPlayer.visibility = View.GONE
             binding.clRecordAgain.visibility = View.GONE
