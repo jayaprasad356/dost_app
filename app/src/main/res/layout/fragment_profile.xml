@@ -9,10 +9,12 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_profile"
         style="@style/CardViewStyle.Spacing"
-        android:layout_height="200dp"
-        android:layout_marginTop="35dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
         app:cardBackgroundColor="@color/black_light"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.27"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,13 +24,21 @@
             android:layout_margin="4dp"
             android:orientation="horizontal">
 
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_image_top_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.16" />
+
             <ImageView
                 android:id="@+id/iv_edit_profile"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="8dp"
-                android:padding="6dp"
                 android:contentDescription="@string/edit"
+                android:padding="6dp"
                 android:src="@drawable/edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -37,16 +47,18 @@
 
             <ImageView
                 android:id="@+id/iv_profile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="12dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:contentDescription="@string/profile"
                 android:scaleType="center"
                 android:src="@drawable/star"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorAccent"
+                app:layout_constraintTop_toTopOf="@+id/gl_image_top_margin"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.25"
                 tools:ignore="MissingConstraints" />
 
             <TextView
@@ -55,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:text="name"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 app:layout_constraintEnd_toEndOf="@+id/iv_profile"
                 app:layout_constraintStart_toStartOf="@+id/iv_profile"
                 app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
@@ -65,203 +77,279 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_profile_options"
         style="@style/CardViewStyle.Spacing"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="40dp"
         app:cardBackgroundColor="@color/black_light"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_profile">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_wallet"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_margin_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/edit"
-                android:padding="6dp"
-                android:src="@drawable/star"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="20dp"
+                app:layout_constraintGuide_percent="0.33" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_margin_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="54dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/gl_margin_1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorAccent"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tv_wallet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/wallet"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_wallet"
-                app:layout_constraintStart_toEndOf="@+id/iv_wallet"
-                app:layout_constraintTop_toTopOf="@+id/iv_wallet" />
+                <ImageView
+                    android:id="@+id/iv_wallet"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/edit"
+                    android:padding="6dp"
+                    android:src="@drawable/wallet"
+                    app:tint="@color/white"
+                    tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/iv_wallet_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/star"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_wallet"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/iv_wallet" />
+                <TextView
+                    android:id="@+id/tv_wallet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wallet"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_wallet"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_wallet_arrow"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/right_arrow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
-                android:background="@color/cardview_divider"
-                app:layout_constraintEnd_toEndOf="@+id/iv_wallet_arrow"
-                app:layout_constraintStart_toStartOf="@+id/iv_wallet"
-                app:layout_constraintTop_toBottomOf="@+id/iv_wallet" />
+                android:background="@color/profile_cardview_divider"
+                app:layout_constraintEnd_toEndOf="@+id/cl_wallet"
+                app:layout_constraintStart_toStartOf="@+id/cl_wallet"
+                app:layout_constraintTop_toTopOf="@+id/gl_margin_1" />
 
-            <ImageView
-                android:id="@+id/iv_transactions"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_transactions"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/edit"
-                android:padding="6dp"
-                android:src="@drawable/star"
+                app:layout_constraintBottom_toBottomOf="@+id/gl_margin_2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_wallet"
-                app:tint="@color/colorAccent"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toBottomOf="@+id/gl_margin_1">
 
-            <TextView
-                android:id="@+id/tv_transactions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/transactions"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_transactions"
-                app:layout_constraintStart_toEndOf="@+id/iv_transactions"
-                app:layout_constraintTop_toTopOf="@+id/iv_transactions" />
+                <ImageView
+                    android:id="@+id/iv_transactions"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/edit"
+                    android:padding="6dp"
+                    android:src="@drawable/transactions"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white"
+                    tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/iv_transactions_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/star"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_transactions"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/iv_transactions" />
+                <TextView
+                    android:id="@+id/tv_transactions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transactions"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_transactions"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_transactions_arrow"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/right_arrow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
-                android:background="@color/cardview_divider"
-                app:layout_constraintEnd_toEndOf="@+id/iv_transactions_arrow"
-                app:layout_constraintStart_toStartOf="@+id/iv_transactions"
-                app:layout_constraintTop_toBottomOf="@+id/iv_transactions" />
+                android:background="@color/profile_cardview_divider"
+                app:layout_constraintEnd_toEndOf="@+id/cl_transactions"
+                app:layout_constraintStart_toStartOf="@+id/cl_transactions"
+                app:layout_constraintTop_toTopOf="@+id/gl_margin_2" />
 
-            <ImageView
-                android:id="@+id/iv_account_privacy"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_account_privacy"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/edit"
-                android:padding="6dp"
-                android:src="@drawable/star"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_transactions"
-                app:tint="@color/colorAccent"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toBottomOf="@+id/gl_margin_2">
 
-            <TextView
-                android:id="@+id/tv_account_privacy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/account_privacy"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_account_privacy"
-                app:layout_constraintStart_toEndOf="@+id/iv_account_privacy"
-                app:layout_constraintTop_toTopOf="@+id/iv_account_privacy" />
+                <ImageView
+                    android:id="@+id/iv_account_privacy"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/edit"
+                    android:padding="6dp"
+                    android:src="@drawable/account_privacy"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white"
+                    tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/iv_account_privacy_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/star"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_account_privacy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/iv_account_privacy" />
+                <TextView
+                    android:id="@+id/tv_account_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_privacy"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_account_privacy"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/iv_account_privacy_arrow"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/right_arrow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_logout"
         style="@style/CardViewStyle.Spacing"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="40dp"
         app:cardBackgroundColor="@color/black_light"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_profile_options">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="6dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iv_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="4dp"
                 android:contentDescription="@string/edit"
-                android:padding="6dp"
-                android:src="@drawable/star"
+                android:src="@drawable/logout"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorAccent"
+                app:tint="@color/white"
                 tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/tv_logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="@string/logout"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintStart_toEndOf="@+id/iv_logout"
                 app:layout_constraintTop_toTopOf="@+id/iv_logout" />
 
             <ImageView
                 android:id="@+id/iv_logout_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/star"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/right_arrow"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/iv_logout" />
+                app:layout_constraintTop_toTopOf="@+id/iv_logout"
+                app:tint="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-    <TextView
-        android:id="@+id/tv_help"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/need_help"
-        android:textColor="@color/white"
-        android:textSize="16sp"
+        android:layout_marginTop="55dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_logout" />
+        app:layout_constraintTop_toBottomOf="@+id/cv_logout">
+
+        <TextView
+            android:id="@+id/tv_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/need_help"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_support_mail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginStart="2dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_help"
+            app:layout_constraintStart_toEndOf="@+id/tv_help"
+            app:layout_constraintTop_toTopOf="@+id/tv_help" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
-        android:id="@+id/tv_versiom"
+        android:id="@+id/tv_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="@string/version"
-        android:textSize="16sp"
+        android:textColor="#8d8e92"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_help" />
