@@ -63,17 +63,17 @@
 
     <ImageView
         android:id="@+id/iv_timer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/timer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:tint="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/cl_help"
-        app:layout_constraintTop_toBottomOf="@+id/tl_voice_identification_hint" />
+        app:layout_constraintTop_toBottomOf="@+id/tl_voice_identification_hint"
+        app:tint="@color/white" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_help"
