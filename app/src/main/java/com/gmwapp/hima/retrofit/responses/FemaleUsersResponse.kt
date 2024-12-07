@@ -12,7 +12,4 @@ data class FemaleUsersResponseData(
     val language: String,
     val interests: String,
     val describe_yourself: String,
-    val summary: String,
-    val audio: Int,
-    val video: Int,
 )
