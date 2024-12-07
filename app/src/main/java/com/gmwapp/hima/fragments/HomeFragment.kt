@@ -5,13 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.databinding.FragmentHomeBinding
+import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.gmwapp.hima.viewmodels.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment() {
     private var isAllFabVisible: Boolean = false
     lateinit var binding: FragmentHomeBinding
+    private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +37,7 @@ class HomeFragment : BaseFragment() {
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
         })
+
         initFab()
     }
 

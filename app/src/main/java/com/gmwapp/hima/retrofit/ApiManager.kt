@@ -5,6 +5,7 @@ import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.CoinsResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.EarningsResponse
+import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
@@ -110,6 +111,17 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<TransactionsResponse> = getApiInterface().getTransactions(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun getFemaleUsers(
+        userId: Int, callback: NetworkCallback<FemaleUsersResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<FemaleUsersResponse> = getApiInterface().getFemaleUsers(userId)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -255,6 +267,10 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/transaction_list")
     fun getTransactions(@Field("user_id") userId: Int): Call<TransactionsResponse>
+
+    @FormUrlEncoded
+    @POST("api/female_users_list")
+    fun getFemaleUsers(@Field("user_id") userId: Int): Call<FemaleUsersResponse>
 
     @FormUrlEncoded
     @POST("api/withdrawals_list")
