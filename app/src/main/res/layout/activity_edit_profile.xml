@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.029" />
+        app:layout_constraintGuide_percent="0.039" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_bottom_margin"
@@ -92,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintHeight_default="percent"
-                app:layout_constraintHeight_percent="0.037"
+                app:layout_constraintHeight_percent="0.027"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
