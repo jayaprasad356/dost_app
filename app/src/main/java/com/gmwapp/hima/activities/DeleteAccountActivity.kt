@@ -76,7 +76,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val supportMail = prefs?.getSettingsData()?.support_mail
         val userData = prefs?.getUserData()
-        val subject = getString(R.string.mail_subject, userData?.mobile)
+        val subject = getString(R.string.mail_subject, userData?.mobile, userData?.language)
 
         val body = getString(R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,
             BuildConfig.VERSION_CODE
