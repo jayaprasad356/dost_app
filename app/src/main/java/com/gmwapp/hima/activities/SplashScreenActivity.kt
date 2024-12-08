@@ -71,10 +71,12 @@ class SplashScreenActivity : BaseActivity() {
 
             }
         }
-        Handler().postDelayed({
-            startActivity(intent)
-            finish()
-        }, 3000)
+        if(intent!=null) {
+            Handler().postDelayed({
+                startActivity(intent)
+                finish()
+            }, 3000)
+        }
     }
 
 }
