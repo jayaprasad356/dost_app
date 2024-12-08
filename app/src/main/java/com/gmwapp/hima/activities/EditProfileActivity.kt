@@ -181,7 +181,7 @@ class EditProfileActivity : BaseActivity() {
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
-        profileViewModel.getAvatarsList("male")
+        userData?.gender?.let { profileViewModel.getAvatarsList(it) }
         profileViewModel.userValidationLiveData.observe(this, Observer {
             if (it.success) {
                 isValidUserName = true
