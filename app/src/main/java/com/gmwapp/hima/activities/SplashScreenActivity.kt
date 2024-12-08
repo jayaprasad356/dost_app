@@ -57,6 +57,8 @@ class SplashScreenActivity : BaseActivity() {
                 intent?.putExtra(DConstants.LANGUAGE, userData?.language)
                 intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             }
+            startActivity(intent)
+            finish()
         });
         if (userData == null) {
             intent = Intent(
@@ -68,7 +70,11 @@ class SplashScreenActivity : BaseActivity() {
                     this@SplashScreenActivity, MainActivity::class.java
                 )
             }else{
-
+                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
+                    profileViewModel.getUsers(
+                        it
+                    )
+                }
             }
         }
         if(intent!=null) {
