@@ -31,8 +31,7 @@ class VerifyOTPActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        window.statusBarColor = resources.getColor(R.color.dark_blue)
         val mobileNumber: String = intent.getStringExtra(DConstants.MOBILE_NUMBER).toString()
         val otp = intent.getIntExtra(DConstants.OTP, 0)
         val countryCode = intent.getIntExtra(DConstants.COUNTRY_CODE, 0)
