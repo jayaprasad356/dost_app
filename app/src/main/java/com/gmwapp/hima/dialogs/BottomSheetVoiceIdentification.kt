@@ -57,6 +57,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
 
     private fun initUI() {
         var timer:CountDownTimer?=null;
+        mediaPlayer = MediaPlayer()
         binding.clMicrophone.setOnTouchListener(OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 binding.tlSpeechTextHintTimer.text = "00:00"
@@ -93,8 +94,6 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
 
                 try {
                     mRecorder?.release()
-                    mediaPlayer = MediaPlayer()
-
 
                     mediaPlayer?.setDataSource(audiofile?.absolutePath)
                     mediaPlayer?.prepare()
@@ -113,11 +112,11 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         })
         binding.ivPlay.setOnClickListener({
             if (isPlaying) {
-                binding.ivPlay.setBackgroundResource(R.drawable.pause)
+                binding.ivPlay.setImageDrawable(context?.getDrawable(R.drawable.play))
                 mediaPlayer?.pause()
                 setAudioProgress()
             } else {
-                binding.ivPlay.setBackgroundResource(R.drawable.play)
+                binding.ivPlay.setImageDrawable(context?.getDrawable(R.drawable.pause))
                 mediaPlayer?.start()
                 setAudioProgress()
             }
@@ -125,6 +124,9 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         })
         binding.clRecordAgain.setOnClickListener({
             mediaPlayer?.release()
+            mediaPlayer = MediaPlayer()
+            isPlaying = false;
+            binding.ivPlay.setImageDrawable(context?.getDrawable(R.drawable.play))
             binding.tvPlayToListen.visibility = View.GONE
             binding.clPlayer.visibility = View.GONE
             binding.clRecordAgain.visibility = View.GONE
@@ -149,7 +151,14 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
                 try {
                     val currentPos = mediaPlayer?.currentPosition
                     binding.pbProgress.progress = currentPos as Int
-                    handlerProgressBar.postDelayed(this, 100)
+                    if(currentPos<totalDuration){
+                        handlerProgressBar.postDelayed(this, 100)
+
+                    }else{
+                        isPlaying = false
+                        binding.ivPlay.setImageDrawable(context?.getDrawable(R.drawable.play))
+                        mediaPlayer?.seekTo(0)
+                    }
 
                 } catch (ed: IllegalStateException) {
                     ed.printStackTrace()
