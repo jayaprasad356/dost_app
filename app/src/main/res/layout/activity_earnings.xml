@@ -123,7 +123,7 @@
         <com.gmwapp.hima.widgets.DButton
             android:id="@+id/btn_withdraw"
             android:layout_width="0dp"
-            android:layout_height="25dp"
+            android:layout_height="35dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.4"
