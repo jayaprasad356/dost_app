@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,31 +36,56 @@ class EarningsActivity : BaseActivity() {
         }
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
-        val supportMail = prefs?.getSettingsData()?.support_mail
-        binding.tvSupportMail.text =
-            supportMail
+        val settingsData = prefs?.getSettingsData()
+        val supportMail = settingsData?.support_mail
+        binding.tvSupportMail.text = supportMail
+        binding.tlBalanceHint.text =
+            getString(R.string.balance_hint_text, settingsData?.minimum_withdrawals)
         accountViewModel.getSettings()
-        BaseApplication.getInstance()?.getPrefs()?.getUserData()
-            ?.let { earningsViewModel.getEarnings(it.id) }
+        prefs?.getUserData()?.let {
+                earningsViewModel.getEarnings(it.id)
+                val balance = it.balance
+                if (settingsData?.minimum_withdrawals != null && balance != null && balance < settingsData.minimum_withdrawals) {
+                    binding.btnWithdraw.visibility = View.GONE
+                    binding.ivBalance.visibility = View.VISIBLE
+                    binding.tlBalanceHint.visibility = View.VISIBLE
+                } else {
+                    binding.btnWithdraw.visibility = View.VISIBLE
+                    binding.ivBalance.visibility = View.GONE
+                    binding.tlBalanceHint.visibility = View.GONE
+                }
+                binding.tvCurrentBalance.text = balance.toString()
+            }
         accountViewModel.settingsLiveData.observe(this, Observer {
             if (it.success) {
                 if (it.data != null) {
                     if (it.data.size > 0) {
-                        prefs?.setSettingsData(it.data.get(0))
-                        val supportMail = prefs?.getSettingsData()?.support_mail
-                        binding.tvSupportMail.text =
-                            supportMail
+                        val settingsData1 = it.data[0]
+                        prefs?.setSettingsData(settingsData1)
+                        val supportMail = settingsData1.support_mail
+                        binding.tlBalanceHint.text =
+                            getString(R.string.balance_hint_text, settingsData1.minimum_withdrawals)
+                        binding.tvSupportMail.text = supportMail
                         val userData = prefs?.getUserData()
-                        val subject = getString(R.string.delete_account_mail_subject, userData?.mobile,  userData?.language)
+
+                        val subject = getString(
+                            R.string.delete_account_mail_subject,
+                            userData?.mobile,
+                            userData?.language
+                        )
 
                         val body = getString(
-                            R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,
+                            R.string.mail_body,
+                            userData?.mobile,
+                            android.os.Build.MODEL,
+                            userData?.language,
                             BuildConfig.VERSION_CODE
                         )
                         binding.tvSupportMail.setOnClickListener {
                             val intent = Intent(Intent.ACTION_VIEW)
 
-                            val data = Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")
+                            val data =
+                                Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")
                             intent.setData(data)
 
                             startActivity(intent)
@@ -74,10 +100,9 @@ class EarningsActivity : BaseActivity() {
             if (it.data != null) {
                 binding.rvEarnings.setLayoutManager(
                     LinearLayoutManager(
-                        this,
-                        LinearLayoutManager.VERTICAL,
-                        false
-                    ))
+                        this, LinearLayoutManager.VERTICAL, false
+                    )
+                )
 
                 var earningsAdapter = EarningsAdapter(this, it.data)
                 binding.rvEarnings.setAdapter(earningsAdapter)

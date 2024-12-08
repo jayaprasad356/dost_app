@@ -137,7 +137,7 @@
     <string name="for_any_queries">"For any queries please contact "</string>
     <string name="earnings">Earnings</string>
     <string name="current_balance">Current balance</string>
-    <string name="balance_hint_text">Balance should be at least \u20B950 to withdraw</string>
+    <string name="balance_hint_text">Balance should be at least \u20B9%d to withdraw</string>
     <string name="pending">Pending</string>
     <string name="withdrawn">Withdrawn</string>
     <string name="cancelled">Cancelled</string>
@@ -146,4 +146,5 @@
     <string name="getting_started">Getting Started</string>
     <string name="getting_started_hint">Watch the training video to become a successful Superhima and start earning!</string>
     <string name="complete">Complete</string>
+    <string name="withdraw">Withdraw</string>
 </resources>

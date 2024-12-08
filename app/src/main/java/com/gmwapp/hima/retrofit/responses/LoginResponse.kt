@@ -23,5 +23,6 @@ data class UserData (
     val describe_yourself:String?,
     val voice:String?,
     val status:Int?,
+    val balance:Float?,
 
 )
