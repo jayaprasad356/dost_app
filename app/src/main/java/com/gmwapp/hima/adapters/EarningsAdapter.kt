@@ -33,7 +33,7 @@ class EarningsAdapter(
         when (earning.status) {
             0 -> {
                 holder.binding.tvStatus.text = activity.getString(R.string.pending)
-                holder.binding.tvStatus.setTextColor(activity.getColor(android.R.color.white))
+                holder.binding.tvStatus.setTextColor(activity.getColor(R.color.dark_blue))
             }
             1 -> {
                 holder.binding.tvStatus.text = activity.getString(R.string.withdrawn)
@@ -45,7 +45,6 @@ class EarningsAdapter(
             }
         }
         holder.binding.tvDate.text = earning.datetime
-        holder.binding.tvAccount.text = earning.id.toString()
         holder.binding.tvAmount.text = earning.amount.toString()
         holder.binding.tvId.text = activity.getString(R.string.transaction_id, earning.id.toString())
     }
