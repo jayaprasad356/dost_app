@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -103,6 +104,7 @@ dependencies {
     implementation ("com.skyfishjy.ripplebackground:library:1.0.1")
     implementation ("androidx.fragment:fragment-ktx:1.6.1")
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1")
+    implementation("com.google.firebase:firebase-crashlytics:18.4.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
