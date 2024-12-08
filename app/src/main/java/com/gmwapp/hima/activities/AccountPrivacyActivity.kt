@@ -28,7 +28,7 @@ class AccountPrivacyActivity : BaseActivity() {
 
     private fun initUI() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
-        prefs?.getUserData()?.id?.let { accountViewModel.getSettings(it) }
+        accountViewModel.getSettings()
         binding.cvDeleteAccount.setOnClickListener {
             val intent = Intent(this, DeleteAccountActivity::class.java)
             startActivity(intent)

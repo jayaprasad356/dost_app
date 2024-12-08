@@ -104,7 +104,7 @@ class ProfileFragment : BaseFragment() {
                 )
             }
         })
-        prefs?.getUserData()?.id?.let { accountViewModel.getSettings(it) }
+        accountViewModel.getSettings()
         accountViewModel.settingsLiveData.observe(viewLifecycleOwner, Observer {
             if (it.success) {
                 if (it.data != null) {

@@ -38,7 +38,7 @@ class EarningsActivity : BaseActivity() {
         val supportMail = prefs?.getSettingsData()?.support_mail
         binding.tvSupportMail.text =
             supportMail
-        prefs?.getUserData()?.id?.let { accountViewModel.getSettings(it) }
+        accountViewModel.getSettings()
         BaseApplication.getInstance()?.getPrefs()?.getUserData()
             ?.let { earningsViewModel.getEarnings(it.id) }
         accountViewModel.settingsLiveData.observe(this, Observer {

@@ -25,7 +25,7 @@ class AlmostDoneActivity : BaseActivity() {
         val supportMail = prefs?.getSettingsData()?.support_mail
         binding.tvSupportMail.text =
             supportMail
-        prefs?.getUserData()?.id?.let { accountViewModel.getSettings(it) }
+        accountViewModel.getSettings()
         accountViewModel.settingsLiveData.observe(this, Observer {
             if (it.success) {
                 if (it.data != null) {

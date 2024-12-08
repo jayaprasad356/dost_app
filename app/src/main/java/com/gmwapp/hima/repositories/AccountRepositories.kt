@@ -10,7 +10,7 @@ import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import javax.inject.Inject
 
 class AccountRepositories @Inject constructor(private val apiManager: ApiManager) {
-  fun getSettings(userId: Int,callback: NetworkCallback<SettingsResponse>) {
-        apiManager.getSettings(userId,callback)
+  fun getSettings(callback: NetworkCallback<SettingsResponse>) {
+        apiManager.getSettings(callback)
     }
 }

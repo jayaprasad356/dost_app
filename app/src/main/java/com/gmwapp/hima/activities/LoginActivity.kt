@@ -136,11 +136,9 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
 
     private fun setMessageWithClickableLink() {
         val content = getString(R.string.terms_and_conditions_text)
-        val url = "http://my-site.com/information" //TODO need to add the terms & conditions link
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(url)
+                val intent = Intent(this@LoginActivity, WebviewActivity::class.java)
                 startActivity(intent)
             }
 

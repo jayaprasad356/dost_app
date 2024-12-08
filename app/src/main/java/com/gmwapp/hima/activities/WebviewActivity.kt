@@ -44,6 +44,7 @@ class WebviewActivity : BaseActivity() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         prefs?.getSettingsData()?.privacy_policy?.let { binding.wvPrivacyPolicy.loadData(it,  "text/html; charset=utf-8", "UTF-8") }
 
+        accountViewModel.getSettings()
         accountViewModel.settingsLiveData.observe(this, Observer {
             if (it.success) {
                 if (it.data != null) {

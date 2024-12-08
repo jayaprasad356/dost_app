@@ -17,9 +17,9 @@ import javax.inject.Inject
 class AccountViewModel @Inject constructor(private val accountRepositories: AccountRepositories) : ViewModel() {
 
     val settingsLiveData = MutableLiveData<SettingsResponse>()
-    fun getSettings(userId: Int,) {
+    fun getSettings() {
         viewModelScope.launch {
-            accountRepositories.getSettings(userId,object:NetworkCallback<SettingsResponse> {
+            accountRepositories.getSettings(object:NetworkCallback<SettingsResponse> {
                 override fun onResponse(
                     call: Call<SettingsResponse>,
                     response: Response<SettingsResponse>

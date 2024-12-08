@@ -204,10 +204,10 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     }
 
     fun getSettings(
-        userId: Int, callback: NetworkCallback<SettingsResponse>
+        callback: NetworkCallback<SettingsResponse>
     ) {
         if (Helper.checkNetworkConnection()) {
-            val apiCall: Call<SettingsResponse> = getApiInterface().getSettings(userId)
+            val apiCall: Call<SettingsResponse> = getApiInterface().getSettings()
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -332,7 +332,6 @@ interface ApiInterface {
         @Part("user_id") userId: Int, @Part voice: MultipartBody.Part
     ): Call<VoiceUpdateResponse>
 
-    @FormUrlEncoded
     @POST("api/settings_list")
-    fun getSettings(@Field("user_id") userId: Int): Call<SettingsResponse>
+    fun getSettings(): Call<SettingsResponse>
 }
