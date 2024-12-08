@@ -135,7 +135,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
     }
 
     private fun setMessageWithClickableLink() {
-        val content = getString(R.string.terms_and_conditions_text)
+        val content = getString(R.string.terms_and_conditions_text, getString(R.string.app_name))
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
                 val intent = Intent(this@LoginActivity, WebviewActivity::class.java)
