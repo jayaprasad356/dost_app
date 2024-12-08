@@ -10,4 +10,5 @@ data class SettingsResponseData(
     val id: Int,
     val privacy_policy: String,
     val support_mail: String,
+    val demo_video: String,
 )

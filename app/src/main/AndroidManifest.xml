@@ -45,6 +45,7 @@
         <activity android:name="com.gmwapp.hima.activities.VoiceIdentificationActivity" />
         <activity android:name="com.gmwapp.hima.activities.EarningsActivity" />
         <activity android:name="com.gmwapp.hima.activities.WebviewActivity" />
+        <activity android:name="com.gmwapp.hima.activities.YoutubeActivity" />
     </application>
 
 </manifest>

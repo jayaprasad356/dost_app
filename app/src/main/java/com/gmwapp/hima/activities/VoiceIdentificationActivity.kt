@@ -98,7 +98,7 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
         profileViewModel.voiceUpdateLiveData.observe(this, Observer {
             if (it.success) {
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
-                val intent = Intent(this, AlmostDoneActivity::class.java)
+                val intent = Intent(this, YoutubeActivity::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(

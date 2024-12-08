@@ -139,4 +139,8 @@
     <string name="withdrawn">Withdrawn</string>
     <string name="cancelled">Cancelled</string>
     <string name="transaction_id">Transaction ID:%s</string>
+    <string name="skip">Skip</string>
+    <string name="getting_started">Getting Started</string>
+    <string name="getting_started_hint">Watch the training video to become a successful Superhima and start earning!</string>
+    <string name="complete">Complete</string>
 </resources>
