@@ -113,7 +113,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
         })
         binding.ivPlay.setOnClickListener({
             if (isPlaying) {
-                binding.ivPlay.setBackgroundResource(R.drawable.play)
+                binding.ivPlay.setBackgroundResource(R.drawable.pause)
                 mediaPlayer?.pause()
                 setAudioProgress()
             } else {

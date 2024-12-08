@@ -25,7 +25,9 @@ import com.gmwapp.hima.databinding.FragmentProfileBinding
 import com.gmwapp.hima.databinding.FragmentProfileFemaleBinding
 import com.gmwapp.hima.dialogs.BottomSheetLogout
 import com.gmwapp.hima.viewmodels.AccountViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProfileFemaleFragment : BaseFragment() {
     lateinit var binding: FragmentProfileFemaleBinding
     private val EDIT_PROFILE_REQUEST_CODE = 1
