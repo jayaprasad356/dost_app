@@ -5,8 +5,6 @@
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/dark_blue</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">
             @style/activityTransition
         </item>
@@ -17,8 +15,6 @@
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/dark_blue</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">
             @style/activityTransition
         </item>
