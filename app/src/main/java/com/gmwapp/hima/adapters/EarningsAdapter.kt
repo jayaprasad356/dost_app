@@ -33,7 +33,7 @@ class EarningsAdapter(
         when (earning.status) {
             0 -> {
                 holder.binding.tvStatus.text = activity.getString(R.string.pending)
-                holder.binding.tvStatus.setTextColor(activity.getColor(R.color.dark_blue))
+                holder.binding.tvStatus.setTextColor(activity.getColor(R.color.colorAccent))
             }
             1 -> {
                 holder.binding.tvStatus.text = activity.getString(R.string.withdrawn)
