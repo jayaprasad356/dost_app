@@ -78,6 +78,7 @@ class VerifyOTPActivity : BaseActivity() {
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         } else if(it.data?.status == 1){
                             intent = Intent(this, AlmostDoneActivity::class.java)
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         } else{
                             intent = Intent(this, VoiceIdentificationActivity::class.java)
                             intent.putExtra(DConstants.LANGUAGE, it.data?.language)

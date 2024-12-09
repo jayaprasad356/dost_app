@@ -64,6 +64,7 @@ class SelectLanguageActivity : BaseActivity() {
                         finish()
                     } else if(it.data?.status == 1){
                         val intent = Intent(this, AlmostDoneActivity::class.java)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                         finish()
                     } else{

@@ -49,11 +49,13 @@ class YoutubeActivity : BaseActivity() {
         })
         binding.btnComplete.setOnClickListener({
             val intent = Intent(this, AlmostDoneActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
             finish()
         })
         binding.tvSkip.setOnClickListener({
             val intent = Intent(this, AlmostDoneActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
             finish()
         })

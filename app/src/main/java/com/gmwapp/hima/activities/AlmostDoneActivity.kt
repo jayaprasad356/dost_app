@@ -61,8 +61,8 @@ class AlmostDoneActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         var intent: Intent? = null
         val prefs = BaseApplication.getInstance()?.getPrefs()
         var userData: UserData?
