@@ -9,14 +9,18 @@ import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityAlmostDoneBinding
+import com.gmwapp.hima.retrofit.responses.UserData
 import com.gmwapp.hima.viewmodels.AccountViewModel
+import com.gmwapp.hima.viewmodels.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class AlmostDoneActivity : BaseActivity() {
     lateinit var binding: ActivityAlmostDoneBinding
+    private val profileViewModel: ProfileViewModel by viewModels()
     private val accountViewModel: AccountViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,4 +61,35 @@ class AlmostDoneActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
+    override fun onStart() {
+        super.onStart()
+        var intent: Intent? = null
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        var userData: UserData?
+        prefs?.getUserData()?.id?.let {
+            profileViewModel.getUsers(
+                it
+            )
+        }
+        profileViewModel.getUserLiveData.observe(this, Observer {
+            prefs?.setUserData(it.data);
+            userData = it.data;
+            if(userData?.status == 2){
+                intent = Intent(this, MainActivity::class.java)
+                intent?.putExtra(
+                    DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
+                )
+                intent?.putExtra(DConstants.LANGUAGE, userData?.language)
+                intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            } else if(userData?.status == 1){
+                intent = Intent(this, AlmostDoneActivity::class.java)
+            } else{
+                intent = Intent(this, VoiceIdentificationActivity::class.java)
+                intent?.putExtra(DConstants.LANGUAGE, userData?.language)
+                intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+            startActivity(intent)
+            finish()
+        });
+    }
 }
