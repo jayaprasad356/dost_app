@@ -81,8 +81,6 @@ class AlmostDoneActivity : BaseActivity() {
                 )
                 intent?.putExtra(DConstants.LANGUAGE, userData?.language)
                 intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            } else if(userData?.status == 1){
-                intent = Intent(this, AlmostDoneActivity::class.java)
             } else{
                 intent = Intent(this, VoiceIdentificationActivity::class.java)
                 intent?.putExtra(DConstants.LANGUAGE, userData?.language)
