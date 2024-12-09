@@ -51,6 +51,7 @@ class SelectLanguageActivity : BaseActivity() {
                     intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
+                    finish()
                 } else {
                     if(it.data?.status == 2){
                         val intent = Intent(this, MainActivity::class.java)
@@ -60,14 +61,17 @@ class SelectLanguageActivity : BaseActivity() {
                         intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
+                        finish()
                     } else if(it.data?.status == 1){
                         val intent = Intent(this, AlmostDoneActivity::class.java)
                         startActivity(intent)
+                        finish()
                     } else{
                         val intent = Intent(this, VoiceIdentificationActivity::class.java)
                         intent.putExtra(DConstants.LANGUAGE, selectedLanguage)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
+                        finish()
                     }
                 }
             } else {
