@@ -2,29 +2,50 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--Permission for recording audio and storage of audio in users device-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.SplashScreenActivity"
             android:exported="true"
-            android:resizeableActivity="true"
-            android:theme="@style/AppTheme">
+            android:resizeableActivity="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.gmwapp.dostt.activities.VerifyOTPActivity" />
-        <activity android:name="com.gmwapp.dostt.activities.MainActivity" />
+        <activity android:name="com.gmwapp.hima.activities.VerifyOTPActivity" />
+        <activity android:name="com.gmwapp.hima.activities.MainActivity" />
+        <activity android:name="com.gmwapp.hima.activities.WalletActivity" />
+        <activity android:name="com.gmwapp.hima.activities.TransactionsActivity" />
+        <activity android:name="com.gmwapp.hima.activities.AccountPrivacyActivity" />
+        <activity android:name="com.gmwapp.hima.activities.DeleteAccountActivity" />
+        <activity android:name="com.gmwapp.hima.activities.EditProfileActivity" />
+        <activity android:name="com.gmwapp.hima.activities.SelectGenderActivity" />
+        <activity android:name="com.gmwapp.hima.activities.SelectLanguageActivity" />
+        <activity android:name="com.gmwapp.hima.activities.LoginActivity" />
+        <activity android:name="com.gmwapp.hima.activities.FemaleAboutActivity"
+            android:resizeableActivity="true"/>
+        <activity android:name="com.gmwapp.hima.activities.AlmostDoneActivity" />
+        <activity android:name="com.gmwapp.hima.activities.VoiceIdentificationActivity" />
+        <activity android:name="com.gmwapp.hima.activities.EarningsActivity" />
+        <activity android:name="com.gmwapp.hima.activities.WebviewActivity" />
+        <activity android:name="com.gmwapp.hima.activities.YoutubeActivity" />
     </application>
 
 </manifest>

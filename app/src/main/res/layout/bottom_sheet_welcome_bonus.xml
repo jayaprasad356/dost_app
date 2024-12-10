@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#161a1d"
+    android:background="@drawable/welcome_bonus_background"
+    android:layout_height="550dp"
+    android:maxHeight="550dp"
+    android:minHeight="550dp"
     android:padding="16dp"
     tools:context=".activities.LoginActivity">
 
@@ -34,20 +36,34 @@
 
     <ImageView
         android:id="@+id/iv_bonus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:src="@drawable/bonus"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.35"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tl_title"
         tools:ignore="ContentDescription" />
+    <View
+        android:id="@+id/v_divider_bonus"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#161a1d"
+        android:alpha="0.5"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintBottom_toTopOf="@+id/cl_coins"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_coins"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/d_button_bg_coins"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_bonus">
@@ -118,7 +134,7 @@
         android:layout_marginEnd="4dp"
         android:text="@string/used_by_text"
         android:textColor="#e0d8ef" />
-    <com.gmwapp.dostt.widgets.DButton
+    <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_add_coins"
         android:layout_width="match_parent"
         android:layout_height="45dp"
