@@ -29,6 +29,29 @@ class LanguageAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val language: Language = languages[position]
 
+
+
+        //  holder.binding.tvLanguage.text different color based on position
+        if (position  == 0) {
+            holder.binding.tvLanguage.setTextColor(activity.resources.getColor(R.color.Hindi))
+        }
+        else if (position  == 1) {
+            holder.binding.tvLanguage.setTextColor(activity.resources.getColor(R.color.Telungu))
+        }
+        else if (position  == 2) {
+            holder.binding.tvLanguage.setTextColor(activity.resources.getColor(R.color.Malayalam))
+        }
+        else if (position  == 3) {
+            holder.binding.tvLanguage.setTextColor(activity.resources.getColor(R.color.Kanadam))
+        }
+        else if (position  == 4) {
+            holder.binding.tvLanguage.setTextColor(activity.resources.getColor(R.color.Punjabi))
+        }
+        else if (position  == 5) {
+            holder.binding.tvLanguage.setTextColor(activity.resources.getColor(R.color.Tamil))
+        }
+
+
         holder.binding.tvLanguage.text = language.name
         holder.binding.ivLanguage.setImageResource(language.image)
         if (language.isSelected == true) {

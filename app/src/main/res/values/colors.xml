@@ -15,6 +15,7 @@
     <color name="cardview_divider">#5d457f</color>
     <color name="transaction_divider">#3b3f42</color>
     <color name="profile_cardview_divider">#444549</color>
+    <color name="divider">#AAAAAA</color>
     <color name="card_view_border">#ebdafc</color>
     <color name="card_view_text">#FFFFFF</color>
     <color name="button_fill">#473368</color>
@@ -25,6 +26,20 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="black_light">#303135</color>
+    <color name="black_light">#545454</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="green">#019A66</color>
+    <color name="pink">#FF1381</color>
+    <color name="pink_light">#FFA5CF</color>
+    <color name="purple">#9C1DF9</color>
+    <color name="blue">#2388F2</color>
+
+    <color name="Hindi">#563EE1</color>
+    <color name="Telungu">#C69F00</color>
+    <color name="Malayalam">#A02334</color>
+    <color name="Kanadam">#9C1DF9</color>
+    <color name="Punjabi">#019A66</color>
+    <color name="Tamil">#FF1381</color>
+
+
 </resources>

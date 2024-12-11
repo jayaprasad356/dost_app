@@ -50,7 +50,7 @@
 
     <style name="CardViewStyle.Spacing" parent="CardViewStyle">
         <item name="cardElevation">2dp</item>
-        <item name="cardCornerRadius">10dp</item>
+        <item name="cardCornerRadius">@dimen/_10sdp</item>
     </style>
 
     <style name="EditTextStyle">

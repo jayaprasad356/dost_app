@@ -61,11 +61,12 @@
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/tl_title" />
 
-    <ImageView
-        android:id="@+id/iv_timer"
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/av_timer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/timer"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.4"
         app:layout_constraintHeight_default="percent"
@@ -75,7 +76,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/cl_help"
         app:layout_constraintTop_toBottomOf="@+id/tl_voice_identification_hint"
-        app:tint="@color/white" />
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/timer" />
+
+
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_help"

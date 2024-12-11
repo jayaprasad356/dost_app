@@ -57,6 +57,8 @@ class SelectGenderActivity : BaseActivity() {
             profileViewModel.getAvatarsList(selectedGender)
             binding.btnMale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)
             binding.btnFemale.setBackgroundColor(getColor(android.R.color.transparent))
+            binding.btnMale.setTextColor(getColor(R.color.colorPrimaryDark))
+            binding.btnFemale.setTextColor(getColor(R.color.white))
             binding.btnMale.isEnabled = false
             binding.btnFemale.isEnabled = true
         }
@@ -65,6 +67,8 @@ class SelectGenderActivity : BaseActivity() {
             profileViewModel.getAvatarsList(selectedGender)
             binding.btnMale.setBackgroundColor(getColor(android.R.color.transparent))
             binding.btnFemale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)
+            binding.btnMale.setTextColor(getColor(R.color.white))
+            binding.btnFemale.setTextColor(getColor(R.color.colorPrimaryDark))
             binding.btnMale.isEnabled = true
             binding.btnFemale.isEnabled = false
         }
