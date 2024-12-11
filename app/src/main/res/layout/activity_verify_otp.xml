@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_blue"
+    android:background="@drawable/bg_app"
     tools:context=".activities.LoginActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:text="@string/login_to_get_started"
         android:textColor="@color/white"
+        android:fontFamily="@font/poppins_regular"
         android:textSize="26sp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
@@ -47,6 +48,7 @@
         android:layout_marginTop="14dp"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:fontFamily="@font/poppins_regular"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/tl_title" />
 
@@ -93,15 +95,15 @@
         android:layout_marginTop="14dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:itemBackground="#321a56"
-        android:textColor="@color/white"
+        android:itemBackground="@color/white"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_gravity="center"
         android:inputType="number"
         android:cursorVisible="true"
         app:hideLineWhenFilled="true"
         app:itemRadius="13dp"
         app:lineColor="@color/pin_color"
-        app:lineWidth="1dp"
+        app:lineWidth="2dp"
         style="@style/PinWidget.PinView"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin"
         app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
@@ -115,7 +117,7 @@
         android:layout_marginTop="54dp"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/poppins_semibold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pv_otp" />
@@ -127,7 +129,7 @@
         android:text="@string/retry_in"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/poppins_semibold"
         app:layout_constraintTop_toBottomOf="@+id/tv_didnt_received_otp"
         app:layout_constraintEnd_toEndOf="@+id/gl_right_margin"
         app:layout_constraintStart_toStartOf="@+id/gl_left_margin" />
