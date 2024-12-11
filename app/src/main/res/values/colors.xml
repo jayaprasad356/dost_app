@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorAccent">#9C27B0</color>
-    <color name="colorPrimaryDark">#161a1d</color>
-    <color name="dark_blue">#1a0042</color>
+    <color name="colorPrimaryDark">#ff0d4a</color>
+    <color name="colorPrimaryLight">#FFA5CF</color>
+    <color name="dark_blue">#ff1383</color>
     <color name="user_name_hint_text">#a5a6aa</color>
     <color name="black_background">#161a1d</color>
     <color name="blue_background">#1a0042</color>
@@ -15,7 +16,7 @@
     <color name="transaction_divider">#3b3f42</color>
     <color name="profile_cardview_divider">#444549</color>
     <color name="card_view_border">#ebdafc</color>
-    <color name="card_view_text">#a395b6</color>
+    <color name="card_view_text">#FFFFFF</color>
     <color name="button_fill">#473368</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

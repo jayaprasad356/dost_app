@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_background"
+    android:background="@drawable/bg_app"
     tools:context=".activities.LoginActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -58,9 +58,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/edit_profile"
-        android:textColor="#f6f7fb"
+        android:textColor="@color/white"
         android:textSize="20sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/poppins_regular"
         app:layout_constraintBottom_toBottomOf="@+id/iv_back"
         app:layout_constraintStart_toEndOf="@+id/iv_back"
         app:layout_constraintTop_toTopOf="@+id/iv_back" />
@@ -71,7 +71,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/black_background"
         android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_update"
         app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
@@ -82,7 +81,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
-            android:background="@color/black_background"
             android:focusable="true"
             android:focusableInTouchMode="true"
             tools:context=".activities.LoginActivity">
@@ -101,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/your_avatar"
-                android:textColor="#abacb0"
+                android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -146,6 +144,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/d_button_bg_user_name"
+                android:backgroundTint="@color/white"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -165,11 +164,12 @@
                         style="@style/EditTextStyle"
                         android:imeOptions="actionDone"
                         android:singleLine="true"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black"
                         android:textCursorDrawable="@drawable/color_cursor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:maxLength="10"
+                        android:fontFamily="@font/poppins_regular"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -229,7 +229,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/user_name_hint"
-                android:textColor="@color/user_name_hint_text"
+                android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cv_user_name" />
@@ -271,7 +271,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/select_maximum"
-                android:textColor="#a5a6aa"
+                android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_interests" />
@@ -289,7 +289,7 @@
                 android:id="@+id/cv_non_editable"
                 style="@style/CardViewStyle.Spacing"
                 android:layout_height="0dp"
-                app:cardBackgroundColor="#222629"
+                app:cardBackgroundColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_default="percent"
                 app:layout_constraintHeight_percent="0.157"
@@ -316,7 +316,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/gender"
-                        android:textColor="#c2c3c7"
+                        android:textColor="@color/black_light"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="@+id/gl_non_editable_left_margin"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -327,7 +327,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Male"
-                        android:textColor="#c2c3c7"
+                        android:textColor="@color/black_light"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="@+id/gl_non_editable_left_margin"
                         app:layout_constraintTop_toBottomOf="@+id/tv_gender_title" />
@@ -346,7 +346,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/preferred_language"
-                        android:textColor="#c2c3c7"
+                        android:textColor="@color/black_light"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="@+id/tv_gender"
                         app:layout_constraintTop_toBottomOf="@+id/v_gender_editable" />
@@ -357,7 +357,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="name"
-                        android:textColor="#c2c3c7"
+                        android:textColor="@color/black_light"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="@+id/gl_non_editable_left_margin"
                         app:layout_constraintTop_toBottomOf="@+id/tv_preferred_language_title" />
@@ -370,7 +370,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/above_fields_are_not_editable"
-                android:textColor="#a5a6aa"
+                android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cv_non_editable" />

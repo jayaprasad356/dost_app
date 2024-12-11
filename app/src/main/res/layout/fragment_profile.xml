@@ -11,7 +11,7 @@
         style="@style/CardViewStyle.Spacing"
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
-        app:cardBackgroundColor="@color/black_light"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.27"
@@ -42,7 +42,7 @@
                 android:src="@drawable/edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white"
+                app:tint="@color/black_light"
                 tools:ignore="MissingConstraints" />
 
             <ImageView
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="name"
-                android:textColor="@color/white"
+                android:textColor="@color/black_light"
                 android:textSize="22sp"
                 app:layout_constraintEnd_toEndOf="@+id/iv_profile"
                 app:layout_constraintStart_toStartOf="@+id/iv_profile"
@@ -79,7 +79,7 @@
         style="@style/CardViewStyle.Spacing"
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
-        app:cardBackgroundColor="@color/black_light"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.25"
@@ -122,7 +122,7 @@
                     android:contentDescription="@string/edit"
                     android:padding="6dp"
                     android:src="@drawable/wallet"
-                    app:tint="@color/white"
+                    app:tint="@color/black_light"
                     tools:ignore="MissingConstraints" />
 
                 <TextView
@@ -130,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/wallet"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black_light"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_wallet"
@@ -144,7 +144,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/white" />
+                    app:tint="@color/black_light" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -175,7 +175,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/white"
+                    app:tint="@color/black_light"
                     tools:ignore="MissingConstraints" />
 
                 <TextView
@@ -183,7 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/transactions"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black_light"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_transactions"
@@ -197,7 +197,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/white" />
+                    app:tint="@color/black_light" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -228,7 +228,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/white"
+                    app:tint="@color/black_light"
                     tools:ignore="MissingConstraints" />
 
                 <TextView
@@ -236,7 +236,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/account_privacy"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black_light"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_account_privacy"
@@ -250,7 +250,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/white" />
+                    app:tint="@color/black_light" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -260,7 +260,7 @@
         style="@style/CardViewStyle.Spacing"
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
-        app:cardBackgroundColor="@color/black_light"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.08"
@@ -283,7 +283,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white"
+                app:tint="@color/black_light"
                 tools:ignore="MissingConstraints" />
 
             <TextView
@@ -292,7 +292,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/logout"
-                android:textColor="@color/white"
+                android:textColor="@color/black_light"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintStart_toEndOf="@+id/iv_logout"
@@ -306,7 +306,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/iv_logout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/iv_logout"
-                app:tint="@color/white" />
+                app:tint="@color/black_light" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -348,7 +348,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/version"
-        android:textColor="#8d8e92"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_regular"
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

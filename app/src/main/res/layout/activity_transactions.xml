@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_background"
+    android:background="@drawable/bg_app"
     tools:context=".activities.LoginActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -61,6 +61,7 @@
         android:layout_marginStart="16dp"
         android:text="@string/transactions"
         android:textColor="@color/white"
+        android:fontFamily="@font/poppins_regular"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_back"
         app:layout_constraintStart_toEndOf="@+id/iv_back"

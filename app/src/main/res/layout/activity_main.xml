@@ -5,10 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_background"
+    android:background="@drawable/bg_app"
     tools:context=".activities.LoginActivity">
 
     <FrameLayout
+        android:layout_marginTop="30dp"
         android:id="@+id/flFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -34,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:labelVisibilityMode="unlabeled"
-        android:background="#161a1d"
+        android:background="@color/white"
         app:itemTextColor="@color/bottom_nav_color"
         app:itemIconTint="@color/bottom_nav_color"
         app:layout_constraintStart_toStartOf="parent"
