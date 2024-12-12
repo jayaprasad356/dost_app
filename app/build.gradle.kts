@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
 
@@ -13,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.gmwapp.hima"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -105,6 +106,9 @@ dependencies {
     implementation ("androidx.fragment:fragment-ktx:1.6.1")
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1")
     implementation("com.google.firebase:firebase-crashlytics:18.4.1")
+    implementation ("com.google.gms:google-services:4.3.14")
+
+    implementation ("com.github.ZEGOCLOUD:zego_uikit_prebuilt_call_android:+")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

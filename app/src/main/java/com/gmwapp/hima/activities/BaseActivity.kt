@@ -1,23 +1,41 @@
 package com.gmwapp.hima.activities
 
+import android.R
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import com.gmwapp.hima.BaseApplication
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
+
+@AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        val permissionNeeded = arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
+
+        if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(permissionNeeded, 101);
+        }
     }
+
 
     fun setCenterLayoutManager(recyclerView: RecyclerView) {
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {

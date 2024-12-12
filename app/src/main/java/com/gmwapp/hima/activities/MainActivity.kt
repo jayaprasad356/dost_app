@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
@@ -20,19 +22,34 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.zegoexpress.ZegoExpressEngine
+import im.zego.zegoexpress.callback.IZegoEventHandler
+import im.zego.zegoexpress.constants.ZegoPlayerState
+import im.zego.zegoexpress.constants.ZegoPublisherState
+import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import im.zego.zegoexpress.constants.ZegoUpdateType
+import im.zego.zegoexpress.entity.ZegoCanvas
+import im.zego.zegoexpress.entity.ZegoRoomConfig
+import im.zego.zegoexpress.entity.ZegoStream
+import im.zego.zegoexpress.entity.ZegoUser
+import org.json.JSONObject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityMainBinding
     var isBackPressedAlready = false
+    var userName:String? = null
+    var userID :String? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        userID = userData?.id.toString()
+        userName = userData?.name
     }
-
     private fun initUI() {
         val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
         bottomSheet.show(
