@@ -147,4 +147,8 @@
     <string name="getting_started_hint">Watch the training video to become a successful Superhima and start earning!</string>
     <string name="complete">Complete</string>
     <string name="withdraw">Withdraw</string>
+    <string name="audio">Audio</string>
+    <string name="todays_activity">Today\'s Activity</string>
+    <string name="approx_earnings">Approx earnings</string>
+    <string name="total_calls">Total calls</string>
 </resources>

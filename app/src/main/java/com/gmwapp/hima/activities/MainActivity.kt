@@ -13,6 +13,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityMainBinding
 import com.gmwapp.hima.dialogs.BottomSheetWelcomeBonus
+import com.gmwapp.hima.fragments.FemaleHomeFragment
 import com.gmwapp.hima.fragments.HomeFragment
 import com.gmwapp.hima.fragments.ProfileFemaleFragment
 import com.gmwapp.hima.fragments.ProfileFragment
@@ -77,7 +78,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home -> {
-                supportFragmentManager.beginTransaction().replace(R.id.flFragment, HomeFragment())
+
+                val homeFragment = if(BaseApplication.getInstance()?.getPrefs()?.getUserData()?.gender == DConstants.FEMALE)
+                    FemaleHomeFragment() else HomeFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.flFragment, homeFragment)
                     .commit()
                 return true
             }
