@@ -2,15 +2,19 @@ package com.gmwapp.hima.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.adapters.FemaleUserAdapter
 import com.gmwapp.hima.adapters.TransactionAdapter
@@ -69,6 +73,24 @@ class HomeFragment : BaseFragment() {
     }
 
     fun initFab(){
+
+
+        val htmlText = " Video <img src='coin_d'/> 60/min"
+        val htmlText1 = " Audio <img src='coin_d'/> 60/min"
+
+        binding.tvVideo.text = Html.fromHtml(htmlText, Html.ImageGetter { source ->
+            ContextCompat.getDrawable(requireActivity(), R.drawable.coin_d)?.apply {
+                setBounds(0, 0, 45, 45)
+            }
+        }, null)
+
+        binding.tvAudio.text = Html.fromHtml(htmlText1, Html.ImageGetter { source ->
+            ContextCompat.getDrawable(requireActivity(), R.drawable.coin_d)?.apply {
+                setBounds(0, 0, 45, 45)
+            }
+        }, null)
+
+
         binding.fabRandom.extend()
         binding.fabAudio.hide()
         binding.fabVideo.hide()
@@ -79,6 +101,16 @@ class HomeFragment : BaseFragment() {
                 binding.tvAudio.setVisibility(View.VISIBLE)
                 binding.tvVideo.setVisibility(View.VISIBLE)
 
+                // change the bg color
+                binding.fabRandom.setBackgroundTintList(resources.getColorStateList(R.color.white))
+
+                // Change the icon tint
+                binding.fabRandom.setIconTintResource(R.color.black)
+
+
+                // Change the icon and extend the parent FAB
+                binding.fabRandom.setIconResource(R.drawable.ic_close) // Replace with your icon for shrinked state
+
                 binding.fabRandom.shrink()
                 isAllFabVisible = true
             } else {
@@ -87,6 +119,16 @@ class HomeFragment : BaseFragment() {
                 binding.tvAudio.setVisibility(View.GONE)
                 binding.tvVideo.setVisibility(View.GONE)
 
+
+                binding.fabRandom.setBackgroundTintList(resources.getColorStateList(R.color.blue))
+
+
+                binding.fabRandom.setIconTintResource(R.color.white)
+
+
+
+                // Change the icon and extend the parent FAB
+                binding.fabRandom.setIconResource(R.drawable.random) // Replace with your icon for shrinked state
                 binding.fabRandom.extend()
 
                 isAllFabVisible = false

@@ -106,6 +106,12 @@ dependencies {
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1")
     implementation("com.google.firebase:firebase-crashlytics:18.4.1")
 
+    implementation ("com.airbnb.android:lottie:3.4.0")
+
+
+    implementation("com.intuit.sdp:sdp-android:1.1.0")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

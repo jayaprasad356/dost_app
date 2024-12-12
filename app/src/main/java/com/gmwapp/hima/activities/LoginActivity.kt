@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.R
@@ -33,6 +34,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
     private val loginViewModel: LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
@@ -72,10 +74,10 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         }
         binding.cbTermsAndConditions.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg_white)
+              //  binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg_white)
                 binding.btnSendOtp.isEnabled = true
             } else {
-                binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg)
+//binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg)
                 binding.btnSendOtp.isEnabled = false
             }
         }
@@ -86,10 +88,10 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 window.statusBarColor = resources.getColor(R.color.dark_blue)
                 if (!binding.cbTermsAndConditions.isChecked || TextUtils.isEmpty(s)) {
-                    binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg)
+               //     binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg)
                     binding.btnSendOtp.isEnabled = false
                 } else {
-                    binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg_white)
+              //      binding.btnSendOtp.setBackgroundResource(R.drawable.d_button_bg_white)
                     binding.btnSendOtp.isEnabled = true
                 }
             }

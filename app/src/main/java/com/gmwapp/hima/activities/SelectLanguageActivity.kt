@@ -113,7 +113,7 @@ class SelectLanguageActivity : BaseActivity() {
             override fun onItemSelected(language: Language) {
                 binding.btnContinue.isEnabled = true
                 selectedLanguage = language.name
-                binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
+          //      binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
             }
 
         }
