@@ -2,6 +2,7 @@ package com.gmwapp.hima
 
 import android.app.Application
 import com.gmwapp.hima.utils.DPreferences
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 
 
@@ -19,6 +20,8 @@ class BaseApplication : Application(){
         super.onCreate()
         mInstance = this
         mPreferences = DPreferences(this)
+        FirebaseApp.initializeApp(this)
+
     }
 
     fun getPrefs(): DPreferences? {

@@ -8,6 +8,22 @@
     android:background="@drawable/bg_app"
     tools:context=".activities.LoginActivity">
 
+    <TextureView
+        android:id="@+id/preview"
+        android:layout_width="wrap_content"
+        android:layout_height="731dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextureView
+        android:id="@+id/remoteUserView"
+        android:layout_width="150dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <FrameLayout
         android:layout_marginTop="30dp"
         android:id="@+id/flFragment"
