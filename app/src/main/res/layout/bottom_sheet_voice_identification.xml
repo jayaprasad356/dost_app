@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="550dp"
-    android:background="#260e4c"
+    android:background="@drawable/bg_app"
     android:maxHeight="550dp"
     android:minHeight="550dp"
     android:padding="16dp"

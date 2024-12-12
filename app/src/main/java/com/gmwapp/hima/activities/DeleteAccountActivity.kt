@@ -152,7 +152,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (TextUtils.isEmpty(s)) {
-                    binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
+                   // binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
                     binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
                     binding.btnDeleteAccount.isEnabled = false
                 } else {
@@ -160,7 +160,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                         R.string.description_remaining_text,
                         s.length
                     )
-                    binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
+                //    binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
                     binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
                     binding.btnDeleteAccount.isEnabled = true
                 }

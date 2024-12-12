@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_background"
+    android:background="@drawable/bg_app"
     tools:context=".activities.LoginActivity">
 
 
@@ -42,9 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/almost_done"
-        android:textColor="#d3cbda"
+        android:textColor="@color/white"
         android:textSize="26sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/poppins_semibold"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintTop_toTopOf="@+id/gl_top_margin" />
 
@@ -54,18 +54,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/almost_done_hint"
-        android:textColor="#d3cbda"
+        android:textColor="@color/white"
         android:textSize="16sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/poppins_semibold"
         app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/tl_title" />
 
-    <ImageView
-        android:id="@+id/iv_timer"
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/av_timer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/timer"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.4"
         app:layout_constraintHeight_default="percent"
@@ -75,7 +76,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/cl_help"
         app:layout_constraintTop_toBottomOf="@+id/tl_voice_identification_hint"
-        app:tint="@color/white" />
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/timer" />
+
+
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_help"
@@ -93,6 +100,7 @@
             android:text="@string/for_any_queries"
             android:textColor="@color/white"
             android:textSize="12sp"
+            android:fontFamily="@font/poppins_regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -102,6 +110,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="12sp"
+            android:fontFamily="@font/poppins_regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_need_help" />
     </androidx.constraintlayout.widget.ConstraintLayout>
