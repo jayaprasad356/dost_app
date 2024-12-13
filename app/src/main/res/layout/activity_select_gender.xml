@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_background"
+    android:background="@drawable/bg_app"
     tools:context=".activities.LoginActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -84,7 +84,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/personalise_yourself_hint"
-        android:textColor="#cfbfe3"
+        android:textColor="@color/white"
         android:layout_marginTop="10dp"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@+id/tv_personalise"
@@ -141,8 +141,8 @@
                 android:background="@drawable/d_button_bg_gender_selected"
                 android:text="@string/male"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#fffbff"/>
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/colorPrimaryDark"/>
 
             <com.gmwapp.hima.widgets.DButton
                 android:id="@+id/btn_female"
@@ -159,8 +159,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:text="@string/female"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#fffbff"/>
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/white"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -181,27 +181,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/gender_change_warning"
-        android:textColor="#d6c6ea"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_regular"
         android:textSize="12sp"
         android:layout_marginBottom="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_continue" />
 
-    <com.gmwapp.hima.widgets.DButton
+
+
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_continue"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/d_button_bg_white"
-        android:text="@string/continue_text"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.08"
+        android:layout_marginBottom="24dp"
         android:textAllCaps="false"
-        android:textColor="#1e1f21"
-        android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@+id/gl_bottom_margin"
         app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.06"
-        app:layout_constraintStart_toStartOf="@id/gl_left_margin" />
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/continue_text"
+        android:textSize="14sp"
+        app:cornerRadius="@dimen/_18sdp"
+        android:textColor="@color/button_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="@color/button_background_tint"
+        app:layout_constraintStart_toStartOf="@id/gl_left_margin"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

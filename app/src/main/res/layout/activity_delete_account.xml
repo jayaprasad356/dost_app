@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="16dp"
-    android:background="@color/black_background">
+    android:background="@drawable/bg_app">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_left_margin"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="@id/gl_top_margin"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.05"
-        app:tint="#feffff"
+        app:tint="@color/white"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/delete_account"
-        android:textColor="#f6f7fb"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/iv_back"
@@ -81,7 +81,7 @@
             android:id="@+id/cl_warnings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black_background"
+            android:background="@drawable/bg_app"
             tools:context=".activities.LoginActivity">
 
             <androidx.constraintlayout.widget.Guideline
@@ -134,7 +134,8 @@
                             android:layout_marginLeft="14dp"
                             android:layout_marginTop="16dp"
                             android:text="@string/delete_warning_1"
-                            android:textColor="#ffe0e0"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/poppins_regular"
                             android:textSize="12sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/iv_hint_1"
@@ -158,7 +159,8 @@
                             android:layout_marginLeft="14dp"
                             android:layout_marginTop="16dp"
                             android:text="@string/delete_warning_2"
-                            android:textColor="#ffe0e0"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/poppins_regular"
                             android:textSize="12sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/iv_hint_2"
@@ -331,9 +333,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/view_more"
-                            android:textColor="#ffe0e0"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/poppins_semibold"
                             android:textSize="12sp"
-                            android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -360,6 +362,7 @@
                 android:layout_marginTop="40dp"
                 android:text="@string/delete_reason_text"
                 android:textColor="@color/white"
+                android:fontFamily="@font/poppins_regular"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cv_delete_account" />
@@ -384,6 +387,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:visibility="gone"
+                android:fontFamily="@font/poppins_regular"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_reasons" />
 
@@ -393,6 +397,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/d_button_bg_user_name"
+                android:backgroundTint="@color/white"
                 android:minHeight="75dp"
                 android:visibility="gone"
                 app:cardCornerRadius="10dp"
@@ -417,9 +422,9 @@
                         android:hint="@string/tell_us_about_your_issue"
                         android:maxLength="250"
                         android:minHeight="75dp"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black"
                         android:textColorHint="#98999d"
-                        android:textCursorDrawable="@drawable/color_cursor"
+                        android:textCursorDrawable="@color/colorPrimaryDark"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -474,18 +479,22 @@
             app:layout_constraintStart_toEndOf="@+id/tv_need_help" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.gmwapp.hima.widgets.DButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_delete_account"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.08"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/d_button_bg_disabled"
         android:padding="8dp"
+        android:enabled="false"
         android:text="@string/delete_account"
         android:textAllCaps="false"
-        android:textColor="@color/black"
+        app:cornerRadius="@dimen/_18sdp"
+        android:textColor="@color/button_text_color"
+        android:backgroundTint="@color/button_background_tint"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

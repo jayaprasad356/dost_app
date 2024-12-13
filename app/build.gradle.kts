@@ -110,6 +110,12 @@ dependencies {
 
     implementation ("com.github.ZEGOCLOUD:zego_uikit_prebuilt_call_android:+")
 
+    implementation ("com.airbnb.android:lottie:3.4.0")
+
+
+    implementation("com.intuit.sdp:sdp-android:1.1.0")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -109,10 +109,10 @@ class VerifyOTPActivity : BaseActivity() {
 
             override fun afterTextChanged(s: Editable) {
                 if(s.toString().length==6){
-                    binding.btnVerifyOtp.setBackgroundResource(R.drawable.d_button_bg_white)
+                 //   binding.btnVerifyOtp.setBackgroundResource(R.drawable.d_button_bg_white)
                     binding.btnVerifyOtp.isEnabled = true
                 }else{
-                    binding.btnVerifyOtp.setBackgroundResource(R.drawable.d_button_bg)
+                //    binding.btnVerifyOtp.setBackgroundResource(R.drawable.d_button_bg)
                     binding.btnVerifyOtp.isEnabled = false
                 }
             }
