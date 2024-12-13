@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityCallBinding
 import com.gmwapp.hima.databinding.ActivityMainBinding
 import com.zegocloud.uikit.ZegoUIKit
@@ -42,8 +43,6 @@ class CallActivity : BaseActivity() {
     lateinit var mContext: CallActivity
     lateinit var activity: Activity
 
-    // Declare the TextView for displaying the call duration
-    private lateinit var textView: TextView
     private var roomID: String? = null
     private var duration = 0
     private var timer: Timer? = null
@@ -61,7 +60,6 @@ class CallActivity : BaseActivity() {
     }
 
 
-
     private lateinit var voiceCallButton: ZegoSendCallInvitationButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,14 +68,10 @@ class CallActivity : BaseActivity() {
         voiceCallButton = binding.voiceCallButton
         mContext = this
         initUI()
-        addListner()
-        addObsereves()
 
-
-       addRoomStateChangedListener()
+        addRoomStateChangedListener()
 
     }
-
 
 
     private fun addRoomStateChangedListener() {
@@ -92,12 +86,12 @@ class CallActivity : BaseActivity() {
                 }
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
-                    Toast.makeText(mContext,"Call Cancelled",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, "Call Cancelled", Toast.LENGTH_SHORT).show()
                     finish()
                 }
 
                 override fun onIncomingCallTimeout(callID: String?, caller: ZegoCallUser?) {
-                    Toast.makeText(mContext,"Call Timeout",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, "Call Timeout", Toast.LENGTH_SHORT).show()
                     finish()
                 }
 
@@ -106,23 +100,21 @@ class CallActivity : BaseActivity() {
 
 
                 override fun onOutgoingCallRejectedCauseBusy(
-                    callID: String?,
-                    callee: ZegoCallUser?
+                    callID: String?, callee: ZegoCallUser?
                 ) {
-                    Toast.makeText(mContext,"Call Rejected",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, "Call Rejected", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
-                   // addObsereves()
-                    Toast.makeText(mContext,"Call Rejected",Toast.LENGTH_SHORT).show()
+                    // addObsereves()
+                    Toast.makeText(mContext, "Call Rejected", Toast.LENGTH_SHORT).show()
                     finish()
                 }
 
                 override fun onOutgoingCallTimeout(
-                    callID: String?,
-                    callees: MutableList<ZegoCallUser>?
+                    callID: String?, callees: MutableList<ZegoCallUser>?
                 ) {
-                    Toast.makeText(mContext,"Call Timeout",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, "Call Timeout", Toast.LENGTH_SHORT).show()
                     TODO("Not yet implemented")
                 }
             }
@@ -132,70 +124,25 @@ class CallActivity : BaseActivity() {
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
                     roomID = room
-                    userId = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id.toString() // Set user_id
+                    userId = BaseApplication.getInstance()?.getPrefs()
+                        ?.getUserData()?.id.toString() // Set user_id
                     callUserId = targetUserId.toString() // Set call_user_id
                     startTime = dateFormat.format(Date()) // Set call start time in IST
-                   addTextView()   // Add TextView to display duration
                     startTimer()    // Start the timer when call start
                 }
-                ZegoRoomStateChangedReason.LOGOUT ->{
+
+                ZegoRoomStateChangedReason.LOGOUT -> {
                     stopTimer()
                     endTime = dateFormat.format(Date()) // Set call end time in IST
-                    logCallDetails() // Log call details including duration
 
                 }
 
-
-
-                else -> { /* Handle other cases if necessary */ }
+                else -> { /* Handle other cases if necessary */
+                }
             }
         }
-
-
-
-
     }
 
-
-
-    private fun logCallDetails() {
-        val durationInSec = duration
-        // Log or save user_id, call_user_id, start_time, end_time, and duration here
-        println("User ID: $userId")
-        println("Call User ID: $callUserId")
-        println("Start Time: $startTime")
-        println("End Time: $endTime")
-        println("Duration: $durationInSec seconds")
-//        binding.tvText6.text= "Last Call : $duration"
-      //  Toast.makeText(this, "Duration: ${transToHourMinSec(durationInSec)}", Toast.LENGTH_SHORT).show()
-//
-//        binding.tvText3.text = "User ID: $userId\n" +
-//                "Call User ID: $callUserId\n" +
-//                "Start Time: $startTime\n" +
-//                "End Time: $endTime\n" +
-//                "Duration: ${transToHourMinSec(duration)}"
-
-//        usercall(userId,callUserId,startTime,endTime,duration)
-    }
-
-
-
-    private fun addTextView() {
-//        val rootView = binding.root as RelativeLayout
-//        textView = TextView(this).apply {
-//            setTextColor(Color.WHITE)
-//            textSize = 18f
-//        }
-//        val params = RelativeLayout.LayoutParams(
-//            RelativeLayout.LayoutParams.WRAP_CONTENT,
-//            RelativeLayout.LayoutParams.WRAP_CONTENT
-//        ).apply {
-//            addRule(RelativeLayout.CENTER_HORIZONTAL)
-//            addRule(RelativeLayout.ALIGN_PARENT_TOP)
-//            topMargin = (20 * resources.displayMetrics.density).toInt()
-//        }
-//        rootView.addView(textView, params)
-    }
 
     private fun startTimer() {
         duration = 0
@@ -219,25 +166,18 @@ class CallActivity : BaseActivity() {
         return String.format("%02d:%02d:%02d", hours, minutes, secs)
     }
 
-
-
-    private fun addObsereves() {
-        // Uncomment if you want to observe `usercallLiveData`
-        // viewModel.usercallLiveData.observe(this) { response ->
-        //     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-        // }
-        StartVideoCall("36", "Kalyani857")
-    }
-
-    private fun addListner() {
-    }
-
-
-
     private fun initUI() {
         activity = this
 
+        val receiverId = intent.getStringExtra(DConstants.RECEIVER_ID)
+        val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
+        val type = intent.getStringExtra(DConstants.CALL_TYPE)
 
+        when (type) {
+            "audio" -> receiverId?.let { receiverName?.let { it1 -> StartVoiceCall(it, it1) } }
+            "video" -> receiverId?.let { receiverName?.let { it1 -> StartVideoCall(it, it1) } }
+            else -> Toast.makeText(this, "Invalid call type", Toast.LENGTH_SHORT).show()
+        }
 
     }
 
@@ -268,7 +208,7 @@ class CallActivity : BaseActivity() {
 
             // Additional delay if needed to allow time for the call to start
             delay(4000)  // Additional delay to allow the call setup
-             // Finish the activity after call initiation
+            // Finish the activity after call initiation
         }
     }
 

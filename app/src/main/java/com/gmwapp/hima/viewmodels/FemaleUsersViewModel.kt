@@ -8,6 +8,7 @@ import com.gmwapp.hima.repositories.FemaleUsersRepositories
 import com.gmwapp.hima.repositories.TransactionsRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
+import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
 import com.gmwapp.hima.retrofit.responses.UpdateCallStatusResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,9 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
 
     val femaleUsersResponseLiveData = MutableLiveData<FemaleUsersResponse>()
     val femaleUsersErrorLiveData = MutableLiveData<String>()
+
+    val randomUsersResponseLiveData = MutableLiveData<RandomUsersResponse>()
+    val randomUsersErrorLiveData = MutableLiveData<String>()
 
     val updateCallStatusResponseLiveData = MutableLiveData<UpdateCallStatusResponse>()
     val updateCallStatusErrorLiveData = MutableLiveData<String>()
@@ -42,6 +46,27 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
 
                 override fun onNoNetwork() {
                     femaleUsersErrorLiveData.postValue(DConstants.NO_NETWORK);
+                }
+            })
+        }
+    }
+
+    fun getRandomUser(userId: Int, callType: String) {
+        viewModelScope.launch {
+            femaleUsersRepositories.getRandomUser(userId,callType, object:NetworkCallback<RandomUsersResponse> {
+                override fun onResponse(
+                    call: Call<RandomUsersResponse>,
+                    response: Response<RandomUsersResponse>
+                ) {
+                    randomUsersResponseLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<RandomUsersResponse>, t: Throwable) {
+                    randomUsersErrorLiveData.postValue(DConstants.LOGIN_ERROR);
+                }
+
+                override fun onNoNetwork() {
+                    randomUsersErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }

@@ -7,6 +7,7 @@ import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.EarningsResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
+import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
 import com.gmwapp.hima.retrofit.responses.SettingsResponse
@@ -128,6 +129,17 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<FemaleUsersResponse> = getApiInterface().getFemaleUsers(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun getRandomUser(
+        userId: Int,callType: String, callback: NetworkCallback<RandomUsersResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<RandomUsersResponse> = getApiInterface().getRandomUser(userId, callType)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -298,6 +310,10 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/female_users_list")
     fun getFemaleUsers(@Field("user_id") userId: Int): Call<FemaleUsersResponse>
+
+    @FormUrlEncoded
+    @POST("api/random_user")
+    fun getRandomUser(@Field("user_id") userId: Int,@Field("call_type") callType: String): Call<RandomUsersResponse>
 
     @FormUrlEncoded
     @POST("api/calls_status_update")

@@ -19,4 +19,7 @@ object DConstants {
     const val LANGUAGE = "language"
     const val AUDIO = "audio"
     const val VIDEO = "video"
+    const val CALL_TYPE = "call_type"
+    const val RECEIVER_ID = "receiver_id"
+    const val RECEIVER_NAME = "receiver_name"
 }
