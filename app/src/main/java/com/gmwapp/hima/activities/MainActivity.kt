@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import com.gmwapp.hima.BaseApplication
@@ -12,6 +14,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityMainBinding
 import com.gmwapp.hima.dialogs.BottomSheetWelcomeBonus
+import com.gmwapp.hima.fragments.FemaleHomeFragment
 import com.gmwapp.hima.fragments.HomeFragment
 import com.gmwapp.hima.fragments.ProfileFemaleFragment
 import com.gmwapp.hima.fragments.ProfileFragment
@@ -21,11 +24,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.zegoexpress.ZegoExpressEngine
+import im.zego.zegoexpress.callback.IZegoEventHandler
+import im.zego.zegoexpress.constants.ZegoPlayerState
+import im.zego.zegoexpress.constants.ZegoPublisherState
+import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import im.zego.zegoexpress.constants.ZegoUpdateType
+import im.zego.zegoexpress.entity.ZegoCanvas
+import im.zego.zegoexpress.entity.ZegoRoomConfig
+import im.zego.zegoexpress.entity.ZegoStream
+import im.zego.zegoexpress.entity.ZegoUser
+import org.json.JSONObject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityMainBinding
     var isBackPressedAlready = false
+    var userName:String? = null
+    var userID :String? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +49,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        userID = userData?.id.toString()
+        userName = userData?.name
     }
-
     private fun initUI() {
         val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
         bottomSheet.show(
@@ -62,7 +80,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home -> {
-                supportFragmentManager.beginTransaction().replace(R.id.flFragment, HomeFragment())
+
+                val homeFragment = if(BaseApplication.getInstance()?.getPrefs()?.getUserData()?.gender == DConstants.FEMALE)
+                    FemaleHomeFragment() else HomeFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.flFragment, homeFragment)
                     .commit()
                 return true
             }
