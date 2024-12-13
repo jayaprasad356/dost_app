@@ -79,6 +79,8 @@ class FemaleHomeFragment : BaseFragment() {
         })
         femaleUsersViewModel.updateCallStatusErrorLiveData.observe(viewLifecycleOwner, Observer {
             showErrorMessage(it)
+            binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1;
+            binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1;
         })
         binding.sAudio.setOnCheckedChangeListener({ buttonView, isChecked ->
             userData?.id?.let {
