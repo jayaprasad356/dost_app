@@ -75,6 +75,8 @@ class FemaleHomeFragment : BaseFragment() {
                 prefs?.setUserData(it.data)
             } else {
                 Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1;
+                binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1;
             }
         })
         femaleUsersViewModel.updateCallStatusErrorLiveData.observe(viewLifecycleOwner, Observer {
