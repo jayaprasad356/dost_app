@@ -22,6 +22,7 @@ import com.gmwapp.hima.activities.DeleteAccountActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.adapters.FemaleUserAdapter
 import com.gmwapp.hima.adapters.TransactionAdapter
+import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.databinding.FragmentHomeBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
@@ -45,7 +46,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
     private var isAllFabVisible: Boolean = false
-    lateinit var binding: FragmentHomeBinding
+    lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
 
     override fun onCreateView(
@@ -53,7 +54,7 @@ class FemaleHomeFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        binding = FragmentFemaleHomeBinding.inflate(layoutInflater)
 
         initUI()
         return binding.root
@@ -66,34 +67,6 @@ class FemaleHomeFragment : BaseFragment() {
             startActivity(intent)
         })
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-        userData?.id?.let {
-            femaleUsersViewModel.getFemaleUsers(
-                it
-            )
-        }
-
-        userData?.let { it1 -> setupZegoUIKit(it1.id,userData.name) }
-        binding.fabAudio.setOnClickListener({
-            val intent = Intent(context, CallActivity::class.java)
-            startActivity(intent)
-        })
-
-        femaleUsersViewModel.femaleUsersResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it?.data != null) {
-                binding.rvProfiles.setLayoutManager(
-                    LinearLayoutManager(
-                        activity,
-                        LinearLayoutManager.VERTICAL,
-                        false
-                    )
-                )
-
-                var transactionAdapter = activity?.let { it1 -> FemaleUserAdapter(it1, it.data) }
-                binding.rvProfiles.setAdapter(transactionAdapter)
-            }
-        })
-
-        initFab()
     }
 
     private fun setupZegoUIKit(Userid: Any, userName: String) {
@@ -184,29 +157,4 @@ class FemaleHomeFragment : BaseFragment() {
 
     }
 
-    fun initFab(){
-        binding.fabRandom.extend()
-        binding.fabAudio.hide()
-        binding.fabVideo.hide()
-        binding.fabRandom.setOnClickListener {
-            if (!isAllFabVisible) {
-                binding.fabAudio.show()
-                binding.fabVideo.show()
-                binding.tvAudio.setVisibility(View.VISIBLE)
-                binding.tvVideo.setVisibility(View.VISIBLE)
-
-                binding.fabRandom.shrink()
-                isAllFabVisible = true
-            } else {
-                binding.fabAudio.hide()
-                binding.fabVideo.hide()
-                binding.tvAudio.setVisibility(View.GONE)
-                binding.tvVideo.setVisibility(View.GONE)
-
-                binding.fabRandom.extend()
-
-                isAllFabVisible = false
-            }
-        }
-    }
 }
