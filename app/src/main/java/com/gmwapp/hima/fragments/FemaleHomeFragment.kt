@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -22,6 +23,7 @@ import com.gmwapp.hima.activities.DeleteAccountActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.adapters.FemaleUserAdapter
 import com.gmwapp.hima.adapters.TransactionAdapter
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.databinding.FragmentHomeBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
@@ -45,14 +47,11 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
-    private var isAllFabVisible: Boolean = false
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentFemaleHomeBinding.inflate(layoutInflater)
 
@@ -60,13 +59,41 @@ class FemaleHomeFragment : BaseFragment() {
         return binding.root
     }
 
-
-    private fun initUI(){
+    private fun initUI() {
         binding.clCoins.setOnClickListener({
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
         })
-        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        val userData = prefs?.getUserData()
+        if (userData != null) {
+            binding.sAudio.isChecked = userData.audio_status == 1
+            binding.sVideo.isChecked = userData.video_status == 1
+        }
+        femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+                prefs?.setUserData(it.data)
+            } else {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+        femaleUsersViewModel.updateCallStatusErrorLiveData.observe(viewLifecycleOwner, Observer {
+            showErrorMessage(it)
+        })
+        binding.sAudio.setOnCheckedChangeListener({ buttonView, isChecked ->
+            userData?.id?.let {
+                femaleUsersViewModel.updateCallStatus(
+                    it, DConstants.AUDIO, if (isChecked) 1 else 0
+                )
+            }
+        })
+        binding.sVideo.setOnCheckedChangeListener({ buttonView, isChecked ->
+            userData?.id?.let {
+                femaleUsersViewModel.updateCallStatus(
+                    it, DConstants.VIDEO, if (isChecked) 1 else 0
+                )
+            }
+        })
     }
 
     private fun setupZegoUIKit(Userid: Any, userName: String) {
@@ -97,12 +124,15 @@ class FemaleHomeFragment : BaseFragment() {
                     invitationData.type == ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
                         ZegoUIKitPrebuiltCallConfig.groupVideoCall()
                     }
+
                     invitationData.type != ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
                         ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
                     }
+
                     invitationData.type != ZegoInvitationType.VIDEO_CALL.value -> {
                         ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
                     }
+
                     else -> {
                         ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
                     }
@@ -124,13 +154,17 @@ class FemaleHomeFragment : BaseFragment() {
 
 
                 config.avatarViewProvider = object : ZegoAvatarViewProvider {
-                    override fun onUserIDUpdated(parent: ViewGroup, uiKitUser: ZegoUIKitUser): View {
+                    override fun onUserIDUpdated(
+                        parent: ViewGroup, uiKitUser: ZegoUIKitUser
+                    ): View {
                         val imageView = ImageView(parent.context)
                         // Set different avatars for different users based on the user parameter in the callback.
-                        val avatarUrl = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+                        val avatarUrl =
+                            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
                         if (!avatarUrl.isNullOrEmpty()) {
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(avatarUrl).apply(requestOptions).into(imageView)
+                            Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
+                                .into(imageView)
                         }
                         return imageView
                     }
@@ -138,7 +172,9 @@ class FemaleHomeFragment : BaseFragment() {
 
                 callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
                     override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
-                        val config = ZegoUIKitPrebuiltCallInvitationConfig.generateDefaultConfig(invitationData)
+                        val config = ZegoUIKitPrebuiltCallInvitationConfig.generateDefaultConfig(
+                            invitationData
+                        )
                         // Modify the config settings here according to your business needs
                         return config
                     }
@@ -152,8 +188,9 @@ class FemaleHomeFragment : BaseFragment() {
 // Initialize the Zego call service with the provided details
 
 
-
-        ZegoUIKitPrebuiltCallService.init(BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig)
+        ZegoUIKitPrebuiltCallService.init(
+            BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig
+        )
 
     }
 

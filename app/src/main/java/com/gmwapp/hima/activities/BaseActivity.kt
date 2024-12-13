@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.constants.DConstants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -36,6 +37,17 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
+    fun showErrorMessage(message: String) {
+        if (message == DConstants.NO_NETWORK) {
+            Toast.makeText(
+                this@BaseActivity, getString(com.gmwapp.hima.R.string.please_try_again_later), Toast.LENGTH_LONG
+            ).show()
+        } else {
+            Toast.makeText(
+                this@BaseActivity, message, Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     fun setCenterLayoutManager(recyclerView: RecyclerView) {
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {

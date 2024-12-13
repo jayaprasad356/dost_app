@@ -17,4 +17,6 @@ object DConstants {
     const val TEXT = "text"
     const val AVATAR_ID = "avatar_id"
     const val LANGUAGE = "language"
+    const val AUDIO = "audio"
+    const val VIDEO = "video"
 }
