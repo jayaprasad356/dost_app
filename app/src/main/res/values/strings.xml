@@ -151,4 +151,7 @@
     <string name="todays_activity">Today\'s Activity</string>
     <string name="approx_earnings">Approx earnings</string>
     <string name="total_calls">Total calls</string>
+    <string name="cancel">Cancel</string>
+    <string name="wait_hint">Please wait while we find you someone who is available</string>
+    <string name="finding_a_app_for_you">Finding a for &appname; you...</string>
 </resources>
