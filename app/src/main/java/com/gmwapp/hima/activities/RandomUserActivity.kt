@@ -71,10 +71,12 @@ class RandomUserActivity : BaseActivity() {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
                 ).show()
+                finish()
             }
         })
         femaleUsersViewModel.randomUsersErrorLiveData.observe(this, Observer {
             showErrorMessage(it)
+            finish()
         })
         userData?.let {
             callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
