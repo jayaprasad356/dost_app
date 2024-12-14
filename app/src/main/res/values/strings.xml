@@ -154,4 +154,6 @@
     <string name="cancel">Cancel</string>
     <string name="wait_hint">Please wait while we find you someone who is available</string>
     <string name="finding_a_app_for_you">Finding a &appname; for you...</string>
+    <string name="call_rejected">Call Rejected</string>
+    <string name="call_timeout">Call Timeout</string>
 </resources>
