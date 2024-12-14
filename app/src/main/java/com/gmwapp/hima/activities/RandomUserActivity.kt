@@ -43,8 +43,6 @@ class RandomUserActivity : BaseActivity() {
     lateinit var activity: Activity
 
     private var roomID: String? = null
-    private var duration = 0
-    private var timer: Timer? = null
 
     private var userId: String = ""
     private var callUserId: String = ""
