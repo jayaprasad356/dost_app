@@ -172,7 +172,7 @@ class RandomUserActivity : BaseActivity() {
                         CallUpdateWorker::class.java
                     ).setInputData(data).setConstraints(constraints).build()
                     WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
-
+                    finish()
                 }
 
                 else -> { /* Handle other cases if necessary */
