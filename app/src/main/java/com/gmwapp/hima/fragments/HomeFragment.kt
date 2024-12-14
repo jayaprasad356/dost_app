@@ -84,6 +84,12 @@ class HomeFragment : BaseFragment() {
             startActivity(intent)
         })
 
+        binding.fabVideo.setOnClickListener({
+            val intent = Intent(context, RandomUserActivity::class.java)
+            intent.putExtra(DConstants.CALL_TYPE, "video")
+            startActivity(intent)
+        })
+
         femaleUsersViewModel.femaleUsersResponseLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.data != null) {
                 binding.rvProfiles.setLayoutManager(
