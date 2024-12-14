@@ -78,6 +78,12 @@ class RandomUserActivity : BaseActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
+        }else{
+            val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+            val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+            userData?.let {
+                callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+            }
         }
         PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
             .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
