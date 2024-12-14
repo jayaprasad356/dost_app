@@ -29,11 +29,14 @@ class BaseApplication : Application(), Configuration.Provider{
 
     }
 
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder().setWorkerFactory(workerFactory).build()
-
+//    override fun getWorkManagerConfiguration(): Configuration =
+//        Configuration.Builder().setWorkerFactory(workerFactory).build()
+//
     fun getPrefs(): DPreferences? {
         return mPreferences
     }
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
 }
