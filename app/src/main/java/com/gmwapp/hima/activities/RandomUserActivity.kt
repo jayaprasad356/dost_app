@@ -70,15 +70,13 @@ class RandomUserActivity : BaseActivity() {
             arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
 
         if (ContextCompat.checkSelfPermission(
-                this,
-                "android.permission.CAMERA"
+                this, "android.permission.CAMERA"
             ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                this,
-                "android.permission.RECORD_AUDIO"
+                this, "android.permission.RECORD_AUDIO"
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
-        }else{
+        } else {
             val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
             val callType = intent.getStringExtra(DConstants.CALL_TYPE)
             userData?.let {
@@ -117,12 +115,16 @@ class RandomUserActivity : BaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        askPermissions()
+    }
+
     private fun initUI() {
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
         binding.btnCancel.setOnClickListener({
             finish()
         })
-        askPermissions()
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
