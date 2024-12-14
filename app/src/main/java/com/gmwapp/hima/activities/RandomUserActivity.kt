@@ -64,9 +64,7 @@ class RandomUserActivity : BaseActivity() {
                 intent.putExtra(DConstants.CALL_TYPE, callType)
                 intent.putExtra(DConstants.RECEIVER_ID, it.data?.call_user_id)
                 intent.putExtra(DConstants.RECEIVER_NAME, it.data?.call_user_name)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
-                finish()
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
