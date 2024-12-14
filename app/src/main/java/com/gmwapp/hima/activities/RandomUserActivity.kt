@@ -1,13 +1,17 @@
 package com.gmwapp.hima.activities
 
+import android.Manifest
 import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
@@ -19,6 +23,9 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
+import com.permissionx.guolindev.PermissionX
+import com.permissionx.guolindev.callback.ExplainReasonCallback
+import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallType
@@ -27,17 +34,14 @@ import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoInvitationCallListe
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
-import java.util.Timer
-import java.util.TimerTask
 
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity() {
+    private val CALL_PERMISSIONS_REQUEST_CODE = 1;
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
@@ -61,17 +65,64 @@ class RandomUserActivity : BaseActivity() {
         initUI()
     }
 
+    fun askPermissions(){
+        val permissionNeeded = arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
+
+        if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE);
+        }
+        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                val message =
+                    "We need your consent for the following permissions in order to use the offline call function properly"
+                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CALL_PERMISSIONS_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
+                val permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val permissionToRecord = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                if (permissionToCamera && permissionToRecord) {
+                    val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+                    val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+                    userData?.let {
+                        callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+                    }
+                } else {
+                    try {
+                        finish()
+                        startActivity(
+                            Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", packageName, null)
+                            )
+                        )
+                    } catch (e: Exception) {
+                        e.message?.let { Log.e("RandomUserActivity", it) }
+                    }
+                    Toast.makeText(applicationContext, getString(R.string.grant_permission), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
     private fun initUI() {
-        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
         binding.btnCancel.setOnClickListener({
             finish()
         })
+        askPermissions()
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
                 setupCall(it.data?.call_user_id.toString(), it.data?.call_user_name.toString(), callType.toString())
-//                setupCall("48", "Anushka854", callType.toString())
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
@@ -83,9 +134,6 @@ class RandomUserActivity : BaseActivity() {
             showErrorMessage(it)
             finish()
         })
-        userData?.let {
-            callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
-        }
     }
 
     private fun addRoomStateChangedListener(callId:Int) {
@@ -156,7 +204,8 @@ class RandomUserActivity : BaseActivity() {
                     finish()
                 }
 
-                else -> { /* Handle other cases if necessary */
+                else -> {
+                    finish()
                 }
             }
         }

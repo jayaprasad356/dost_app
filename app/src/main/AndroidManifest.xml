@@ -69,7 +69,6 @@
         <activity android:name="com.gmwapp.hima.activities.EarningsActivity" />
         <activity android:name="com.gmwapp.hima.activities.WebviewActivity" />
         <activity android:name="com.gmwapp.hima.activities.YoutubeActivity" />
-        <activity android:name="com.gmwapp.hima.activities.CallActivity" />
         <activity android:name="com.gmwapp.hima.activities.RandomUserActivity" />
 
         <provider

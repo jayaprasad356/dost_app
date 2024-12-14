@@ -156,4 +156,5 @@
     <string name="finding_a_app_for_you">Finding a &appname; for you...</string>
     <string name="call_rejected">Call Rejected</string>
     <string name="call_timeout">Call Timeout</string>
+    <string name="grant_permission">Please grant the permission to make the call</string>
 </resources>
