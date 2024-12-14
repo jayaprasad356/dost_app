@@ -48,6 +48,7 @@ class RandomUserActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRandomUserBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initUI()
     }
 

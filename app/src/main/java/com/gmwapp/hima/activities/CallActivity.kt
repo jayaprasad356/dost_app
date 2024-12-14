@@ -71,6 +71,7 @@ class CallActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCallBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         voiceCallButton = binding.voiceCallButton
         mContext = this
         initUI()
