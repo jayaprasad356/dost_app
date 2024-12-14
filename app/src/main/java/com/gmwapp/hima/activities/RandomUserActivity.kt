@@ -182,16 +182,7 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(false)
         binding.voiceCallButton.resourceID = "zego_uikit_call"
         binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
-
-
-        lifecycleScope.launch {
-            delay(4000)  // 4-second delay before initiating the call
-            binding.voiceCallButton.performClick() // Programmatically click to start the call
-
-            // Additional delay if needed to allow time for the call to start
-            delay(4000)  // Additional delay to allow the call setup
-        }
-
+        binding.voiceCallButton.performClick() // Programmatically click to start the call
     }
 
     private fun StartVideoCall(targetUserId: String, targetName: String) {
@@ -200,6 +191,4 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
         binding.voiceCallButton.performClick()
     }
-
-
 }
