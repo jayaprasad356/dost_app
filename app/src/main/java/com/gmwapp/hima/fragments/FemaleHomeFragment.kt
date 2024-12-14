@@ -1,23 +1,31 @@
 package com.gmwapp.hima.fragments
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.activities.GrantPermissionsActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.permissionx.guolindev.PermissionX
+import com.permissionx.guolindev.callback.ExplainReasonCallback
+import com.permissionx.guolindev.callback.RequestCallback
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
+    private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
 
@@ -28,6 +36,49 @@ class FemaleHomeFragment : BaseFragment() {
 
         initUI()
         return binding.root
+    }
+
+    fun askPermissions() {
+        val permissionNeeded =
+            arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
+
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    "android.permission.CAMERA"
+                )
+            } != PackageManager.PERMISSION_GRANTED || context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    "android.permission.RECORD_AUDIO"
+                )
+            } != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
+        }
+        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                val message =
+                    "We need your consent for the following permissions in order to use the offline call function properly"
+                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CALL_PERMISSIONS_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
+                val permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val permissionToRecord = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                if (!(permissionToCamera && permissionToRecord)) {
+                    val intent = Intent(context, GrantPermissionsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+        }
     }
 
     private fun initUI() {
@@ -61,6 +112,9 @@ class FemaleHomeFragment : BaseFragment() {
                 femaleUsersViewModel.updateCallStatus(
                     it, DConstants.AUDIO, if (isChecked) 1 else 0
                 )
+            }
+            if(isChecked){
+
             }
         })
         binding.sVideo.setOnCheckedChangeListener({ buttonView, isChecked ->

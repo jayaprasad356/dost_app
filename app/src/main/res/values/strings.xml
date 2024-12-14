@@ -157,4 +157,10 @@
     <string name="call_rejected">Call Rejected</string>
     <string name="call_timeout">Call Timeout</string>
     <string name="grant_permission">Please grant the permission to make the call</string>
+    <string name="enable_camera_and_microphone">Enable camera and microphone</string>
+    <string name="permissions_hint">Allow &appname; to access your camera and microphone to join calls within the app</string>
+    <string name="camera">Camera</string>
+    <string name="camera_hint"><![CDATA[Settings > Apps > App management > &appname; > Permission > Camera]]></string>
+    <string name="microphone_hint"><![CDATA[Settings > Apps > App management > &appname; > Permission > Microphone]]></string>
+    <string name="microphone">Microphone</string>
 </resources>

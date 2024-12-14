@@ -41,7 +41,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity() {
-    private val CALL_PERMISSIONS_REQUEST_CODE = 1;
+    private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
@@ -65,12 +65,19 @@ class RandomUserActivity : BaseActivity() {
         initUI()
     }
 
-    fun askPermissions(){
-        val permissionNeeded = arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
+    fun askPermissions() {
+        val permissionNeeded =
+            arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
 
-        if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE);
+        if (ContextCompat.checkSelfPermission(
+                this,
+                "android.permission.CAMERA"
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                this,
+                "android.permission.RECORD_AUDIO"
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
         }
         PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
             .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
@@ -96,23 +103,14 @@ class RandomUserActivity : BaseActivity() {
                         callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
                     }
                 } else {
-                    try {
-                        finish()
-                        startActivity(
-                            Intent(
-                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", packageName, null)
-                            )
-                        )
-                    } catch (e: Exception) {
-                        e.message?.let { Log.e("RandomUserActivity", it) }
-                    }
-                    Toast.makeText(applicationContext, getString(R.string.grant_permission), Toast.LENGTH_LONG)
-                        .show()
+                    finish()
+                    val intent = Intent(this, GrantPermissionsActivity::class.java)
+                    startActivity(intent)
                 }
             }
         }
     }
+
     private fun initUI() {
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
         binding.btnCancel.setOnClickListener({
@@ -122,7 +120,11 @@ class RandomUserActivity : BaseActivity() {
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
-                setupCall(it.data?.call_user_id.toString(), it.data?.call_user_name.toString(), callType.toString())
+                setupCall(
+                    it.data?.call_user_id.toString(),
+                    it.data?.call_user_name.toString(),
+                    callType.toString()
+                )
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
@@ -136,7 +138,7 @@ class RandomUserActivity : BaseActivity() {
         })
     }
 
-    private fun addRoomStateChangedListener(callId:Int) {
+    private fun addRoomStateChangedListener(callId: Int) {
         ZegoUIKitPrebuiltCallService.events.invitationEvents.invitationListener =
             object : ZegoInvitationCallListener {
                 override fun onIncomingCallReceived(
@@ -162,18 +164,30 @@ class RandomUserActivity : BaseActivity() {
                 override fun onOutgoingCallRejectedCauseBusy(
                     callID: String?, callee: ZegoCallUser?
                 ) {
-                    Toast.makeText(this@RandomUserActivity, getString(R.string.call_rejected), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@RandomUserActivity,
+                        getString(R.string.call_rejected),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
-                    Toast.makeText(this@RandomUserActivity, getString(R.string.call_rejected), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@RandomUserActivity,
+                        getString(R.string.call_rejected),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
                 }
 
                 override fun onOutgoingCallTimeout(
                     callID: String?, callees: MutableList<ZegoCallUser>?
                 ) {
-                    Toast.makeText(this@RandomUserActivity, getString(R.string.call_timeout), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@RandomUserActivity,
+                        getString(R.string.call_timeout),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
                 }
             }
@@ -193,8 +207,7 @@ class RandomUserActivity : BaseActivity() {
                     endTime = dateFormat.format(Date()) // Set call end time in IST
                     val constraints =
                         Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-                    val data: Data = Data.Builder()
-                        .putInt(DConstants.CALL_ID, callId)
+                    val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
                         .putString(DConstants.STARTED_TIME, startTime)
                         .putString(DConstants.ENDED_TIME, endTime).build()
                     val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
@@ -210,6 +223,7 @@ class RandomUserActivity : BaseActivity() {
             }
         }
     }
+
     private fun setupCall(receiverId: String, receiverName: String, type: String) {
         activity = this
 
