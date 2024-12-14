@@ -75,6 +75,7 @@ class CallActivity : BaseActivity() {
         mContext = this
         initUI()
 
+
         addRoomStateChangedListener()
 
     }
@@ -185,10 +186,15 @@ class CallActivity : BaseActivity() {
     private fun initUI() {
         activity = this
 
-        val receiverId = intent.getStringExtra(DConstants.RECEIVER_ID)
+        val receiverId = intent.getIntExtra(DConstants.RECEIVER_ID,0).toString()
         val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
         val type = intent.getStringExtra(DConstants.CALL_TYPE)
 
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        val userData = prefs?.getUserData()
+        if (userData != null) {
+            setupZegoUIKit(userData.id,userData.name)
+        }
         when (type) {
             "audio" -> receiverId?.let { receiverName?.let { it1 -> StartVoiceCall(it, it1) } }
             "video" -> receiverId?.let { receiverName?.let { it1 -> StartVideoCall(it, it1) } }
