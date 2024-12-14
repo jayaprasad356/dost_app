@@ -49,13 +49,14 @@ class RandomUserActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRandomUserBinding.inflate(layoutInflater)
         initUI()
-
-
     }
 
     private fun initUI() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+        binding.btnCancel.setOnClickListener({
+            finish()
+        })
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 val intent = Intent(this, CallActivity::class.java)
