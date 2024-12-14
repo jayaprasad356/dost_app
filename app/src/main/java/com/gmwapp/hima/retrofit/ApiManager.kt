@@ -14,6 +14,7 @@ import com.gmwapp.hima.retrofit.responses.SettingsResponse
 import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
 import com.gmwapp.hima.retrofit.responses.UpdateCallStatusResponse
+import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import com.gmwapp.hima.retrofit.responses.UserValidationResponse
 import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
@@ -155,6 +156,22 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<UpdateCallStatusResponse> =
                 getApiInterface().updateCallStatus(userId, callType, status)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun updateConnectedCall(
+        userId: Int,
+        callId: Int,
+        startedTime: String,
+        endedTime: String,
+        callback: NetworkCallback<UpdateConnectedCallResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<UpdateConnectedCallResponse> =
+                getApiInterface().updateConnectedCall(userId, callId, startedTime, endedTime)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -322,6 +339,15 @@ interface ApiInterface {
         @Field("call_type") call_type: String,
         @Field("status") status: Int
     ): Call<UpdateCallStatusResponse>
+
+    @FormUrlEncoded
+    @POST("api/update_connected_call")
+    fun updateConnectedCall(
+        @Field("user_id") userId: Int,
+        @Field("call_id") callId: Int,
+        @Field("started_time") startedTime: String,
+        @Field("ended_time") endedTime: String,
+    ): Call<UpdateConnectedCallResponse>
 
     @FormUrlEncoded
     @POST("api/withdrawals_list")

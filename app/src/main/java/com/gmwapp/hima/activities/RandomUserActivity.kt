@@ -60,6 +60,7 @@ class RandomUserActivity : BaseActivity() {
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 val intent = Intent(this, CallActivity::class.java)
+                intent.putExtra(DConstants.CALL_ID, it.data?.call_id)
                 intent.putExtra(DConstants.CALL_TYPE, callType)
                 intent.putExtra(DConstants.RECEIVER_ID, it.data?.call_user_id)
                 intent.putExtra(DConstants.RECEIVER_NAME, it.data?.call_user_name)

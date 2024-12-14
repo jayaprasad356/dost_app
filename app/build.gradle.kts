@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
@@ -84,6 +85,7 @@ dependencies {
 
     //coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3" )// Use latest version
     implementation ("io.github.chaosleung:pinview:1.4.4")
 
     implementation("com.github.bumptech.glide:glide:4.15.0")
@@ -115,6 +117,10 @@ dependencies {
 
     implementation("com.intuit.sdp:sdp-android:1.1.0")
 
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.work.runtime)
+    implementation ("androidx.work:work-runtime-ktx:2.10.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

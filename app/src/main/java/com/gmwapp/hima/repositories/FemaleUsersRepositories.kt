@@ -6,6 +6,7 @@ import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
 import com.gmwapp.hima.retrofit.responses.UpdateCallStatusResponse
+import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
 import javax.inject.Inject
 
 class FemaleUsersRepositories @Inject constructor(private val apiManager: ApiManager) {
@@ -25,6 +26,18 @@ class FemaleUsersRepositories @Inject constructor(private val apiManager: ApiMan
     ) {
         apiManager.updateCallStatus(
             userId, callType, status, callback
+        )
+    }
+
+    fun updateConnectedCall(
+        userId: Int,
+        callId: Int,
+        startedTime: String,
+        endedTime: String,
+        callback: NetworkCallback<UpdateConnectedCallResponse>
+    ) {
+        apiManager.updateConnectedCall(
+            userId, callId, startedTime,endedTime, callback
         )
     }
 }

@@ -14,11 +14,17 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityCallBinding
 import com.gmwapp.hima.databinding.ActivityMainBinding
+import com.gmwapp.hima.workers.CallUpdateWorker
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallType
@@ -134,6 +140,16 @@ class CallActivity : BaseActivity() {
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     stopTimer()
                     endTime = dateFormat.format(Date()) // Set call end time in IST
+                    val constraints =
+                        Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                    val data: Data = Data.Builder()
+                        .putString(DConstants.CALL_ID, intent.getStringExtra(DConstants.CALL_ID))
+                        .putString(DConstants.STARTED_TIME, startTime)
+                        .putString(DConstants.ENDED_TIME, endTime).build()
+                    val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                        CallUpdateWorker::class.java
+                    ).setInputData(data).setConstraints(constraints).build()
+                    WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
 
                 }
 
