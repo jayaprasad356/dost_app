@@ -62,9 +62,6 @@ class RandomUserActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRandomUserBinding.inflate(layoutInflater)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(binding.root)
         initUI()
     }
@@ -87,13 +84,6 @@ class RandomUserActivity : BaseActivity() {
                 callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
             }
         }
-        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
-                val message =
-                    "We need your consent for the following permissions in order to use the offline call function properly"
-                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
-
     }
 
     override fun onRequestPermissionsResult(
@@ -259,14 +249,14 @@ class RandomUserActivity : BaseActivity() {
 
     private fun StartVoiceCall(targetUserId: String, targetName: String) {
         binding.voiceCallButton.setIsVideoCall(false)
-        binding.voiceCallButton.resourceID = "zego_uikit_call"
+        binding.voiceCallButton.resourceID = "zego_call"
         binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
         binding.voiceCallButton.performClick() // Programmatically click to start the call
     }
 
     private fun StartVideoCall(targetUserId: String, targetName: String) {
         binding.voiceCallButton.setIsVideoCall(true)
-        binding.voiceCallButton.resourceID = "zego_uikit_call"
+        binding.voiceCallButton.resourceID = "zego_call"
         binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
         binding.voiceCallButton.performClick()
     }
