@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,9 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.constants.DConstants
-import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
-import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
@@ -118,6 +117,13 @@ open class BaseActivity : AppCompatActivity() {
                     override fun onUserIDUpdated(
                         parent: ViewGroup, uiKitUser: ZegoUIKitUser
                     ): View {
+                        try {
+                            (parent.context as AppCompatActivity).window.setFlags(
+                                WindowManager.LayoutParams.FLAG_SECURE,
+                                WindowManager.LayoutParams.FLAG_SECURE
+                            )
+                        } catch (e: Exception) {
+                        }
                         val imageView = ImageView(parent.context)
                         // Set different avatars for different users based on the user parameter in the callback.
                         val avatarUrl =
@@ -141,14 +147,8 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
 
-                config.audioVideoViewConfig.videoViewForegroundViewProvider =
-                    ZegoForegroundViewProvider { parent, uiKitUser ->
-                        val foregroundView: CustomCallView =
-                            CustomCallView(parent.context, uiKitUser.userID)
-                        foregroundView
-                    }
 
-                config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                    config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.topMenuBarConfig.isVisible = true;
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
                 return config

@@ -3,8 +3,10 @@ package com.gmwapp.hima.fragments
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -101,6 +103,13 @@ open class BaseFragment : Fragment() {
                     override fun onUserIDUpdated(
                         parent: ViewGroup, uiKitUser: ZegoUIKitUser
                     ): View {
+                        try {
+                            (parent.context as AppCompatActivity).window.setFlags(
+                                WindowManager.LayoutParams.FLAG_SECURE,
+                                WindowManager.LayoutParams.FLAG_SECURE
+                            )
+                        } catch (e: Exception) {
+                        }
                         val imageView = ImageView(parent.context)
                         // Set different avatars for different users based on the user parameter in the callback.
                         val avatarUrl =
