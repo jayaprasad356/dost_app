@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.activities.DeleteAccountActivity
 import com.gmwapp.hima.R
+import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.adapters.FemaleUserAdapter
 import com.gmwapp.hima.adapters.TransactionAdapter
