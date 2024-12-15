@@ -134,16 +134,6 @@ open class BaseFragment : Fragment() {
                     }
                 }
 
-                callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
-                    override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
-                        val config = ZegoUIKitPrebuiltCallInvitationConfig.generateDefaultConfig(
-                            invitationData
-                        )
-                        // Modify the config settings here according to your business needs
-                        return config
-                    }
-                }
-
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.topMenuBarConfig.isVisible = true;
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
