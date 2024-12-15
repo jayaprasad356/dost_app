@@ -147,10 +147,6 @@ open class BaseActivity : AppCompatActivity() {
                 }
 
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
-                config.hangUpConfirmDialogInfo.title = getString(R.string.warning)
-                config.hangUpConfirmDialogInfo.message = getString(R.string.warning_end_call)
-                config.hangUpConfirmDialogInfo.cancelButtonName = getString(R.string.cancel)
-                config.hangUpConfirmDialogInfo.confirmButtonName = getString(R.string.confirm)
                 return config
             }
         }
