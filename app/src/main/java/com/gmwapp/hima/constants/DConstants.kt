@@ -17,4 +17,13 @@ object DConstants {
     const val TEXT = "text"
     const val AVATAR_ID = "avatar_id"
     const val LANGUAGE = "language"
+    const val AUDIO = "audio"
+    const val VIDEO = "video"
+    const val CALL_TYPE = "call_type"
+    const val USER_ID = "user_id"
+    const val STARTED_TIME = "started_time"
+    const val ENDED_TIME = "ended_time"
+    const val CALL_ID = "call_id"
+    const val RECEIVER_ID = "receiver_id"
+    const val RECEIVER_NAME = "receiver_name"
 }

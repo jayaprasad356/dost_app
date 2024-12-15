@@ -69,7 +69,14 @@
         <activity android:name="com.gmwapp.hima.activities.EarningsActivity" />
         <activity android:name="com.gmwapp.hima.activities.WebviewActivity" />
         <activity android:name="com.gmwapp.hima.activities.YoutubeActivity" />
-        <activity android:name="com.gmwapp.hima.activities.CallActivity" />
+        <activity android:name="com.gmwapp.hima.activities.RandomUserActivity" />
+        <activity android:name="com.gmwapp.hima.activities.GrantPermissionsActivity" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+
     </application>
 
 </manifest>
