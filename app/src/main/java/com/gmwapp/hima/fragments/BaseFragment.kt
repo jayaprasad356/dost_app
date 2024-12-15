@@ -17,11 +17,13 @@ import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.config.DurationUpdateListener
 import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
+import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
 import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
+import java.util.Arrays
 
 open class BaseFragment : Fragment() {
     fun showErrorMessage(message: String) {
@@ -62,7 +64,16 @@ open class BaseFragment : Fragment() {
                     }
 
                     else -> {
-                        ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+                        val oneOnOneVideoCall = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+                        oneOnOneVideoCall.bottomMenuBarConfig.buttons = ArrayList(
+                            Arrays.asList(
+                                ZegoMenuBarButtonName.SWITCH_CAMERA_BUTTON,
+                                ZegoMenuBarButtonName.HANG_UP_BUTTON,
+                                ZegoMenuBarButtonName.TOGGLE_MICROPHONE_BUTTON,
+                                ZegoMenuBarButtonName.SWITCH_AUDIO_OUTPUT_BUTTON
+                            )
+                        );
+                        oneOnOneVideoCall
                     }
                 }
 
@@ -107,7 +118,6 @@ open class BaseFragment : Fragment() {
                         return config
                     }
                 }
-
 
 
                 return config
