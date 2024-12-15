@@ -1,212 +1,131 @@
 package com.gmwapp.hima.fragments
 
-import android.app.Application
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.activity.viewModels
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
-import com.gmwapp.hima.activities.CallActivity
-import com.gmwapp.hima.activities.DeleteAccountActivity
+import com.gmwapp.hima.activities.EarningsActivity
+import com.gmwapp.hima.activities.GrantPermissionsActivity
 import com.gmwapp.hima.activities.WalletActivity
-import com.gmwapp.hima.adapters.FemaleUserAdapter
-import com.gmwapp.hima.adapters.TransactionAdapter
-import com.gmwapp.hima.databinding.FragmentHomeBinding
-import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
+import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
-import com.gmwapp.hima.viewmodels.LoginViewModel
-import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
-import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
-import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
-import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
-import com.zegocloud.uikit.prebuilt.call.config.DurationUpdateListener
-import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
-import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
-import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
-import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
-import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
-import com.zegocloud.uikit.service.defines.ZegoUIKitUser
+import com.permissionx.guolindev.PermissionX
+import com.permissionx.guolindev.callback.ExplainReasonCallback
+import com.permissionx.guolindev.callback.RequestCallback
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
-    private var isAllFabVisible: Boolean = false
-    lateinit var binding: FragmentHomeBinding
+    private val CALL_PERMISSIONS_REQUEST_CODE = 1
+    lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        binding = FragmentFemaleHomeBinding.inflate(layoutInflater)
 
         initUI()
         return binding.root
     }
 
+    fun askPermissions() {
+        val permissionNeeded =
+            arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
 
-    private fun initUI(){
-        binding.clCoins.setOnClickListener({
-            val intent = Intent(context, WalletActivity::class.java)
-            startActivity(intent)
-        })
-        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-        userData?.id?.let {
-            femaleUsersViewModel.getFemaleUsers(
-                it
-            )
-        }
-
-        userData?.let { it1 -> setupZegoUIKit(it1.id,userData.name) }
-        binding.fabAudio.setOnClickListener({
-            val intent = Intent(context, CallActivity::class.java)
-            startActivity(intent)
-        })
-
-        femaleUsersViewModel.femaleUsersResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it?.data != null) {
-                binding.rvProfiles.setLayoutManager(
-                    LinearLayoutManager(
-                        activity,
-                        LinearLayoutManager.VERTICAL,
-                        false
-                    )
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    "android.permission.CAMERA"
                 )
+            } != PackageManager.PERMISSION_GRANTED || context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    "android.permission.RECORD_AUDIO"
+                )
+            } != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
+        }
+        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                val message =
+                    "We need your consent for the following permissions in order to use the offline call function properly"
+                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
 
-                var transactionAdapter = activity?.let { it1 -> FemaleUserAdapter(it1, it.data) }
-                binding.rvProfiles.setAdapter(transactionAdapter)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CALL_PERMISSIONS_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
+                val permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val permissionToRecord = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                if (!(permissionToCamera && permissionToRecord)) {
+                    val intent = Intent(context, GrantPermissionsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    private fun initUI() {
+        binding.clCoins.setOnClickListener({
+            val intent = Intent(context, EarningsActivity::class.java)
+            startActivity(intent)
+        })
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        askPermissions()
+        val userData = prefs?.getUserData()
+        if (userData != null) {
+            setupZegoUIKit(userData.id,userData.name)
+            binding.sAudio.isChecked = userData.audio_status == 1
+            binding.sVideo.isChecked = userData.video_status == 1
+        }
+        femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+                prefs?.setUserData(it.data)
+            } else {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1;
+                binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1;
             }
         })
-
-        initFab()
-    }
-
-    private fun setupZegoUIKit(Userid: Any, userName: String) {
-
-        // Android's application context
-        val appID: Long = 364167780
-        val appSign: String = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
-        val userID: String = Userid.toString()
-        val userName: String = userName.toString()
-
-
-        val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
-
-
-        //  callInvitationConfig.incomingCallRingtone = "outgoingcallringtone" // No file extension
-        //  callInvitationConfig.outgoingCallRingtone = "outgoingcallringtone" // No file extension
-
-        callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
-
-        // Whether to enable the feature of inviting users to an ongoing call
-        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = false
-
-
-        // Set the custom call configuration provider
-        callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
-            override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
-                val config: ZegoUIKitPrebuiltCallConfig = when {
-                    invitationData.type == ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
-                        ZegoUIKitPrebuiltCallConfig.groupVideoCall()
-                    }
-                    invitationData.type != ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
-                        ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
-                    }
-                    invitationData.type != ZegoInvitationType.VIDEO_CALL.value -> {
-                        ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
-                    }
-                    else -> {
-                        ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
-                    }
-                }
-
-                // Set up call duration configuration with a listener
-                config.durationConfig = ZegoCallDurationConfig().apply {
-                    isVisible = true
-                    durationUpdateListener = object : DurationUpdateListener {
-                        override fun onDurationUpdate(seconds: Long) {
-                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
-                            if (seconds.toInt() == 60 * 5) {  // Ends call after 5 minutes
-                                //     ZegoUIKitPrebuiltCallService.endCall()
-                            }
-                        }
-                    }
-                }
-
-
-
-                config.avatarViewProvider = object : ZegoAvatarViewProvider {
-                    override fun onUserIDUpdated(parent: ViewGroup, uiKitUser: ZegoUIKitUser): View {
-                        val imageView = ImageView(parent.context)
-                        // Set different avatars for different users based on the user parameter in the callback.
-                        val avatarUrl = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
-                        if (!avatarUrl.isNullOrEmpty()) {
-                            val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(avatarUrl).apply(requestOptions).into(imageView)
-                        }
-                        return imageView
-                    }
-                }
-
-                callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
-                    override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
-                        val config = ZegoUIKitPrebuiltCallInvitationConfig.generateDefaultConfig(invitationData)
-                        // Modify the config settings here according to your business needs
-                        return config
-                    }
-                }
-
-
-
-                return config
+        femaleUsersViewModel.updateCallStatusErrorLiveData.observe(viewLifecycleOwner, Observer {
+            showErrorMessage(it)
+            binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1;
+            binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1;
+        })
+        binding.sAudio.setOnCheckedChangeListener({ buttonView, isChecked ->
+            userData?.id?.let {
+                femaleUsersViewModel.updateCallStatus(
+                    it, DConstants.AUDIO, if (isChecked) 1 else 0
+                )
             }
-        }
-// Initialize the Zego call service with the provided details
+            if(isChecked){
 
-
-
-        ZegoUIKitPrebuiltCallService.init(BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig)
-
-    }
-
-    fun initFab(){
-        binding.fabRandom.extend()
-        binding.fabAudio.hide()
-        binding.fabVideo.hide()
-        binding.fabRandom.setOnClickListener {
-            if (!isAllFabVisible) {
-                binding.fabAudio.show()
-                binding.fabVideo.show()
-                binding.tvAudio.setVisibility(View.VISIBLE)
-                binding.tvVideo.setVisibility(View.VISIBLE)
-
-                binding.fabRandom.shrink()
-                isAllFabVisible = true
-            } else {
-                binding.fabAudio.hide()
-                binding.fabVideo.hide()
-                binding.tvAudio.setVisibility(View.GONE)
-                binding.tvVideo.setVisibility(View.GONE)
-
-                binding.fabRandom.extend()
-
-                isAllFabVisible = false
             }
-        }
+        })
+        binding.sVideo.setOnCheckedChangeListener({ buttonView, isChecked ->
+            userData?.id?.let {
+                femaleUsersViewModel.updateCallStatus(
+                    it, DConstants.VIDEO, if (isChecked) 1 else 0
+                )
+            }
+        })
     }
+
 }

@@ -131,7 +131,6 @@ class VerifyOTPActivity : BaseActivity() {
                 login(mobileNumber)
             }
         }
-
     }
 
     private fun startTimer(){
