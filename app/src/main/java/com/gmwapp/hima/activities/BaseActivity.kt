@@ -132,16 +132,9 @@ open class BaseActivity : AppCompatActivity() {
                         } catch (e: Exception) {
                         }
                         val imageView = ImageView(parent.context)
-                        var avatarUrl: String? = null
                         // Set different avatars for different users based on the user parameter in the callback.
-                        uiKitUser.avatar
-                        if (uiKitUser.userID != userID) {
-                            avatarUrl =
+                        val avatarUrl =
                                 BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
-                        } else {
-
-                        }
-
                         if (!avatarUrl.isNullOrEmpty()) {
                             val requestOptions = RequestOptions().circleCrop()
                             Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
