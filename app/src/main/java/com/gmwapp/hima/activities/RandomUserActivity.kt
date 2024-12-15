@@ -111,11 +111,7 @@ class RandomUserActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isAlreadyCalled) {
-            finish()
-        } else {
-            isAlreadyCalled = true
-        }
+        askPermissions()
     }
 
     private fun initUI() {
@@ -123,15 +119,14 @@ class RandomUserActivity : BaseActivity() {
         binding.btnCancel.setOnClickListener({
             finish()
         })
-        askPermissions()
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
-                it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
                 setupCall(
                     it.data?.call_user_id.toString(),
                     it.data?.call_user_name.toString(),
                     callType.toString()
                 )
+                it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
