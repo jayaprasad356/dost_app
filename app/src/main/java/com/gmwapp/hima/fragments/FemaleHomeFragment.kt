@@ -57,13 +57,6 @@ class FemaleHomeFragment : BaseFragment() {
         ) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
         }
-        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
-                val message =
-                    "We need your consent for the following permissions in order to use the offline call function properly"
-                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
-
     }
 
     override fun onRequestPermissionsResult(
