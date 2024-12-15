@@ -144,7 +144,6 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/d_button_bg_user_name"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -182,7 +181,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/enter_your_age_hint"
-                android:textColor="@color/user_name_hint_text"
+                android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cv_enter_your_age" />
@@ -224,7 +223,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/select_maximum_and_minimum"
-                android:textColor="#a5a6aa"
+                android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_interests" />
@@ -296,7 +295,7 @@
                 android:layout_marginBottom="20dp"
                 android:maxLength="250"
                 android:text="@string/description_remaining_text"
-                android:textColor="#98999d"
+                android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@id/cv_summary"
                 app:layout_constraintTop_toBottomOf="@+id/cv_summary" />
