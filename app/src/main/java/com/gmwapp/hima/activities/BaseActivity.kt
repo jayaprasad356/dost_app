@@ -42,7 +42,7 @@ import kotlin.math.abs
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
-    private var foregroundView: CustomCallView? = null;
+    private var foregroundView: CustomCallView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,9 +132,16 @@ open class BaseActivity : AppCompatActivity() {
                         } catch (e: Exception) {
                         }
                         val imageView = ImageView(parent.context)
+                        var avatarUrl: String? = null
                         // Set different avatars for different users based on the user parameter in the callback.
-                        val avatarUrl =
-                            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+                        uiKitUser.avatar
+                        if (uiKitUser.userID != userID) {
+                            avatarUrl =
+                                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+                        } else {
+
+                        }
+
                         if (!avatarUrl.isNullOrEmpty()) {
                             val requestOptions = RequestOptions().circleCrop()
                             Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
@@ -159,8 +166,7 @@ open class BaseActivity : AppCompatActivity() {
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
                         foregroundView = CustomCallView(
-                            parent.context,
-                            uiKitUser.userID
+                            parent.context, uiKitUser.userID
                         )
                         foregroundView
                     }
