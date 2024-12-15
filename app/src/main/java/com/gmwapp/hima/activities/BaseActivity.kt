@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
@@ -31,6 +32,7 @@ import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.config.DurationUpdateListener
 import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
+import com.zegocloud.uikit.prebuilt.call.config.ZegoHangUpConfirmDialogInfo
 import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
@@ -144,8 +146,11 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
 
-
-
+                config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.hangUpConfirmDialogInfo.title = getString(R.string.warning)
+                config.hangUpConfirmDialogInfo.message = getString(R.string.warning_end_call)
+                config.hangUpConfirmDialogInfo.cancelButtonName = getString(R.string.cancel)
+                config.hangUpConfirmDialogInfo.confirmButtonName = getString(R.string.confirm)
                 return config
             }
         }

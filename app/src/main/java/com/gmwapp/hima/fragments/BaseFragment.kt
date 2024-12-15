@@ -17,6 +17,7 @@ import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.config.DurationUpdateListener
 import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
+import com.zegocloud.uikit.prebuilt.call.config.ZegoHangUpConfirmDialogInfo
 import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
@@ -24,6 +25,7 @@ import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationC
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import java.util.Arrays
+
 
 open class BaseFragment : Fragment() {
     fun showErrorMessage(message: String) {
@@ -119,7 +121,11 @@ open class BaseFragment : Fragment() {
                     }
                 }
 
-
+                config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.hangUpConfirmDialogInfo.title = getString(R.string.warning)
+                config.hangUpConfirmDialogInfo.message = getString(R.string.warning_end_call)
+                config.hangUpConfirmDialogInfo.cancelButtonName = getString(R.string.cancel)
+                config.hangUpConfirmDialogInfo.confirmButtonName = getString(R.string.confirm)
                 return config
             }
         }

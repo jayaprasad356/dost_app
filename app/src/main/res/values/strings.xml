@@ -164,4 +164,7 @@
     <string name="microphone_hint"><![CDATA[Settings > Apps > App management > &appname; > Permission > Microphone]]></string>
     <string name="microphone">Microphone</string>
     <string name="please_enter_the_valid_otp">Please enter the valid OTP</string>
+    <string name="warning_end_call">Are you sure you want to end your call?</string>
+    <string name="warning">Warning</string>
+    <string name="confirm">Confirm</string>
 </resources>
