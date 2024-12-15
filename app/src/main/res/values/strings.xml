@@ -163,4 +163,5 @@
     <string name="camera_hint"><![CDATA[Settings > Apps > App management > &appname; > Permission > Camera]]></string>
     <string name="microphone_hint"><![CDATA[Settings > Apps > App management > &appname; > Permission > Microphone]]></string>
     <string name="microphone">Microphone</string>
+    <string name="please_enter_the_valid_otp">Please enter the valid OTP</string>
 </resources>
