@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.widgets.CustomCallEmptyView
 import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
 import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
@@ -158,10 +159,13 @@ open class BaseActivity : AppCompatActivity() {
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
-                        foregroundView = CustomCallView(
-                            parent.context, uiKitUser.userID
-                        )
-                        foregroundView
+                        if (uiKitUser.userID != userID) {
+                            foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                            foregroundView
+                        }else {
+                            CustomCallEmptyView(parent.context, uiKitUser.userID
+                        )}
+
                     }
                 return config
             }
