@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.activities.EarningsActivity
 import com.gmwapp.hima.activities.GrantPermissionsActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
@@ -83,10 +84,11 @@ class FemaleHomeFragment : BaseFragment() {
 
     private fun initUI() {
         binding.clCoins.setOnClickListener({
-            val intent = Intent(context, WalletActivity::class.java)
+            val intent = Intent(context, EarningsActivity::class.java)
             startActivity(intent)
         })
         val prefs = BaseApplication.getInstance()?.getPrefs()
+        askPermissions()
         val userData = prefs?.getUserData()
         if (userData != null) {
             setupZegoUIKit(userData.id,userData.name)
