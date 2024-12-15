@@ -149,6 +149,8 @@ open class BaseActivity : AppCompatActivity() {
                     }
 
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.topMenuBarConfig.isVisible = true;
+                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
                 return config
             }
         }
