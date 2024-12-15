@@ -37,7 +37,7 @@ android {
     productFlavors {
         create("development") {
             dimension = "hima"
-            applicationIdSuffix = ".dev"
+         //   applicationIdSuffix = ".dev"
             buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com\"")
         }
         create("production") {

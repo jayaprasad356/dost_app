@@ -117,7 +117,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintHeight_percent="0.08"
         android:layout_marginBottom="24dp"
         android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"

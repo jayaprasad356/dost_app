@@ -181,10 +181,10 @@ class FemaleAboutActivity : BaseActivity() {
     private fun updateButton() {
         if (isValidAge && selectedInterests.size > 0 && binding.etSummary.text.isNotEmpty()) {
             binding.btnContinue.isEnabled = true
-            binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
+         //   binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
             binding.btnContinue.isEnabled = false
-            binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_female_button_disabled)
+         //   binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_female_button_disabled)
         }
     }
 
