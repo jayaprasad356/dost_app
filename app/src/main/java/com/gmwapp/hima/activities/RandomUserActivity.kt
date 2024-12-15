@@ -45,7 +45,7 @@ class RandomUserActivity : BaseActivity() {
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
-
+    private var isAlreadyCalled = false
     private var roomID: String? = null
 
     private var userId: String = ""
@@ -117,7 +117,11 @@ class RandomUserActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        askPermissions()
+        if (isAlreadyCalled) {
+            finish()
+        } else {
+            isAlreadyCalled = true
+        }
     }
 
     private fun initUI() {
@@ -125,6 +129,7 @@ class RandomUserActivity : BaseActivity() {
         binding.btnCancel.setOnClickListener({
             finish()
         })
+        askPermissions()
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
