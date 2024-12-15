@@ -153,17 +153,6 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
 
-                callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
-                    override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
-                        val config = ZegoUIKitPrebuiltCallInvitationConfig.generateDefaultConfig(
-                            invitationData
-                        )
-                        // Modify the config settings here according to your business needs
-                        return config
-                    }
-                }
-
-
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
