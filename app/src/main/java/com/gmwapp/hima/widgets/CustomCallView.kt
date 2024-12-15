@@ -20,7 +20,7 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
     override fun onForegroundViewCreated(uiKitUser: ZegoUIKitUser) {
         // init your custom view
-        val view = inflate(context, R.layout.activity_call, this)
+        val view = inflate(context, R.layout.widget_custom_call, this)
         tvTime = view.findViewById<View>(R.id.tv_time) as TextView?
     }
 
