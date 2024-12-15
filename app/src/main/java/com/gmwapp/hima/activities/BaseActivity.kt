@@ -1,9 +1,7 @@
 package com.gmwapp.hima.activities
 
-import android.Manifest
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.AttributeSet
@@ -13,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -21,12 +18,10 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
-import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
-import com.permissionx.guolindev.PermissionX
-import com.permissionx.guolindev.callback.ExplainReasonCallback
-import com.permissionx.guolindev.callback.RequestCallback
+import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
+import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
@@ -145,6 +140,13 @@ open class BaseActivity : AppCompatActivity() {
                         return config
                     }
                 }
+
+                config.audioVideoViewConfig.videoViewForegroundViewProvider =
+                    ZegoForegroundViewProvider { parent, uiKitUser ->
+                        val foregroundView: CustomCallView =
+                            CustomCallView(parent.context, uiKitUser.userID)
+                        foregroundView
+                    }
 
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 return config
