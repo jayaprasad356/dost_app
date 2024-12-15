@@ -27,19 +27,17 @@
 
     <ImageView
         android:id="@+id/iv_logo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/edit"
         android:scaleType="fitXY"
         android:src="@drawable/logo"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.04"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.12"
         app:tint="@color/white"
         tools:ignore="MissingConstraints" />
 
@@ -51,8 +49,7 @@
         android:text="@string/app_name"
         android:textColor="@color/white"
         android:textSize="22sp"
-        android:textStyle="bold"
-        android:fontFamily="monospace"
+        android:fontFamily="@font/poppins_bold"
         app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
         app:layout_constraintStart_toEndOf="@+id/iv_logo"
         app:layout_constraintTop_toTopOf="@+id/iv_logo" />
@@ -60,70 +57,45 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_coins"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.15"
+        android:paddingEnd="@dimen/_10sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:background="@drawable/d_button_bg"
+        android:backgroundTint="#FEA6BD"
         app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_logo"
-        android:background="@drawable/d_button_bg"
-        android:backgroundTint="#464646">
+    >
 
-        <View
-            android:id="@+id/v_divider_1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.14"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/iv_coin"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/coin_d"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
             android:scaleType="fitXY"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintWidth_percent="0.36"
-            app:layout_constraintHeight_percent="0.72"
-            android:layout_marginRight="4dp"
-            app:layout_constraintStart_toEndOf="@+id/v_divider_1"
+            android:src="@drawable/coin_d"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-        <View
-            android:id="@+id/v_divider_2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.14"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_coin"
-            app:layout_constraintEnd_toEndOf="parent" />
+        />
+
 
         <TextView
             android:id="@+id/tv_coins"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:gravity=""
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.29"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/v_divider_2"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/v_divider_3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.14"
+            app:layout_constraintStart_toEndOf="@+id/iv_coin"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_coins" />
+           />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

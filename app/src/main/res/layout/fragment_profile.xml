@@ -118,8 +118,8 @@
 
                 <ImageView
                     android:id="@+id/iv_wallet"
-                    android:layout_width="@dimen/_24sdp"
-                    android:layout_height="@dimen/_24sdp"
+                    android:layout_width="@dimen/_28sdp"
+                    android:layout_height="@dimen/_28sdp"
                     android:contentDescription="@string/edit"
                     android:padding="6dp"
                     android:src="@drawable/wallet_svg"
@@ -161,8 +161,8 @@
 
                 <ImageView
                     android:id="@+id/iv_transactions"
-                    android:layout_width="@dimen/_24sdp"
-                    android:layout_height="@dimen/_24sdp"
+                    android:layout_width="@dimen/_28sdp"
+                    android:layout_height="@dimen/_28sdp"
                     android:contentDescription="@string/edit"
                     android:padding="6dp"
                     android:src="@drawable/transaction_svg"
@@ -207,8 +207,8 @@
 
                 <ImageView
                     android:id="@+id/iv_account_privacy"
-                    android:layout_width="@dimen/_24sdp"
-                    android:layout_height="@dimen/_24sdp"
+                    android:layout_width="@dimen/_28sdp"
+                    android:layout_height="@dimen/_28sdp"
                     android:contentDescription="@string/edit"
                     android:padding="6dp"
                     android:src="@drawable/privacy_svg"
@@ -255,8 +255,8 @@
 
             <ImageView
                 android:id="@+id/iv_logout"
-                android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp"
+                android:layout_width="@dimen/_28sdp"
+                android:layout_height="@dimen/_28sdp"
                 android:padding="6dp"
                 android:contentDescription="@string/edit"
                 android:src="@drawable/logout_svg"

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:textColor="#feffff"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:text="@string/tap_and_hold_to_speak"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/user_name_hint_text"
+        android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/content"
@@ -60,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_speech_text"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.23"
-        app:rb_color="#473066"
+        app:rb_color="@color/white"
         app:rb_duration="1500"
         app:rb_radius="15dp"
         app:rb_rippleAmount="3"
@@ -146,7 +146,8 @@
             android:src="@drawable/play"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/pink" />
 
         <ProgressBar
             android:id="@+id/pb_progress"
@@ -206,22 +207,23 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.gmwapp.hima.widgets.DButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_submit"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/d_button_bg_white"
+        android:backgroundTint="@color/button_background_tint"
         android:text="@string/submit"
         android:textAllCaps="false"
-        android:textColor="#1e152a"
+        android:textColor="@color/button_text_color"
         android:textSize="14sp"
-        android:textStyle="bold"
+        android:paddingVertical="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_medium"
         android:visibility="gone"
+        app:cornerRadius="@dimen/_18sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.09"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
