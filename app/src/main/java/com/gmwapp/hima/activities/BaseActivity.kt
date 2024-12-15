@@ -20,7 +20,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
+import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
@@ -40,6 +42,7 @@ import kotlin.math.abs
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
+    private var foregroundView: CustomCallView? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +53,9 @@ open class BaseActivity : AppCompatActivity() {
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
-                this@BaseActivity, getString(com.gmwapp.hima.R.string.please_try_again_later), Toast.LENGTH_LONG
+                this@BaseActivity,
+                getString(com.gmwapp.hima.R.string.please_try_again_later),
+                Toast.LENGTH_LONG
             ).show()
         } else {
             Toast.makeText(
@@ -70,6 +75,7 @@ open class BaseActivity : AppCompatActivity() {
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = false
 
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
+
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
                 val config: ZegoUIKitPrebuiltCallConfig = when {
                     invitationData.type == ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
@@ -93,7 +99,7 @@ open class BaseActivity : AppCompatActivity() {
                                 ZegoMenuBarButtonName.TOGGLE_MICROPHONE_BUTTON,
                                 ZegoMenuBarButtonName.SWITCH_AUDIO_OUTPUT_BUTTON
                             )
-                        );
+                        )
                         oneOnOneVideoCall
                     }
                 }
@@ -104,6 +110,7 @@ open class BaseActivity : AppCompatActivity() {
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
+                            foregroundView?.updateTime(seconds)
                             if (seconds.toInt() == 60 * 5) {  // Ends call after 5 minutes
                                 //     ZegoUIKitPrebuiltCallService.endCall()
                             }
@@ -148,9 +155,15 @@ open class BaseActivity : AppCompatActivity() {
                 }
 
 
-                    config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
-                config.topMenuBarConfig.isVisible = true;
-                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
+                config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.audioVideoViewConfig.videoViewForegroundViewProvider =
+                    ZegoForegroundViewProvider { parent, uiKitUser ->
+                        foregroundView = CustomCallView(
+                            parent.context,
+                            uiKitUser.userID
+                        )
+                        foregroundView
+                    }
                 return config
             }
         }
