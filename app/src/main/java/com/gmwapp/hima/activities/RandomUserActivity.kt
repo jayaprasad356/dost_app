@@ -250,14 +250,18 @@ class RandomUserActivity : BaseActivity() {
     private fun StartVoiceCall(targetUserId: String, targetName: String) {
         binding.voiceCallButton.setIsVideoCall(false)
         binding.voiceCallButton.resourceID = "zego_call"
-        binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
+        val user = ZegoUIKitUser(targetUserId, targetName)
+        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.performClick() // Programmatically click to start the call
     }
 
     private fun StartVideoCall(targetUserId: String, targetName: String) {
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
-        binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
+        val user = ZegoUIKitUser(targetUserId, targetName)
+        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.performClick()
     }
 }
