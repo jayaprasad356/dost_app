@@ -117,19 +117,19 @@ open class BaseFragment : Fragment() {
                         Glide.with(parent.context).load(uiKitUser.avatar?.ifEmpty { BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image }).apply(requestOptions)
                             .into(imageView)
                         // Set different avatars for different users based on the user parameter in the callback.
-//                        if (uiKitUser.userID == userID) {
-//                            val avatarUrl =
-//                                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
-//                            if (!avatarUrl.isNullOrEmpty()) {
-//                                val requestOptions = RequestOptions().circleCrop()
-//                                Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
-//                                    .into(imageView)
-//                            }
-//                        }else{
-//                            val requestOptions = RequestOptions().circleCrop()
-//                            Glide.with(parent.context).load(uiKitUser.avatar).apply(requestOptions)
-//                                .into(imageView)
-//                        }
+                        if (uiKitUser.userID == userID) {
+                            val avatarUrl =
+                                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+                            if (!avatarUrl.isNullOrEmpty()) {
+                                val requestOptions = RequestOptions().circleCrop()
+                                Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
+                                    .into(imageView)
+                            }
+                        }else{
+                            val requestOptions = RequestOptions().circleCrop()
+                            Glide.with(parent.context).load(uiKitUser.avatar).apply(requestOptions)
+                                .into(imageView)
+                        }
                         return imageView
                     }
                 }
