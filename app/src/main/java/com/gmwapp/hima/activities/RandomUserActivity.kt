@@ -61,6 +61,22 @@ class RandomUserActivity : BaseActivity() {
         initUI()
     }
 
+    private fun checkOverlayPermission() {
+        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                val message =
+                    "We need your consent for the following permissions in order to use the offline call function properly"
+                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+            }).request(RequestCallback { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    initializeCall()
+                } else {
+                    checkOverlayPermission()
+                }
+            })
+
+    }
+
     fun askPermissions() {
         val permissionNeeded =
             arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
@@ -73,18 +89,16 @@ class RandomUserActivity : BaseActivity() {
         ) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
         } else {
-            val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-            val callType = intent.getStringExtra(DConstants.CALL_TYPE)
-            userData?.let {
-                callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
-            }
+            checkOverlayPermission()
         }
-        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
-                val message =
-                    "We need your consent for the following permissions in order to use the offline call function properly"
-                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
+    }
+
+    private fun initializeCall() {
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+        userData?.let {
+            callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -231,7 +245,12 @@ class RandomUserActivity : BaseActivity() {
         }
     }
 
-    private fun setupCall(receiverId: String, receiverName: String, type: String, balanceTime:String?) {
+    private fun setupCall(
+        receiverId: String,
+        receiverName: String,
+        type: String,
+        balanceTime: String?
+    ) {
         activity = this
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
@@ -251,8 +270,7 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(false)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
-//        val user = ZegoUIKitUser("48", "Anushka854")
-        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
         binding.voiceCallButton.performClick() // Programmatically click to start the call
@@ -262,8 +280,7 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
-//        val user = ZegoUIKitUser("48", "Anushka854")
-        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
         binding.voiceCallButton.performClick()
