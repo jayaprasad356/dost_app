@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
@@ -32,6 +33,8 @@ import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoInvitationCallListe
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
@@ -277,7 +280,11 @@ class RandomUserActivity : BaseActivity() {
         user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
-        binding.voiceCallButton.performClick() // Programmatically click to start the call
+        lifecycleScope.launch {
+            delay(4000)
+            binding.voiceCallButton.performClick()
+        }
+
     }
 
     private fun StartVideoCall(targetUserId: String, targetName: String) {
@@ -287,6 +294,9 @@ class RandomUserActivity : BaseActivity() {
         user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
-        binding.voiceCallButton.performClick()
+        lifecycleScope.launch {
+            delay(4000)
+            binding.voiceCallButton.performClick()
+        }
     }
 }
