@@ -38,30 +38,43 @@ class FemaleHomeFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        askPermissions();
+    }
+
     fun askPermissions() {
         val permissionNeeded =
             arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
 
         if (context?.let {
                 ContextCompat.checkSelfPermission(
-                    it,
-                    "android.permission.CAMERA"
+                    it, "android.permission.CAMERA"
                 )
             } != PackageManager.PERMISSION_GRANTED || context?.let {
                 ContextCompat.checkSelfPermission(
-                    it,
-                    "android.permission.RECORD_AUDIO"
+                    it, "android.permission.RECORD_AUDIO"
                 )
-            } != PackageManager.PERMISSION_GRANTED
-        ) {
+            } != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
+        }else{
+            checkOverlayPermission()
         }
+    }
+
+    private fun checkOverlayPermission() {
         PermissionX.init(requireActivity()).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
             .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
                 val message =
                     "We need your consent for the following permissions in order to use the offline call function properly"
                 scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
+            }).request(RequestCallback { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    initializeCall()
+                } else {
+                    checkOverlayPermission()
+                }
+            })
 
     }
 
@@ -76,8 +89,18 @@ class FemaleHomeFragment : BaseFragment() {
                 if (!(permissionToCamera && permissionToRecord)) {
                     val intent = Intent(context, GrantPermissionsActivity::class.java)
                     startActivity(intent)
+                } else {
+                    checkOverlayPermission()
                 }
             }
+        }
+    }
+
+    private fun initializeCall() {
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        val userData = prefs?.getUserData()
+        if (userData != null) {
+            setupZegoUIKit(userData.id, userData.name)
         }
     }
 
@@ -87,10 +110,8 @@ class FemaleHomeFragment : BaseFragment() {
             startActivity(intent)
         })
         val prefs = BaseApplication.getInstance()?.getPrefs()
-        askPermissions()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            setupZegoUIKit(userData.id,userData.name)
             binding.sAudio.isChecked = userData.audio_status == 1
             binding.sVideo.isChecked = userData.video_status == 1
         }
@@ -99,14 +120,14 @@ class FemaleHomeFragment : BaseFragment() {
                 prefs?.setUserData(it.data)
             } else {
                 Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1;
-                binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1;
+                binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
+                binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
             }
         })
         femaleUsersViewModel.updateCallStatusErrorLiveData.observe(viewLifecycleOwner, Observer {
             showErrorMessage(it)
-            binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1;
-            binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1;
+            binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
+            binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
         })
         binding.sAudio.setOnCheckedChangeListener({ buttonView, isChecked ->
             userData?.id?.let {
@@ -114,7 +135,7 @@ class FemaleHomeFragment : BaseFragment() {
                     it, DConstants.AUDIO, if (isChecked) 1 else 0
                 )
             }
-            if(isChecked){
+            if (isChecked) {
 
             }
         })
