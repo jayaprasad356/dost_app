@@ -25,6 +25,7 @@ import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
+import com.zegocloud.uikit.prebuilt.call.invite.internal.OutgoingCallButtonListener
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallType
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallUser
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoInvitationCallListener
@@ -159,6 +160,12 @@ class RandomUserActivity : BaseActivity() {
     }
 
     private fun addRoomStateChangedListener(callId: Int) {
+        ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
+            object : OutgoingCallButtonListener {
+                override fun onOutgoingCallCancelButtonPressed() {
+                    initializeCall()
+                }
+            }
         ZegoUIKitPrebuiltCallService.events.invitationEvents.invitationListener =
             object : ZegoInvitationCallListener {
                 override fun onIncomingCallReceived(
