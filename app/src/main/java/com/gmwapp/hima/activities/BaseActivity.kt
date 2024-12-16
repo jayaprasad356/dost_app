@@ -123,7 +123,7 @@ open class BaseActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                 }
                 config.durationConfig = ZegoCallDurationConfig().apply {
-                    isVisible = true
+                    isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d(
