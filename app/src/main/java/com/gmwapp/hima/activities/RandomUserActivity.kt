@@ -121,12 +121,14 @@ class RandomUserActivity : BaseActivity() {
         })
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
+                val data = it.data
                 setupCall(
-                    it.data?.call_user_id.toString(),
-                    it.data?.call_user_name.toString(),
-                    callType.toString()
+                    data?.call_user_id.toString(),
+                    data?.call_user_name.toString(),
+                    callType.toString(),
+                    data?.balance_time
                 )
-                it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
+                data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
@@ -226,13 +228,13 @@ class RandomUserActivity : BaseActivity() {
         }
     }
 
-    private fun setupCall(receiverId: String, receiverName: String, type: String) {
+    private fun setupCall(receiverId: String, receiverName: String, type: String, balanceTime:String?) {
         activity = this
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            setupZegoUIKit(userData.id, userData.name)
+            setupZegoUIKit(userData.id, userData.name, balanceTime)
         }
         when (type) {
             "audio" -> StartVoiceCall(receiverId, receiverName)
@@ -246,6 +248,7 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(false)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
+//        val user = ZegoUIKitUser("48", "Anushka854")
         user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.performClick() // Programmatically click to start the call
@@ -255,6 +258,7 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
+//        val user = ZegoUIKitUser("48", "Anushka854")
         user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.performClick()

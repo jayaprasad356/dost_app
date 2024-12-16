@@ -65,7 +65,7 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun setupZegoUIKit(Userid: Any, userName: String) {
+    fun setupZegoUIKit(Userid: Any, userName: String, balanceTime: String?) {
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()
@@ -106,14 +106,23 @@ open class BaseActivity : AppCompatActivity() {
                 }
 
                 // Set up call duration configuration with a listener
+                var balanceTimeInsecs: Int = 0
+                try {
+                    if (balanceTime != null) {
+                        val split = balanceTime.split(":")
+                        balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+                    }
+                } catch (e: Exception) {
+                }
                 config.durationConfig = ZegoCallDurationConfig().apply {
                     isVisible = true
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
-                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
-                            foregroundView?.updateTime(seconds)
-                            if (seconds.toInt() == 60 * 5) {  // Ends call after 5 minutes
-                                //     ZegoUIKitPrebuiltCallService.endCall()
+                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds] [$balanceTimeInsecs]")
+                            var remainingTime:Int = balanceTimeInsecs - seconds.toInt();
+                            foregroundView?.updateTime(remainingTime)
+                            if (remainingTime ==0) {  // Ends call after 5 minutes
+                                ZegoUIKitPrebuiltCallService.endCall()
                             }
                         }
                     }
@@ -144,7 +153,7 @@ open class BaseActivity : AppCompatActivity() {
                                 Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
                                     .into(imageView)
                             }
-                        }else{
+                        } else {
                             val requestOptions = RequestOptions().circleCrop()
                             Glide.with(parent.context).load(uiKitUser.avatar).apply(requestOptions)
                                 .into(imageView)
@@ -159,9 +168,11 @@ open class BaseActivity : AppCompatActivity() {
                         if (uiKitUser.userID != userID) {
                             foregroundView = CustomCallView(parent.context, uiKitUser.userID)
                             foregroundView
-                        }else {
-                            CustomCallEmptyView(parent.context, uiKitUser.userID
-                        )}
+                        } else {
+                            CustomCallEmptyView(
+                                parent.context, uiKitUser.userID
+                            )
+                        }
 
                     }
                 return config
