@@ -4,11 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -46,7 +42,6 @@ class RandomUserActivity : BaseActivity() {
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
-    private var isAlreadyCalled = false
     private var roomID: String? = null
 
     private var userId: String = ""
@@ -84,6 +79,12 @@ class RandomUserActivity : BaseActivity() {
                 callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
             }
         }
+        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                val message =
+                    "We need your consent for the following permissions in order to use the offline call function properly"
+                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
     }
 
     override fun onRequestPermissionsResult(
@@ -113,6 +114,7 @@ class RandomUserActivity : BaseActivity() {
         super.onResume()
         askPermissions()
     }
+
 
     private fun initUI() {
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
@@ -205,10 +207,12 @@ class RandomUserActivity : BaseActivity() {
                         ?.getUserData()?.id.toString() // Set user_id
                     callUserId = targetUserId.toString() // Set call_user_id
                     startTime = dateFormat.format(Date()) // Set call start time in IST
+
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     endTime = dateFormat.format(Date()) // Set call end time in IST
+
                     val constraints =
                         Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
                     val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
@@ -222,7 +226,6 @@ class RandomUserActivity : BaseActivity() {
                 }
 
                 else -> {
-                    finish()
                 }
             }
         }
@@ -251,6 +254,7 @@ class RandomUserActivity : BaseActivity() {
 //        val user = ZegoUIKitUser("48", "Anushka854")
         user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
         binding.voiceCallButton.setInvitees(listOf(user))
+        binding.voiceCallButton.setTimeout(7)
         binding.voiceCallButton.performClick() // Programmatically click to start the call
     }
 
@@ -261,6 +265,7 @@ class RandomUserActivity : BaseActivity() {
 //        val user = ZegoUIKitUser("48", "Anushka854")
         user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
         binding.voiceCallButton.setInvitees(listOf(user))
+        binding.voiceCallButton.setTimeout(7)
         binding.voiceCallButton.performClick()
     }
 }
