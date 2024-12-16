@@ -1,50 +1,27 @@
 package com.gmwapp.hima.fragments
 
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.ImageView
 import android.text.Html
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
-import com.gmwapp.hima.activities.DeleteAccountActivity
 import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.adapters.FemaleUserAdapter
-import com.gmwapp.hima.adapters.TransactionAdapter
+import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentHomeBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
+import com.gmwapp.hima.retrofit.responses.Reason
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
-import com.gmwapp.hima.viewmodels.LoginViewModel
-import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
-import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
-import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
-import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
-import com.zegocloud.uikit.prebuilt.call.config.DurationUpdateListener
-import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
-import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
-import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
-import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
-import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
-import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -54,9 +31,7 @@ class HomeFragment : BaseFragment() {
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
@@ -65,7 +40,7 @@ class HomeFragment : BaseFragment() {
     }
 
 
-    private fun initUI(){
+    private fun initUI() {
         binding.clCoins.setOnClickListener({
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
@@ -93,13 +68,40 @@ class HomeFragment : BaseFragment() {
             if (it?.data != null) {
                 binding.rvProfiles.setLayoutManager(
                     LinearLayoutManager(
-                        activity,
-                        LinearLayoutManager.VERTICAL,
-                        false
+                        activity, LinearLayoutManager.VERTICAL, false
                     )
                 )
 
-                var transactionAdapter = activity?.let { it1 -> FemaleUserAdapter(it1, it.data) }
+                var transactionAdapter = activity?.let { it1 ->
+                    FemaleUserAdapter(it1,
+                        it.data,
+                        object : OnItemSelectionListener<FemaleUsersResponseData> {
+                            override fun onItemSelected(data: FemaleUsersResponseData) {
+                                val intent = Intent(context, RandomUserActivity::class.java)
+                                intent.putExtra(DConstants.CALL_TYPE, "audio")
+                                intent.putExtra(DConstants.RECEIVER_ID, data.id)
+                                intent.putExtra(DConstants.RECEIVER_NAME, data.name)
+                                intent.putExtra(DConstants.BALANCE_TIME, data.balance)
+                                intent.putExtra(DConstants.CALL_ID, 0)
+                                intent.putExtra(DConstants.IMAGE, data.image)
+                                intent.putExtra(DConstants.TEXT, getString(R.string.wait_user_hint, data.name))
+                                startActivity(intent)
+                            }
+                        },
+                        object : OnItemSelectionListener<FemaleUsersResponseData> {
+                            override fun onItemSelected(data: FemaleUsersResponseData) {
+                                val intent = Intent(context, RandomUserActivity::class.java)
+                                intent.putExtra(DConstants.CALL_TYPE, "video")
+                                intent.putExtra(DConstants.RECEIVER_ID, data.id)
+                                intent.putExtra(DConstants.RECEIVER_NAME, data.name)
+                                intent.putExtra(DConstants.BALANCE_TIME, data.balance)
+                                intent.putExtra(DConstants.CALL_ID, 0)
+                                intent.putExtra(DConstants.IMAGE, data.image)
+                                intent.putExtra(DConstants.TEXT, getString(R.string.wait_user_hint, data.name))
+                                startActivity(intent)
+                            }
+                        })
+                }
                 binding.rvProfiles.setAdapter(transactionAdapter)
             }
         })
@@ -107,7 +109,7 @@ class HomeFragment : BaseFragment() {
         initFab()
     }
 
-    fun initFab(){
+    fun initFab() {
 
 
         val htmlText = " Video <img src='coin_d'/> 60/min"
@@ -133,11 +135,11 @@ class HomeFragment : BaseFragment() {
             if (!isAllFabVisible) {
                 binding.fabAudio.show()
                 binding.fabVideo.show()
-                binding.tvAudio.setVisibility(View.VISIBLE)
-                binding.tvVideo.setVisibility(View.VISIBLE)
+                binding.tvAudio.visibility = View.VISIBLE
+                binding.tvVideo.visibility = View.VISIBLE
 
                 // change the bg color
-                binding.fabRandom.setBackgroundTintList(resources.getColorStateList(R.color.white))
+                binding.fabRandom.backgroundTintList = resources.getColorStateList(R.color.white)
 
                 // Change the icon tint
                 binding.fabRandom.setIconTintResource(R.color.black)
@@ -151,15 +153,14 @@ class HomeFragment : BaseFragment() {
             } else {
                 binding.fabAudio.hide()
                 binding.fabVideo.hide()
-                binding.tvAudio.setVisibility(View.GONE)
-                binding.tvVideo.setVisibility(View.GONE)
+                binding.tvAudio.visibility = View.GONE
+                binding.tvVideo.visibility = View.GONE
 
 
-                binding.fabRandom.setBackgroundTintList(resources.getColorStateList(R.color.blue))
+                binding.fabRandom.backgroundTintList = resources.getColorStateList(R.color.blue)
 
 
                 binding.fabRandom.setIconTintResource(R.color.white)
-
 
 
                 // Change the icon and extend the parent FAB

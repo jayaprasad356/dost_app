@@ -15,6 +15,7 @@ import com.gmwapp.hima.databinding.AdapterTransactionBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.retrofit.responses.Interests
+import com.gmwapp.hima.retrofit.responses.Reason
 import com.gmwapp.hima.retrofit.responses.TransactionsResponseData
 import com.gmwapp.hima.utils.Helper
 import com.google.android.flexbox.AlignItems
@@ -28,6 +29,9 @@ import com.google.android.flexbox.JustifyContent
 class FemaleUserAdapter(
     val activity: Activity,
     private val femaleUsers: List<FemaleUsersResponseData>,
+    val onAudioListener: OnItemSelectionListener<FemaleUsersResponseData>,
+    val onVideoListener: OnItemSelectionListener<FemaleUsersResponseData>
+
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -47,6 +51,12 @@ class FemaleUserAdapter(
             RoundedCorners(28)
         )).into(holder.binding.ivProfile)
 
+        holder.binding.cvAudio.setOnClickListener({
+            onAudioListener.onItemSelected(femaleUser)
+        })
+        holder.binding.cvVideo.setOnClickListener({
+            onVideoListener.onItemSelected(femaleUser)
+        })
         holder.binding.tvName.text = femaleUser.name
         holder.binding.tvLanguage.text = femaleUser.language
         val interestsAsString = femaleUser.interests.split(",")

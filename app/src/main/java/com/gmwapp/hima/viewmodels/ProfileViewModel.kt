@@ -108,6 +108,13 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
         }
     }
 
+    fun getUserSync(
+        userId: Int
+    ): Response<RegisterResponse> {
+            return profileRepositories.getUserSync(
+                userId)
+    }
+
     fun registerFemale(
         mobile: String,
         language: String,

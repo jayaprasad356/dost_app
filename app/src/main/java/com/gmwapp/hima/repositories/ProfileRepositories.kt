@@ -10,6 +10,7 @@ import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
 import com.gmwapp.hima.retrofit.responses.UserValidationResponse
 import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
 import okhttp3.MultipartBody
+import retrofit2.Response
 import javax.inject.Inject
 
 class ProfileRepositories @Inject constructor(private val apiManager: ApiManager) {
@@ -32,6 +33,12 @@ class ProfileRepositories @Inject constructor(private val apiManager: ApiManager
         callback: NetworkCallback<RegisterResponse>
     ) {
         apiManager.getUser(userId, callback)
+    }
+
+    fun getUserSync(
+        userId: Int
+    ): Response<RegisterResponse> {
+        return apiManager.getUserSync(userId)
     }
 
     fun registerFemale(
