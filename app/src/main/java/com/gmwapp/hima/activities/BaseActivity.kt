@@ -175,6 +175,8 @@ open class BaseActivity : AppCompatActivity() {
                         }
 
                     }
+                config.topMenuBarConfig.isVisible = true;
+                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
                 return config
             }
         }
