@@ -7,9 +7,11 @@ data class FemaleUsersResponse(
 )
 
 data class FemaleUsersResponseData(
+    val id: Int,
     val name: String,
     val image: String,
     val language: String,
+    val balance: Int,
     val interests: String,
     val describe_yourself: String,
 )

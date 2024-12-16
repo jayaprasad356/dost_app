@@ -21,6 +21,7 @@ import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
 import com.gmwapp.hima.utils.Helper
 import okhttp3.MultipartBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -92,6 +93,13 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         } else {
             callback.onNoNetwork()
         }
+    }
+
+    fun getUserSync(
+        userId: Int
+    ): Response<RegisterResponse> {
+            val apiCall: Call<RegisterResponse> = getApiInterface().getUserSync(userId)
+            return apiCall.execute()
     }
 
     fun registerFemale(
@@ -304,6 +312,12 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/userdetails")
     fun getUser(
+        @Field("user_id") user_id: Int,
+    ): Call<RegisterResponse>
+
+    @FormUrlEncoded
+    @POST("api/userdetails")
+    fun getUserSync(
         @Field("user_id") user_id: Int,
     ): Call<RegisterResponse>
 

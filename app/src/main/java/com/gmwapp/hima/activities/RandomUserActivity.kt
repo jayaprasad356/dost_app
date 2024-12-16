@@ -4,20 +4,19 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
@@ -29,12 +28,15 @@ import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
+import com.zegocloud.uikit.prebuilt.call.invite.internal.OutgoingCallButtonListener
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallType
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallUser
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoInvitationCallListener
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
@@ -42,11 +44,11 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity() {
+    private var receiverId: Int? = null
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
-    private var isAlreadyCalled = false
     private var roomID: String? = null
 
     private var userId: String = ""
@@ -64,6 +66,32 @@ class RandomUserActivity : BaseActivity() {
         binding = ActivityRandomUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
+        askPermissions()
+    }
+
+    private fun checkOverlayPermission() {
+        try {
+            PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+                .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                    try {
+                        val message =
+                            "We need your consent for the following permissions in order to use the offline call function properly"
+                        scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+                    } catch (e: Exception) {
+                    }
+                }).request(RequestCallback { allGranted, grantedList, deniedList ->
+                    try {
+                        if (allGranted) {
+                            initializeCall(false)
+                        } else {
+                            checkOverlayPermission()
+                        }
+                    } catch (e: Exception) {
+                    }
+                })
+        } catch (e: Exception) {
+        }
+
     }
 
     fun askPermissions() {
@@ -77,6 +105,25 @@ class RandomUserActivity : BaseActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
+        } else {
+            checkOverlayPermission()
+        }
+    }
+
+    private fun initializeCall(cancelled: Boolean) {
+        if (receiverId != null) {
+            if (cancelled) {
+                finish()
+            } else {
+                val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
+                val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+                val balanceTime = intent.getStringExtra(DConstants.BALANCE_TIME)
+                val callId = intent.getIntExtra(DConstants.CALL_ID, 0)
+                setupCall(
+                    receiverId.toString(), receiverName.toString(), callType.toString(), balanceTime
+                )
+                callId?.let { addRoomStateChangedListener(it) }
+            }
         } else {
             val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
             val callType = intent.getStringExtra(DConstants.CALL_TYPE)
@@ -95,11 +142,7 @@ class RandomUserActivity : BaseActivity() {
                 val permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val permissionToRecord = grantResults[1] == PackageManager.PERMISSION_GRANTED
                 if (permissionToCamera && permissionToRecord) {
-                    val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-                    val callType = intent.getStringExtra(DConstants.CALL_TYPE)
-                    userData?.let {
-                        callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
-                    }
+                    checkOverlayPermission()
                 } else {
                     finish()
                     val intent = Intent(this, GrantPermissionsActivity::class.java)
@@ -109,24 +152,31 @@ class RandomUserActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        askPermissions()
-    }
-
     private fun initUI() {
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+        val image = intent.getStringExtra(DConstants.IMAGE)
+        val text = intent.getStringExtra(DConstants.TEXT)
+        if (image != null) {
+            val requestOptions = RequestOptions().circleCrop()
+            Glide.with(this).load(image).apply(requestOptions).into(binding.ivLogo)
+        }
+        if (text != null) {
+            binding.tvWaitHint.text = text
+        }
         binding.btnCancel.setOnClickListener({
             finish()
         })
+        receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
+                val data = it.data
                 setupCall(
-                    it.data?.call_user_id.toString(),
-                    it.data?.call_user_name.toString(),
-                    callType.toString()
+                    data?.call_user_id.toString(),
+                    data?.call_user_name.toString(),
+                    callType.toString(),
+                    data?.balance_time
                 )
-                it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
+                data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
@@ -141,6 +191,12 @@ class RandomUserActivity : BaseActivity() {
     }
 
     private fun addRoomStateChangedListener(callId: Int) {
+        ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
+            object : OutgoingCallButtonListener {
+                override fun onOutgoingCallCancelButtonPressed() {
+                    initializeCall(true)
+                }
+            }
         ZegoUIKitPrebuiltCallService.events.invitationEvents.invitationListener =
             object : ZegoInvitationCallListener {
                 override fun onIncomingCallReceived(
@@ -171,6 +227,7 @@ class RandomUserActivity : BaseActivity() {
                         getString(R.string.call_rejected),
                         Toast.LENGTH_SHORT
                     ).show()
+                    initializeCall(true)
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
@@ -179,7 +236,7 @@ class RandomUserActivity : BaseActivity() {
                         getString(R.string.call_rejected),
                         Toast.LENGTH_SHORT
                     ).show()
-                    finish()
+                    initializeCall(true)
                 }
 
                 override fun onOutgoingCallTimeout(
@@ -190,7 +247,7 @@ class RandomUserActivity : BaseActivity() {
                         getString(R.string.call_timeout),
                         Toast.LENGTH_SHORT
                     ).show()
-                    finish()
+                    initializeCall(true)
                 }
             }
 
@@ -203,10 +260,12 @@ class RandomUserActivity : BaseActivity() {
                         ?.getUserData()?.id.toString() // Set user_id
                     callUserId = targetUserId.toString() // Set call_user_id
                     startTime = dateFormat.format(Date()) // Set call start time in IST
+
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     endTime = dateFormat.format(Date()) // Set call end time in IST
+
                     val constraints =
                         Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
                     val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
@@ -220,23 +279,24 @@ class RandomUserActivity : BaseActivity() {
                 }
 
                 else -> {
-                    finish()
                 }
             }
         }
     }
 
-    private fun setupCall(receiverId: String, receiverName: String, type: String) {
+    private fun setupCall(
+        receiverId: String?, receiverName: String, type: String, balanceTime: String?
+    ) {
         activity = this
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            setupZegoUIKit(userData.id, userData.name)
+            setupZegoUIKit(userData.id, userData.name, balanceTime)
         }
         when (type) {
-            "audio" -> StartVoiceCall(receiverId, receiverName)
-            "video" -> StartVideoCall(receiverId, receiverName)
+            "audio" -> receiverId?.let { StartVoiceCall(it, receiverName) }
+            "video" -> receiverId?.let { StartVideoCall(it, receiverName) }
             else -> Toast.makeText(this, "Invalid call type", Toast.LENGTH_SHORT).show()
         }
 
@@ -246,17 +306,34 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(false)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
-        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        val instance = BaseApplication.getInstance()
+        user.avatar = instance?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
-        binding.voiceCallButton.performClick() // Programmatically click to start the call
+        binding.voiceCallButton.setTimeout(7)
+        lifecycleScope.launch {
+            if (instance?.isCalled() == false || instance?.isCalled() == null) {
+                delay(4000)
+                instance?.setCalled(true)
+            }
+            binding.voiceCallButton.performClick()
+        }
+
     }
 
     private fun StartVideoCall(targetUserId: String, targetName: String) {
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
-        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        val instance = BaseApplication.getInstance()
+        user.avatar = instance?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
-        binding.voiceCallButton.performClick()
+        binding.voiceCallButton.setTimeout(7)
+        lifecycleScope.launch {
+            if (instance?.isCalled() == false || instance?.isCalled() == null) {
+                delay(4000)
+                instance?.setCalled(true)
+            }
+            binding.voiceCallButton.performClick()
+        }
     }
 }
