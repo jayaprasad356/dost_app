@@ -15,6 +15,8 @@ import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
@@ -42,6 +44,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity() {
+    private var receiverId: String? = null
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
@@ -79,7 +82,7 @@ class RandomUserActivity : BaseActivity() {
                 }).request(RequestCallback { allGranted, grantedList, deniedList ->
                     try {
                         if (allGranted) {
-                            initializeCall()
+                            initializeCall(false)
                         } else {
                             checkOverlayPermission()
                         }
@@ -107,11 +110,26 @@ class RandomUserActivity : BaseActivity() {
         }
     }
 
-    private fun initializeCall() {
-        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-        val callType = intent.getStringExtra(DConstants.CALL_TYPE)
-        userData?.let {
-            callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+    private fun initializeCall(cancelled: Boolean) {
+        if (receiverId != null) {
+            if (cancelled) {
+                finish()
+            } else {
+                val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
+                val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+                val balanceTime = intent.getStringExtra(DConstants.BALANCE_TIME)
+                val callId = intent.getStringExtra(DConstants.CALL_ID)
+                setupCall(
+                    receiverId, receiverName.toString(), callType.toString(), balanceTime
+                )
+                callId?.toInt()?.let { addRoomStateChangedListener(it) }
+            }
+        } else {
+            val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+            val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+            userData?.let {
+                callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+            }
         }
     }
 
@@ -136,9 +154,19 @@ class RandomUserActivity : BaseActivity() {
 
     private fun initUI() {
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+        val image = intent.getStringExtra(DConstants.IMAGE)
+        val text = intent.getStringExtra(DConstants.TEXT)
+        if (image != null) {
+            val requestOptions = RequestOptions().circleCrop()
+            Glide.with(this).load(image).apply(requestOptions).into(binding.ivLogo)
+        }
+        if (text != null) {
+            binding.tvWaitHint.text = text
+        }
         binding.btnCancel.setOnClickListener({
             finish()
         })
+        receiverId = intent.getStringExtra(DConstants.RECEIVER_ID)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 val data = it.data
@@ -166,7 +194,7 @@ class RandomUserActivity : BaseActivity() {
         ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
             object : OutgoingCallButtonListener {
                 override fun onOutgoingCallCancelButtonPressed() {
-                    initializeCall()
+                    initializeCall(true)
                 }
             }
         ZegoUIKitPrebuiltCallService.events.invitationEvents.invitationListener =
@@ -256,7 +284,7 @@ class RandomUserActivity : BaseActivity() {
     }
 
     private fun setupCall(
-        receiverId: String, receiverName: String, type: String, balanceTime: String?
+        receiverId: String?, receiverName: String, type: String, balanceTime: String?
     ) {
         activity = this
 
@@ -266,8 +294,8 @@ class RandomUserActivity : BaseActivity() {
             setupZegoUIKit(userData.id, userData.name, balanceTime)
         }
         when (type) {
-            "audio" -> StartVoiceCall(receiverId, receiverName)
-            "video" -> StartVideoCall(receiverId, receiverName)
+            "audio" -> receiverId?.let { StartVoiceCall(it, receiverName) }
+            "video" -> receiverId?.let { StartVideoCall(it, receiverName) }
             else -> Toast.makeText(this, "Invalid call type", Toast.LENGTH_SHORT).show()
         }
 
