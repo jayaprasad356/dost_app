@@ -35,12 +35,8 @@ class FemaleHomeFragment : BaseFragment() {
         binding = FragmentFemaleHomeBinding.inflate(layoutInflater)
 
         initUI()
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
         askPermissions();
+        return binding.root
     }
 
     fun askPermissions() {

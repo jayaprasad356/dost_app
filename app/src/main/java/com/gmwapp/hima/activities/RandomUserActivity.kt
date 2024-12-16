@@ -59,21 +59,31 @@ class RandomUserActivity : BaseActivity() {
         binding = ActivityRandomUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
+        askPermissions()
     }
 
     private fun checkOverlayPermission() {
-        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
-                val message =
-                    "We need your consent for the following permissions in order to use the offline call function properly"
-                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }).request(RequestCallback { allGranted, grantedList, deniedList ->
-                if (allGranted) {
-                    initializeCall()
-                } else {
-                    checkOverlayPermission()
-                }
-            })
+        try {
+            PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+                .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                    try {
+                        val message =
+                            "We need your consent for the following permissions in order to use the offline call function properly"
+                        scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+                    } catch (e: Exception) {
+                    }
+                }).request(RequestCallback { allGranted, grantedList, deniedList ->
+                    try {
+                        if (allGranted) {
+                            initializeCall()
+                        } else {
+                            checkOverlayPermission()
+                        }
+                    } catch (e: Exception) {
+                    }
+                })
+        } catch (e: Exception) {
+        }
 
     }
 
@@ -110,11 +120,7 @@ class RandomUserActivity : BaseActivity() {
                 val permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val permissionToRecord = grantResults[1] == PackageManager.PERMISSION_GRANTED
                 if (permissionToCamera && permissionToRecord) {
-                    val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-                    val callType = intent.getStringExtra(DConstants.CALL_TYPE)
-                    userData?.let {
-                        callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
-                    }
+                    checkOverlayPermission()
                 } else {
                     finish()
                     val intent = Intent(this, GrantPermissionsActivity::class.java)
@@ -123,12 +129,6 @@ class RandomUserActivity : BaseActivity() {
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        askPermissions()
-    }
-
 
     private fun initUI() {
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
@@ -246,10 +246,7 @@ class RandomUserActivity : BaseActivity() {
     }
 
     private fun setupCall(
-        receiverId: String,
-        receiverName: String,
-        type: String,
-        balanceTime: String?
+        receiverId: String, receiverName: String, type: String, balanceTime: String?
     ) {
         activity = this
 
