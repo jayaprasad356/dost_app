@@ -44,7 +44,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity() {
-    private var receiverId: String? = null
+    private var receiverId: Int? = null
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
@@ -118,11 +118,11 @@ class RandomUserActivity : BaseActivity() {
                 val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
                 val callType = intent.getStringExtra(DConstants.CALL_TYPE)
                 val balanceTime = intent.getStringExtra(DConstants.BALANCE_TIME)
-                val callId = intent.getStringExtra(DConstants.CALL_ID)
+                val callId = intent.getIntExtra(DConstants.CALL_ID, 0)
                 setupCall(
-                    receiverId, receiverName.toString(), callType.toString(), balanceTime
+                    receiverId.toString(), receiverName.toString(), callType.toString(), balanceTime
                 )
-                callId?.toInt()?.let { addRoomStateChangedListener(it) }
+                callId?.let { addRoomStateChangedListener(it) }
             }
         } else {
             val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
@@ -166,7 +166,7 @@ class RandomUserActivity : BaseActivity() {
         binding.btnCancel.setOnClickListener({
             finish()
         })
-        receiverId = intent.getStringExtra(DConstants.RECEIVER_ID)
+        receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 val data = it.data
