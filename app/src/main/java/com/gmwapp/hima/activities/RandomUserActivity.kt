@@ -227,6 +227,7 @@ class RandomUserActivity : BaseActivity() {
                         getString(R.string.call_rejected),
                         Toast.LENGTH_SHORT
                     ).show()
+                    initializeCall(true)
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
@@ -235,7 +236,7 @@ class RandomUserActivity : BaseActivity() {
                         getString(R.string.call_rejected),
                         Toast.LENGTH_SHORT
                     ).show()
-                    finish()
+                    initializeCall(true)
                 }
 
                 override fun onOutgoingCallTimeout(
@@ -246,7 +247,7 @@ class RandomUserActivity : BaseActivity() {
                         getString(R.string.call_timeout),
                         Toast.LENGTH_SHORT
                     ).show()
-                    finish()
+                    initializeCall(true)
                 }
             }
 
