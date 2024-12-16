@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -83,13 +84,6 @@ class RandomUserActivity : BaseActivity() {
                 callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
             }
         }
-        PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
-                val message =
-                    "We need your consent for the following permissions in order to use the offline call function properly"
-                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
-
     }
 
     override fun onRequestPermissionsResult(
@@ -117,11 +111,7 @@ class RandomUserActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isAlreadyCalled) {
-            finish()
-        } else {
-            isAlreadyCalled = true
-        }
+        askPermissions()
     }
 
     private fun initUI() {
@@ -129,15 +119,14 @@ class RandomUserActivity : BaseActivity() {
         binding.btnCancel.setOnClickListener({
             finish()
         })
-        askPermissions()
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
-                it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
                 setupCall(
                     it.data?.call_user_id.toString(),
                     it.data?.call_user_name.toString(),
                     callType.toString()
                 )
+                it.data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it.message, Toast.LENGTH_LONG
@@ -255,15 +244,19 @@ class RandomUserActivity : BaseActivity() {
 
     private fun StartVoiceCall(targetUserId: String, targetName: String) {
         binding.voiceCallButton.setIsVideoCall(false)
-        binding.voiceCallButton.resourceID = "zego_uikit_call"
-        binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
+        binding.voiceCallButton.resourceID = "zego_call"
+        val user = ZegoUIKitUser(targetUserId, targetName)
+        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.performClick() // Programmatically click to start the call
     }
 
     private fun StartVideoCall(targetUserId: String, targetName: String) {
         binding.voiceCallButton.setIsVideoCall(true)
-        binding.voiceCallButton.resourceID = "zego_uikit_call"
-        binding.voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserId, targetName)))
+        binding.voiceCallButton.resourceID = "zego_call"
+        val user = ZegoUIKitUser(targetUserId, targetName)
+        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image;
+        binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.performClick()
     }
 }

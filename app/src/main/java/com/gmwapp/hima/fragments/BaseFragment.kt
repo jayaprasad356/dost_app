@@ -3,8 +3,10 @@ package com.gmwapp.hima.fragments
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -101,13 +103,31 @@ open class BaseFragment : Fragment() {
                     override fun onUserIDUpdated(
                         parent: ViewGroup, uiKitUser: ZegoUIKitUser
                     ): View {
+                        try {
+                            (parent.context as AppCompatActivity).window.setFlags(
+                                WindowManager.LayoutParams.FLAG_SECURE,
+                                WindowManager.LayoutParams.FLAG_SECURE
+                            )
+                        } catch (e: Exception) {
+                        }
+
                         val imageView = ImageView(parent.context)
+                        val requestOptions = RequestOptions().circleCrop()
+
+                        Glide.with(parent.context).load(uiKitUser.avatar?.ifEmpty { BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image }).apply(requestOptions)
+                            .into(imageView)
                         // Set different avatars for different users based on the user parameter in the callback.
-                        val avatarUrl =
-                            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
-                        if (!avatarUrl.isNullOrEmpty()) {
+                        if (uiKitUser.userID == userID) {
+                            val avatarUrl =
+                                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+                            if (!avatarUrl.isNullOrEmpty()) {
+                                val requestOptions = RequestOptions().circleCrop()
+                                Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
+                                    .into(imageView)
+                            }
+                        }else{
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
+                            Glide.with(parent.context).load(uiKitUser.avatar).apply(requestOptions)
                                 .into(imageView)
                         }
                         return imageView
@@ -125,6 +145,8 @@ open class BaseFragment : Fragment() {
                 }
 
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.topMenuBarConfig.isVisible = true;
+                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
                 return config
             }
         }

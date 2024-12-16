@@ -1,19 +1,17 @@
 package com.gmwapp.hima.activities
 
-import android.Manifest
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -21,12 +19,11 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
-import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
-import com.permissionx.guolindev.PermissionX
-import com.permissionx.guolindev.callback.ExplainReasonCallback
-import com.permissionx.guolindev.callback.RequestCallback
+import com.gmwapp.hima.widgets.CustomCallEmptyView
+import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
+import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
@@ -46,6 +43,7 @@ import kotlin.math.abs
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
+    private var foregroundView: CustomCallView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +54,9 @@ open class BaseActivity : AppCompatActivity() {
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
-                this@BaseActivity, getString(com.gmwapp.hima.R.string.please_try_again_later), Toast.LENGTH_LONG
+                this@BaseActivity,
+                getString(com.gmwapp.hima.R.string.please_try_again_later),
+                Toast.LENGTH_LONG
             ).show()
         } else {
             Toast.makeText(
@@ -76,6 +76,7 @@ open class BaseActivity : AppCompatActivity() {
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = false
 
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
+
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
                 val config: ZegoUIKitPrebuiltCallConfig = when {
                     invitationData.type == ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
@@ -99,7 +100,7 @@ open class BaseActivity : AppCompatActivity() {
                                 ZegoMenuBarButtonName.TOGGLE_MICROPHONE_BUTTON,
                                 ZegoMenuBarButtonName.SWITCH_AUDIO_OUTPUT_BUTTON
                             )
-                        );
+                        )
                         oneOnOneVideoCall
                     }
                 }
@@ -110,6 +111,7 @@ open class BaseActivity : AppCompatActivity() {
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
+                            foregroundView?.updateTime(seconds)
                             if (seconds.toInt() == 60 * 5) {  // Ends call after 5 minutes
                                 //     ZegoUIKitPrebuiltCallService.endCall()
                             }
@@ -123,13 +125,28 @@ open class BaseActivity : AppCompatActivity() {
                     override fun onUserIDUpdated(
                         parent: ViewGroup, uiKitUser: ZegoUIKitUser
                     ): View {
+                        try {
+                            (parent.context as AppCompatActivity).window.setFlags(
+                                WindowManager.LayoutParams.FLAG_SECURE,
+                                WindowManager.LayoutParams.FLAG_SECURE
+                            )
+                        } catch (e: Exception) {
+                        }
                         val imageView = ImageView(parent.context)
+                        val requestOptions = RequestOptions().circleCrop()
+
                         // Set different avatars for different users based on the user parameter in the callback.
-                        val avatarUrl =
-                            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
-                        if (!avatarUrl.isNullOrEmpty()) {
+                        if (uiKitUser.userID == userID) {
+                            val avatarUrl =
+                                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+                            if (!avatarUrl.isNullOrEmpty()) {
+                                val requestOptions = RequestOptions().circleCrop()
+                                Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
+                                    .into(imageView)
+                            }
+                        }else{
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
+                            Glide.with(parent.context).load(uiKitUser.avatar).apply(requestOptions)
                                 .into(imageView)
                         }
                         return imageView
@@ -146,7 +163,18 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
 
+
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.audioVideoViewConfig.videoViewForegroundViewProvider =
+                    ZegoForegroundViewProvider { parent, uiKitUser ->
+                        if (uiKitUser.userID != userID) {
+                            foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                            foregroundView
+                        }else {
+                            CustomCallEmptyView(parent.context, uiKitUser.userID
+                        )}
+
+                    }
                 return config
             }
         }

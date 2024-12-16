@@ -4,6 +4,21 @@
     android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:contentDescription="@string/profile"
+        android:scaleType="fitXY"
+        android:src="@drawable/star"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
     <com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton
         android:visibility="gone"
         android:layout_marginTop="10dp"
