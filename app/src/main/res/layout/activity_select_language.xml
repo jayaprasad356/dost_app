@@ -111,7 +111,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/gl_right_margin"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintHeight_percent="0.65"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintTop_toBottomOf="@+id/gl_language_top_margin" />
 

@@ -181,7 +181,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                 if (reason.name == "Other") {
                     selectedReasons.clear()
                     binding.btnDeleteAccount.isEnabled = false
-                    binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
+                   // binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
                     binding.etDescription.setText("")
                     if (reason.isSelected == true) {
                         binding.tvRemainingText.visibility = View.GONE
@@ -203,11 +203,11 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                     if (selectedReasons.size > 0) {
                         binding.btnDeleteAccount.isEnabled = true
                         binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
-                        binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
+                      //  binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
                     } else {
                         binding.btnDeleteAccount.isEnabled = false
                         binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
-                        binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
+                     //   binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
                     }
                 }
             }

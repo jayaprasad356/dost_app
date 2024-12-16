@@ -50,10 +50,10 @@ class FemaleAboutActivity : BaseActivity() {
         binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border)
         binding.cvSummary.setBackgroundResource(R.drawable.card_view_border)
 
-        binding.etEnterYourAge.setOnTouchListener { v, _ ->
-            binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_age_selected)
-            false
-        }
+//        binding.etEnterYourAge.setOnTouchListener { v, _ ->
+//            binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_age_selected)
+//            false
+//        }
         binding.etEnterYourAge.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
