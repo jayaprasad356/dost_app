@@ -45,7 +45,7 @@ class EarningsAdapter(
             }
         }
         holder.binding.tvDate.text = earning.datetime
-        holder.binding.tvAmount.text = earning.amount.toString()
+        holder.binding.tvAmount.text = "₹" + earning.amount.toString()
         holder.binding.tvId.text = activity.getString(R.string.transaction_id, earning.id.toString())
     }
 
