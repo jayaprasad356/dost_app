@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.activities.EarningsActivity
 import com.gmwapp.hima.activities.GrantPermissionsActivity
-import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
@@ -57,6 +56,13 @@ class FemaleHomeFragment : BaseFragment() {
         ) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
         }
+        PermissionX.init(requireActivity()).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                val message =
+                    "We need your consent for the following permissions in order to use the offline call function properly"
+                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+            }).request(RequestCallback { allGranted, grantedList, deniedList -> })
+
     }
 
     override fun onRequestPermissionsResult(
