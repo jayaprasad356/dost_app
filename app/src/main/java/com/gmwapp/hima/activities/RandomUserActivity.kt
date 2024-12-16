@@ -305,11 +305,15 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(false)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
-        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+        val instance = BaseApplication.getInstance()
+        user.avatar = instance?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
         lifecycleScope.launch {
-            delay(4000)
+            if (instance?.isCalled() == false || instance?.isCalled() == null) {
+                delay(4000)
+                instance?.setCalled(true)
+            }
             binding.voiceCallButton.performClick()
         }
 
@@ -319,11 +323,15 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
-        user.avatar = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+        val instance = BaseApplication.getInstance()
+        user.avatar = instance?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
         lifecycleScope.launch {
-            delay(4000)
+            if (instance?.isCalled() == false || instance?.isCalled() == null) {
+                delay(4000)
+                instance?.setCalled(true)
+            }
             binding.voiceCallButton.performClick()
         }
     }

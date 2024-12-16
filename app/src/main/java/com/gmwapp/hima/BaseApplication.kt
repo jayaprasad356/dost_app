@@ -10,17 +10,21 @@ import javax.inject.Inject
 
 
 @HiltAndroidApp
-class BaseApplication : Application(), Configuration.Provider{
+class BaseApplication : Application(), Configuration.Provider {
     private var mPreferences: DPreferences? = null
+    private var called: Boolean? = null
+
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
     companion object {
         private var mInstance: BaseApplication? = null
 
-        fun getInstance() : BaseApplication? {
-            return mInstance;
+        fun getInstance(): BaseApplication? {
+            return mInstance
         }
     }
+
     override fun onCreate() {
         super.onCreate()
         mInstance = this
@@ -31,6 +35,14 @@ class BaseApplication : Application(), Configuration.Provider{
 
     fun getPrefs(): DPreferences? {
         return mPreferences
+    }
+
+    fun setCalled(called: Boolean) {
+        this.called = called
+    }
+
+    fun isCalled(): Boolean? {
+        return this.called
     }
 
     override val workManagerConfiguration: Configuration
