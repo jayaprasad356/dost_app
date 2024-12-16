@@ -3,6 +3,7 @@ package com.gmwapp.hima.activities
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Rect
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -20,6 +22,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.utils.UsersImage
+import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallEmptyView
 import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
@@ -37,6 +41,9 @@ import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationC
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Arrays
 import kotlin.math.abs
 
@@ -44,6 +51,7 @@ import kotlin.math.abs
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
     private var foregroundView: CustomCallView? = null
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,10 +126,13 @@ open class BaseActivity : AppCompatActivity() {
                     isVisible = true
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
-                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds] [$balanceTimeInsecs]")
-                            var remainingTime:Int = balanceTimeInsecs - seconds.toInt();
+                            Log.d(
+                                "TAG",
+                                "onDurationUpdate() called with: seconds = [$seconds] [$balanceTimeInsecs]"
+                            )
+                            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
                             foregroundView?.updateTime(remainingTime)
-                            if (remainingTime ==0) {  // Ends call after 5 minutes
+                            if (remainingTime == 0) {  // Ends call after 5 minutes
                                 ZegoUIKitPrebuiltCallService.endCall()
                             }
                         }
@@ -155,8 +166,9 @@ open class BaseActivity : AppCompatActivity() {
                             }
                         } else {
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(uiKitUser.avatar).apply(requestOptions)
-                                .into(imageView)
+                            Glide.with(parent.context).load(UsersImage(profileViewModel, uiKitUser.userID.toInt()).execute().get())
+                                .apply(requestOptions).into(imageView)
+
                         }
                         return imageView
                     }
@@ -169,14 +181,15 @@ open class BaseActivity : AppCompatActivity() {
                             foregroundView = CustomCallView(parent.context, uiKitUser.userID)
                             foregroundView
                         } else {
+
                             CustomCallEmptyView(
                                 parent.context, uiKitUser.userID
                             )
                         }
 
                     }
-                config.topMenuBarConfig.isVisible = true;
-                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
+                config.topMenuBarConfig.isVisible = true
+                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)
                 return config
             }
         }

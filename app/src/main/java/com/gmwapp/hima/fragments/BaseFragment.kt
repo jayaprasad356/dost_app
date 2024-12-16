@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
@@ -15,6 +17,8 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
+import com.gmwapp.hima.utils.UsersImage
+import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
@@ -29,10 +33,13 @@ import com.zegocloud.uikit.prebuilt.call.event.BackPressEvent
 import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Arrays
 
 
+@AndroidEntryPoint
 open class BaseFragment : Fragment() {
+    private val profileViewModel: ProfileViewModel by viewModels()
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
@@ -127,8 +134,9 @@ open class BaseFragment : Fragment() {
                             }
                         }else{
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(uiKitUser.avatar).apply(requestOptions)
-                                .into(imageView)
+                            Glide.with(parent.context).load(UsersImage(profileViewModel, uiKitUser.userID.toInt()).execute().get())
+                                .apply(requestOptions).into(imageView)
+
                         }
                         return imageView
                     }
