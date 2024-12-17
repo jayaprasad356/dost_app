@@ -3,6 +3,7 @@ package com.gmwapp.hima.repositories
 import com.gmwapp.hima.retrofit.ApiManager
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
+import com.gmwapp.hima.retrofit.responses.CallsListResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
@@ -16,6 +17,10 @@ import javax.inject.Inject
 class ProfileRepositories @Inject constructor(private val apiManager: ApiManager) {
     fun getAvatarsList(gender: String, callback: NetworkCallback<AvatarsListResponse>) {
         apiManager.getAvatarsList(gender, callback)
+    }
+
+    fun getCallsList(userId: Int, gender: String, callback: NetworkCallback<CallsListResponse>) {
+        apiManager.getCallsList(userId, gender, callback)
     }
 
     fun register(

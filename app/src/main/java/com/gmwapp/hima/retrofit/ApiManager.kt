@@ -2,6 +2,7 @@ package com.gmwapp.hima.retrofit
 
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
+import com.gmwapp.hima.retrofit.responses.CallsListResponse
 import com.gmwapp.hima.retrofit.responses.CoinsResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.EarningsResponse
@@ -62,6 +63,17 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<AvatarsListResponse> = getApiInterface().getAvatarsList(gender)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun getCallsList(
+        userId: Int, gender: String, callback: NetworkCallback<CallsListResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<CallsListResponse> = getApiInterface().getCallsList(userId, gender)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -299,6 +311,10 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/avatar_list")
     fun getAvatarsList(@Field("gender") gender: String): Call<AvatarsListResponse>
+
+    @FormUrlEncoded
+    @POST("api/calls_list")
+    fun getCallsList(@Field("user_id") userId: Int,@Field("gender") gender: String): Call<CallsListResponse>
 
     @FormUrlEncoded
     @POST("api/register")
