@@ -223,31 +223,16 @@ class RandomUserActivity : BaseActivity() {
                 override fun onOutgoingCallRejectedCauseBusy(
                     callID: String?, callee: ZegoCallUser?
                 ) {
-                    Toast.makeText(
-                        this@RandomUserActivity,
-                        getString(R.string.call_rejected),
-                        Toast.LENGTH_SHORT
-                    ).show()
                     initializeCall(true)
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
-                    Toast.makeText(
-                        this@RandomUserActivity,
-                        getString(R.string.call_rejected),
-                        Toast.LENGTH_SHORT
-                    ).show()
                     initializeCall(true)
                 }
 
                 override fun onOutgoingCallTimeout(
                     callID: String?, callees: MutableList<ZegoCallUser>?
                 ) {
-                    Toast.makeText(
-                        this@RandomUserActivity,
-                        getString(R.string.call_timeout),
-                        Toast.LENGTH_SHORT
-                    ).show()
                     initializeCall(true)
                 }
             }
