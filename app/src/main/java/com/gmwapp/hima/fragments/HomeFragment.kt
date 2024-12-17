@@ -84,6 +84,7 @@ class HomeFragment : BaseFragment() {
                                 intent.putExtra(DConstants.BALANCE_TIME, data.balance)
                                 intent.putExtra(DConstants.CALL_ID, 0)
                                 intent.putExtra(DConstants.IMAGE, data.image)
+                                intent.putExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, true)
                                 intent.putExtra(DConstants.TEXT, getString(R.string.wait_user_hint, data.name))
                                 startActivity(intent)
                             }
@@ -97,6 +98,7 @@ class HomeFragment : BaseFragment() {
                                 intent.putExtra(DConstants.BALANCE_TIME, data.balance)
                                 intent.putExtra(DConstants.CALL_ID, 0)
                                 intent.putExtra(DConstants.IMAGE, data.image)
+                                intent.putExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, true)
                                 intent.putExtra(DConstants.TEXT, getString(R.string.wait_user_hint, data.name))
                                 startActivity(intent)
                             }
