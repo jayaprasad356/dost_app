@@ -27,6 +27,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="black_light">#545454</color>
+    <color name="disabled_black">#45464a</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#019A66</color>
     <color name="pink">#FF1381</color>
