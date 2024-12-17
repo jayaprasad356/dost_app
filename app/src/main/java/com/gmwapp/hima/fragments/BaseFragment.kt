@@ -19,7 +19,10 @@ import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
+import com.gmwapp.hima.widgets.CustomCallEmptyView
+import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
+import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
@@ -39,6 +42,7 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
+    private var foregroundView: CustomCallView? = null
     private val profileViewModel: ProfileViewModel by viewModels()
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
@@ -52,7 +56,7 @@ open class BaseFragment : Fragment() {
         }
     }
 
-    fun setupZegoUIKit(Userid: Any, userName: String) {
+    fun setupZegoUIKit(Userid: Any, userName: String, balanceTime: String?) {
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()
@@ -94,13 +98,24 @@ open class BaseFragment : Fragment() {
                 }
 
                 // Set up call duration configuration with a listener
+                var balanceTimeInsecs: Int = 0
+                try {
+                    if (balanceTime != null) {
+                        val split = balanceTime.split(":")
+                        balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+                    }
+                } catch (e: Exception) {
+                }
+                // Set up call duration configuration with a listener
                 config.durationConfig = ZegoCallDurationConfig().apply {
                     isVisible = true
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
-                            if (seconds.toInt() == 60 * 5) {  // Ends call after 5 minutes
-                                //     ZegoUIKitPrebuiltCallService.endCall()
+                            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
+                            foregroundView?.updateTime(remainingTime)
+                            if (remainingTime == 0) {  // Ends call after 5 minutes
+                                ZegoUIKitPrebuiltCallService.endCall()
                             }
                         }
                     }
@@ -145,6 +160,19 @@ open class BaseFragment : Fragment() {
                 }
 
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.audioVideoViewConfig.videoViewForegroundViewProvider =
+                    ZegoForegroundViewProvider { parent, uiKitUser ->
+                        if (uiKitUser.userID != userID) {
+                            foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                            foregroundView
+                        } else {
+
+                            CustomCallEmptyView(
+                                parent.context, uiKitUser.userID
+                            )
+                        }
+
+                    }
                 config.topMenuBarConfig.isVisible = true;
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
                 return config
