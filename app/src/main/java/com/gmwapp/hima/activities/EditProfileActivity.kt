@@ -46,9 +46,19 @@ class EditProfileActivity : BaseActivity() {
     private fun initUI() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         binding.etUserName.setText(userData?.name)
-        binding.tvGender.text = userData?.gender
+
+        val gender = userData?.gender
+
+        if (gender == "male" || gender == "Male") {
+            binding.tvGender.text = "Male"
+        }
+        else
+        {
+            binding.tvGender.text = "Female"
+        }
+
         binding.tvPreferredLanguage.text = userData?.language
-        binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+      //  binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         binding.ivBack.setOnClickListener(View.OnClickListener {
             finish()
         })
@@ -270,10 +280,10 @@ class EditProfileActivity : BaseActivity() {
 
         if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || !sameInterests || profileViewModel.avatarsListLiveData.value?.data?.get(index)?.id != userData.avatar_id)) {
             binding.btnUpdate.isEnabled = true
-            binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
+         //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
             binding.btnUpdate.isEnabled = false
-            binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+         //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         }
     }
 }

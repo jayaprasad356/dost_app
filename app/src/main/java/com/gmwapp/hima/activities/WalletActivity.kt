@@ -2,6 +2,7 @@ package com.gmwapp.hima.activities
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,11 +33,19 @@ class WalletActivity : BaseActivity() {
         binding.ivBack.setOnClickListener(View.OnClickListener {
             finish()
         })
-        binding.rvPlans.addItemDecoration(SpacesItemDecoration(20))
+//        binding.rvPlans.addItemDecoration(SpacesItemDecoration(20))
         binding.rvPlans.setLayoutManager(layoutManager)
-        binding.rvPlans.addItemDecoration(SpacesItemDecoration(10))
+//        binding.rvPlans.addItemDecoration(SpacesItemDecoration(10))
         BaseApplication.getInstance()?.getPrefs()?.getUserData()?.let { WalletViewModel.getCoins(it.id) }
         WalletViewModel.coinsLiveData.observe(this, Observer {
+
+            if(it.success){
+              //  Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
+
             if(it.success && it.data!=null) {
                 val coinAdapter = CoinAdapter(this,it.data,object :
                     OnItemSelectionListener<CoinsResponseData> {

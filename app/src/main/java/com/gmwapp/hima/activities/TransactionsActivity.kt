@@ -2,6 +2,7 @@ package com.gmwapp.hima.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,14 @@ class TransactionsActivity : BaseActivity() {
         BaseApplication.getInstance()?.getPrefs()?.getUserData()
             ?.let { transactionsViewModel.getTransactions(it.id) }
         transactionsViewModel.transactionsResponseLiveData.observe(this, Observer {
+
+            if(it.success){
+                //  Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
+
             if (it.data != null) {
                 binding.rvTransactions.setLayoutManager(
                     LinearLayoutManager(

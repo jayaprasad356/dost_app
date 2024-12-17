@@ -44,12 +44,12 @@ class CoinAdapter(
             notifyDataSetChanged()
         }
         holder.binding.tvCoins.text = coin.coins.toString()
-        if (coin.discount_price == null) {
+        if (coin.save == null) {
             holder.binding.tvDiscountPrice.visibility = View.GONE
         } else {
-            holder.binding.tvDiscountPrice.paintFlags = holder.binding.tvDiscountPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+         //   holder.binding.tvDiscountPrice.paintFlags = holder.binding.tvDiscountPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             holder.binding.tvDiscountPrice.visibility = View.VISIBLE
-            holder.binding.tvDiscountPrice.text = activity.getString(R.string.rupee_text,coin.discount_price)
+            holder.binding.tvDiscountPrice.text = "save " +coin.save+ " %"
         }
         holder.binding.tvPrice.text = activity.getString(R.string.rupee_text,coin.price)
     }

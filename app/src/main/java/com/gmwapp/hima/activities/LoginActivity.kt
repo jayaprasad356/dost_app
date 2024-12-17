@@ -22,6 +22,7 @@ import com.gmwapp.hima.databinding.ActivityLoginBinding
 import com.gmwapp.hima.dialogs.BottomSheetCountry
 import com.gmwapp.hima.retrofit.responses.Country
 import com.gmwapp.hima.viewmodels.LoginViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.random.Random
 
@@ -49,18 +50,32 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
 
         binding.btnSendOtp.setOnClickListener {
             binding.btnSendOtp.isEnabled = false
-            var mobile = binding.etMobileNumber.text.toString()
-            if (TextUtils.isEmpty(mobile) || mobile.length < 10) {
-                binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
-                binding.tvOtpText.setTextColor(getColor(R.color.error))
-                binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
-            } else {
-                val r = Random(System.currentTimeMillis())
-                otp = r.nextInt(100000,999999)
 
-                sendOTP(mobile, binding.tvCountryCode.text.toString().toInt())
+            // Retrieve mobile number
+            val mobile = binding.etMobileNumber.text.toString()
+            val countryCode = binding.tvCountryCode.text.toString().toInt()
+
+            // Regex for validating 10-digit mobile numbers starting with 6-9
+            val mobileRegex = Regex("^[6-9]\\d{9}$")
+
+            // Validation logic
+            if (TextUtils.isEmpty(mobile) || !mobile.matches(mobileRegex)) {
+                // Invalid mobile number case
+                binding.tvOtpText.text = getString(R.string.invalid_phone_number_text)
+                binding.tvOtpText.setTextColor(getColor(R.color.white))
+             //   binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
+                showSnackbar("Enter a valid 10-digit mobile number")
+                binding.btnSendOtp.isEnabled = true
+            } else {
+                // Valid mobile number case
+                val r = Random(System.currentTimeMillis())
+                otp = r.nextInt(100000, 999999)
+
+                // Send OTP
+                sendOTP(mobile, countryCode)
             }
         }
+
         binding.clCountry.setOnClickListener {
             val bottomSheet = BottomSheetCountry()
             bottomSheet.show(
@@ -111,7 +126,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             } else {
                 binding.tvOtpText.text = it.message
                 binding.tvOtpText.setTextColor(getColor(R.color.error))
-                binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
+               // binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
             }
         })
         loginViewModel.sendOTPErrorLiveData.observe(this, Observer {
@@ -120,7 +135,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             binding.btnSendOtp.isEnabled = true
             binding.tvOtpText.text = getString(R.string.please_try_again_later)
             binding.tvOtpText.setTextColor(getColor(R.color.error))
-            binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
+           // binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
         })
 
         setMessageWithClickableLink()
@@ -161,4 +176,9 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         binding.tvTermsAndConditions.text = spannableString
         binding.tvTermsAndConditions.movementMethod = LinkMovementMethod.getInstance()
     }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    }
+
 }
