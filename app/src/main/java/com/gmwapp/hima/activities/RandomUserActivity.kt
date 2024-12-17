@@ -195,7 +195,7 @@ class RandomUserActivity : BaseActivity() {
         ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
             object : OutgoingCallButtonListener {
                 override fun onOutgoingCallCancelButtonPressed() {
-                    initializeCall(true)
+                    finish()
                 }
             }
         ZegoUIKitPrebuiltCallService.events.invitationEvents.invitationListener =
