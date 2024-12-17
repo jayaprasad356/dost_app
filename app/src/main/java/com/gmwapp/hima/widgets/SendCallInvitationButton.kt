@@ -75,22 +75,18 @@ class SendCallInvitationButton : ZegoSendCallInvitationButton {
         val translationText = CallInvitationServiceImpl.getInstance()
             .callInvitationConfig.translationText
         val invitationType = ZegoInvitationType.getZegoInvitationType(type)
-        Log.e("siva","invokedWhenClick")
         CallInvitationServiceImpl.getInstance()
             .sendInvitation(
                 invitees, invitationType, customData, timeout,
                 this.callID, getSendInvitationConfig()
             ) { result ->
-                Log.e("siva","result : "+result.toString())
 
                 val uiKitUser = ZegoUIKit.getLocalUser()
                 val code = result["code"] as Int
                 val message = result["message"] as String?
                 val errorInvitees = result["errorInvitees"] as List<ZegoUIKitUser>?
-                Log.e("siva","code "+code+" "+uiKitUser.toString())
 
                 if (code == 0) {
-                    Log.e("siva",""+message+" "+uiKitUser.toString())
                     if (errorInvitees!!.isEmpty() || errorInvitees.size != invitees.size) {
                         CallInvitationServiceImpl.getInstance()
                             .addCallStateListener(callStateListener)
