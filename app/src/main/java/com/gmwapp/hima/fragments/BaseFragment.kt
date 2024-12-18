@@ -19,7 +19,10 @@ import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
+import com.gmwapp.hima.widgets.CustomCallEmptyView
+import com.gmwapp.hima.widgets.CustomCallView
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
+import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
@@ -39,6 +42,10 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
+    var receivedId: Int = 0;
+    var callId: Int = 0;
+    var balanceTime: String?=null;
+    private var foregroundView: CustomCallView? = null
     private val profileViewModel: ProfileViewModel by viewModels()
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
@@ -60,10 +67,13 @@ open class BaseFragment : Fragment() {
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
-        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = false
+        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
+        callInvitationConfig.incomingCallRingtone = "rhythm"
+        callInvitationConfig.outgoingCallRingtone = "rhythm"
 
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
+                callId = invitationData.customData.toInt()
                 val config: ZegoUIKitPrebuiltCallConfig = when {
                     invitationData.type == ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
                         ZegoUIKitPrebuiltCallConfig.groupVideoCall()
@@ -92,19 +102,25 @@ open class BaseFragment : Fragment() {
                 }
 
                 // Set up call duration configuration with a listener
+                // Set up call duration configuration with a listener
                 config.durationConfig = ZegoCallDurationConfig().apply {
-                    isVisible = true
+                    isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
-                            if (seconds.toInt() == 60 * 5) {  // Ends call after 5 minutes
-                                //     ZegoUIKitPrebuiltCallService.endCall()
+                            var balanceTimeInsecs: Int = 0
+                            try {
+                                if (balanceTime != null) {
+                                    val split = balanceTime!!.split(":")
+                                    balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+                                }
+                            } catch (e: Exception) {
                             }
+                            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
+                            foregroundView?.updateTime(remainingTime)
                         }
                     }
                 }
-
-
 
                 config.avatarViewProvider = object : ZegoAvatarViewProvider {
                     override fun onUserIDUpdated(
@@ -133,6 +149,7 @@ open class BaseFragment : Fragment() {
                                     .into(imageView)
                             }
                         }else{
+                            receivedId = uiKitUser.userID.toInt()
                             val requestOptions = RequestOptions().circleCrop()
                             Glide.with(parent.context).load(UsersImage(profileViewModel, uiKitUser.userID.toInt()).execute().get())
                                 .apply(requestOptions).into(imageView)
@@ -143,6 +160,19 @@ open class BaseFragment : Fragment() {
                 }
 
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
+                config.audioVideoViewConfig.videoViewForegroundViewProvider =
+                    ZegoForegroundViewProvider { parent, uiKitUser ->
+                        if (uiKitUser.userID != userID) {
+                            foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                            foregroundView
+                        } else {
+
+                            CustomCallEmptyView(
+                                parent.context, uiKitUser.userID
+                            )
+                        }
+
+                    }
                 config.topMenuBarConfig.isVisible = true;
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
                 return config
