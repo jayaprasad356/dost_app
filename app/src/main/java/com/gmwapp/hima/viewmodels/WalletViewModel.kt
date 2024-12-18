@@ -19,7 +19,7 @@ class WalletViewModel @Inject constructor(private val walletRepositories: Wallet
     val coinsLiveData = MutableLiveData<CoinsResponse>()
     fun getCoins(userId: Int) {
         viewModelScope.launch {
-            walletRepositories.getCoins(1, object:NetworkCallback<CoinsResponse> {
+            walletRepositories.getCoins(userId, object:NetworkCallback<CoinsResponse> {
                 override fun onResponse(
                     call: Call<CoinsResponse>,
                     response: Response<CoinsResponse>

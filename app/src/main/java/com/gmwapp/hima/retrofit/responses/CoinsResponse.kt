@@ -9,7 +9,13 @@ data class CoinsResponse(
 data class CoinsResponseData(
     val id: Int,
     val price: Int,
-    val discount_price: Int?,
     val coins: Int,
-    var isSelected: Boolean?,
+    val save: Int?,
+    val popular: Int?,
+    val updated_at: String?,
+    val created_at: String?,
+    var isSelected: Boolean?
 )
+
+
+

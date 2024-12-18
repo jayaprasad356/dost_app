@@ -15,3 +15,4 @@ data class TransactionsResponseData(
     val payment_type: String,
     val datetime: String,
 )
+

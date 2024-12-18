@@ -1,11 +1,15 @@
 package com.gmwapp.hima.fragments
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,7 +24,9 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentHomeBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.retrofit.responses.Reason
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -41,15 +47,25 @@ class HomeFragment : BaseFragment() {
 
 
     private fun initUI() {
-        binding.clCoins.setOnClickListener({
+        binding.clCoins.setOnSingleClickListener({
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
         })
+
+
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userData?.id?.let {
-            femaleUsersViewModel.getFemaleUsers(
-                it
-            )
+            if (context?.let { it1 -> isInternetAvailable(it1) } == true) {
+                femaleUsersViewModel.getFemaleUsers(
+                    it
+                )
+            }
+            else {
+
+                binding.tvNointernet.visibility = View.VISIBLE
+
+            }
+
         }
 
         binding.fabAudio.setOnClickListener({
@@ -106,30 +122,13 @@ class HomeFragment : BaseFragment() {
                 }
                 binding.rvProfiles.setAdapter(transactionAdapter)
             }
+
         })
 
         initFab()
     }
 
     fun initFab() {
-
-
-        val htmlText = " Video <img src='coin_d'/> 60/min"
-        val htmlText1 = " Audio <img src='coin_d'/> 60/min"
-
-        binding.tvVideo.text = Html.fromHtml(htmlText, Html.ImageGetter { source ->
-            ContextCompat.getDrawable(requireActivity(), R.drawable.coin_d)?.apply {
-                setBounds(0, 0, 45, 45)
-            }
-        }, null)
-
-        binding.tvAudio.text = Html.fromHtml(htmlText1, Html.ImageGetter { source ->
-            ContextCompat.getDrawable(requireActivity(), R.drawable.coin_d)?.apply {
-                setBounds(0, 0, 45, 45)
-            }
-        }, null)
-
-
         binding.fabRandom.extend()
         binding.fabAudio.hide()
         binding.fabVideo.hide()
@@ -137,8 +136,12 @@ class HomeFragment : BaseFragment() {
             if (!isAllFabVisible) {
                 binding.fabAudio.show()
                 binding.fabVideo.show()
-                binding.tvAudio.visibility = View.VISIBLE
-                binding.tvVideo.visibility = View.VISIBLE
+                binding.tvAudio1.visibility = View.VISIBLE
+                binding.tvAudio2.visibility = View.VISIBLE
+                binding.tvVideo1.visibility = View.VISIBLE
+                binding.tvVideo2.visibility = View.VISIBLE
+                binding.ivCoinAudio.visibility = View.VISIBLE
+                binding.ivCoinVideo.visibility = View.VISIBLE
 
                 // change the bg color
                 binding.fabRandom.backgroundTintList = resources.getColorStateList(R.color.white)
@@ -155,8 +158,12 @@ class HomeFragment : BaseFragment() {
             } else {
                 binding.fabAudio.hide()
                 binding.fabVideo.hide()
-                binding.tvAudio.visibility = View.GONE
-                binding.tvVideo.visibility = View.GONE
+                binding.tvAudio1.visibility = View.GONE
+                binding.tvAudio2.visibility = View.GONE
+                binding.tvVideo1.visibility = View.GONE
+                binding.tvVideo2.visibility = View.GONE
+                binding.ivCoinAudio.visibility = View.GONE
+                binding.ivCoinVideo.visibility = View.GONE
 
 
                 binding.fabRandom.backgroundTintList = resources.getColorStateList(R.color.blue)
@@ -173,4 +180,16 @@ class HomeFragment : BaseFragment() {
             }
         }
     }
+
+
+
+    // Check for Internet Connection
+    fun isInternetAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+    }
+
 }

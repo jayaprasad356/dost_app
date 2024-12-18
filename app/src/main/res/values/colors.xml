@@ -31,8 +31,10 @@
     <color name="green">#019A66</color>
     <color name="pink">#FF1381</color>
     <color name="pink_light">#FFA5CF</color>
+    <color name="pink_extra_light">#FFC0D4</color>
     <color name="purple">#9C1DF9</color>
     <color name="blue">#2388F2</color>
+    <color name="grey_medium">#75767a</color>
 
     <color name="Hindi">#563EE1</color>
     <color name="Telungu">#C69F00</color>
