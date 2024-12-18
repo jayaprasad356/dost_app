@@ -20,7 +20,12 @@ import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
+import com.zegocloud.uikit.ZegoUIKit
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
 
 
 @AndroidEntryPoint
@@ -28,7 +33,9 @@ class FemaleHomeFragment : BaseFragment() {
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
-
+    private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -96,8 +103,8 @@ class FemaleHomeFragment : BaseFragment() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            femaleUsersViewModel.updateCallStatus()
             setupZegoUIKit(userData.id, userData.name)
+            addRoomStateChangedListener()
         }
     }
 
@@ -143,6 +150,33 @@ class FemaleHomeFragment : BaseFragment() {
                 )
             }
         })
+    }
+
+    private fun addRoomStateChangedListener() {
+
+        ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
+            when (reason) {
+                ZegoRoomStateChangedReason.LOGINED -> {
+                    val prefs = BaseApplication.getInstance()?.getPrefs()
+                    val userData = prefs?.getUserData()
+
+                    femaleUsersViewModel.femaleCallAttendResponseLiveData.observe(viewLifecycleOwner, Observer {
+                        if(it!=null && it.success){
+                            balanceTime = it.data?.remaining_time;
+                        }
+                    })
+                    var startTime = dateFormat.format(Date()) // Set call start time in IST
+                    userData?.id?.let { femaleUsersViewModel.femaleCallAttend(it,callId, startTime) }
+
+                }
+
+                ZegoRoomStateChangedReason.LOGOUT -> {
+                }
+
+                else -> {
+                }
+            }
+        }
     }
 
 }

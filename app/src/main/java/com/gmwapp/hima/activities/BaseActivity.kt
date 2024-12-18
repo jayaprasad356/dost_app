@@ -73,7 +73,7 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun setupZegoUIKit(Userid: Any, userName: String, balanceTime: String?) {
+    fun setupZegoUIKit(Userid: Any, userName: String, balanceTime: String?, callId: Int) {
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()

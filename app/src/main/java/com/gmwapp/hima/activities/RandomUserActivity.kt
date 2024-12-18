@@ -121,9 +121,9 @@ class RandomUserActivity : BaseActivity() {
                 val balanceTime = intent.getStringExtra(DConstants.BALANCE_TIME)
                 val callId = intent.getIntExtra(DConstants.CALL_ID, 0)
                 setupCall(
-                    receiverId.toString(), receiverName.toString(), callType.toString(), balanceTime
+                    receiverId.toString(), receiverName.toString(), callType.toString(), balanceTime, callId
                 )
-                callId?.let { addRoomStateChangedListener(it) }
+                addRoomStateChangedListener(callId)
             }
         } else {
             val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
@@ -171,12 +171,15 @@ class RandomUserActivity : BaseActivity() {
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 val data = it.data
-                setupCall(
-                    data?.call_user_id.toString(),
-                    data?.call_user_name.toString(),
-                    callType.toString(),
-                    data?.balance_time
-                )
+                data?.call_id?.let { it1 ->
+                    setupCall(
+                        data.call_user_id.toString(),
+                        data.call_user_name.toString(),
+                        callType.toString(),
+                        data.balance_time,
+                        it1,
+                    )
+                }
                 data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
             } else {
                 Toast.makeText(
@@ -271,29 +274,30 @@ class RandomUserActivity : BaseActivity() {
     }
 
     private fun setupCall(
-        receiverId: String?, receiverName: String, type: String, balanceTime: String?
+        receiverId: String?, receiverName: String, type: String, balanceTime: String?, callId: Int
     ) {
         activity = this
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            setupZegoUIKit(userData.id, userData.name, balanceTime)
+            setupZegoUIKit(userData.id, userData.name, balanceTime, callId)
         }
         when (type) {
-            "audio" -> receiverId?.let { StartVoiceCall(it, receiverName) }
-            "video" -> receiverId?.let { StartVideoCall(it, receiverName) }
+            "audio" -> receiverId?.let { StartVoiceCall(it, receiverName, callId) }
+            "video" -> receiverId?.let { StartVideoCall(it, receiverName, callId) }
             else -> Toast.makeText(this, "Invalid call type", Toast.LENGTH_SHORT).show()
         }
 
     }
 
-    private fun StartVoiceCall(targetUserId: String, targetName: String) {
+    private fun StartVoiceCall(targetUserId: String, targetName: String, callId:Int) {
         binding.voiceCallButton.setIsVideoCall(false)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
         val instance = BaseApplication.getInstance()
         user.avatar = instance?.getPrefs()?.getUserData()?.image
+        binding.voiceCallButton.setCustomData(callId.toString())
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
         lifecycleScope.launch {
@@ -306,12 +310,13 @@ class RandomUserActivity : BaseActivity() {
 
     }
 
-    private fun StartVideoCall(targetUserId: String, targetName: String) {
+    private fun StartVideoCall(targetUserId: String, targetName: String, callId:Int) {
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
         val instance = BaseApplication.getInstance()
         user.avatar = instance?.getPrefs()?.getUserData()?.image
+        binding.voiceCallButton.setCustomData(callId.toString())
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
         lifecycleScope.launch {

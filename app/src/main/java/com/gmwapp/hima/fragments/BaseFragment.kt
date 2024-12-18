@@ -42,7 +42,8 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
-    private var balanceTime: String?=null;
+    var callId: Int = 0;
+    var balanceTime: String?=null;
     private var foregroundView: CustomCallView? = null
     private val profileViewModel: ProfileViewModel by viewModels()
     fun showErrorMessage(message: String) {
@@ -65,12 +66,13 @@ open class BaseFragment : Fragment() {
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
-        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = false
+        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = "rhythm"
 
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
+                callId = invitationData.customData.toInt()
                 val config: ZegoUIKitPrebuiltCallConfig = when {
                     invitationData.type == ZegoInvitationType.VIDEO_CALL.value && invitationData.invitees.size > 1 -> {
                         ZegoUIKitPrebuiltCallConfig.groupVideoCall()
@@ -99,20 +101,20 @@ open class BaseFragment : Fragment() {
                 }
 
                 // Set up call duration configuration with a listener
-                var balanceTimeInsecs: Int = 0
-                try {
-                    if (balanceTime != null) {
-                        val split = balanceTime.split(":")
-                        balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
-                    }
-                } catch (e: Exception) {
-                }
                 // Set up call duration configuration with a listener
                 config.durationConfig = ZegoCallDurationConfig().apply {
                     isVisible = true
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
+                            var balanceTimeInsecs: Int = 0
+                            try {
+                                if (balanceTime != null) {
+                                    val split = balanceTime!!.split(":")
+                                    balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+                                }
+                            } catch (e: Exception) {
+                            }
                             var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
                             foregroundView?.updateTime(remainingTime)
                             if (remainingTime == 0) {  // Ends call after 5 minutes
