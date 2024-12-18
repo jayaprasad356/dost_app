@@ -104,7 +104,7 @@ open class BaseFragment : Fragment() {
                 // Set up call duration configuration with a listener
                 // Set up call duration configuration with a listener
                 config.durationConfig = ZegoCallDurationConfig().apply {
-                    isVisible = true
+                    isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
