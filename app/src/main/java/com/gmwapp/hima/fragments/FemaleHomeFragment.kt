@@ -166,7 +166,7 @@ class FemaleHomeFragment : BaseFragment() {
                         }
                     })
                     var startTime = dateFormat.format(Date()) // Set call start time in IST
-                    userData?.id?.let { femaleUsersViewModel.femaleCallAttend(it,callId, startTime) }
+                    femaleUsersViewModel.femaleCallAttend(receivedId,callId, startTime)
 
                 }
 

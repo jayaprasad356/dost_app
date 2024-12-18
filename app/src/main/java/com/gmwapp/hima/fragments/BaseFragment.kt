@@ -42,6 +42,7 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
+    var receivedId: Int = 0;
     var callId: Int = 0;
     var balanceTime: String?=null;
     private var foregroundView: CustomCallView? = null
@@ -148,6 +149,7 @@ open class BaseFragment : Fragment() {
                                     .into(imageView)
                             }
                         }else{
+                            receivedId = uiKitUser.userID.toInt()
                             val requestOptions = RequestOptions().circleCrop()
                             Glide.with(parent.context).load(UsersImage(profileViewModel, uiKitUser.userID.toInt()).execute().get())
                                 .apply(requestOptions).into(imageView)
