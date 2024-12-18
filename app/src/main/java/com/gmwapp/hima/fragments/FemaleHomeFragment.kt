@@ -96,7 +96,8 @@ class FemaleHomeFragment : BaseFragment() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            setupZegoUIKit(userData.id, userData.name, userData.balance)
+            femaleUsersViewModel.updateCallStatus()
+            setupZegoUIKit(userData.id, userData.name)
         }
     }
 

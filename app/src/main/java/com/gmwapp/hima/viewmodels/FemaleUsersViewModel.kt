@@ -7,6 +7,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.repositories.FemaleUsersRepositories
 import com.gmwapp.hima.repositories.TransactionsRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
@@ -29,6 +30,9 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
 
     val updateCallStatusResponseLiveData = MutableLiveData<UpdateCallStatusResponse>()
     val updateCallStatusErrorLiveData = MutableLiveData<String>()
+
+    val femaleCallAttendResponseLiveData = MutableLiveData<FemaleCallAttendResponse>()
+    val femaleCallAttendErrorLiveData = MutableLiveData<String>()
 
     fun getFemaleUsers(userId: Int) {
         viewModelScope.launch {
@@ -88,6 +92,28 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
 
                 override fun onNoNetwork() {
                     updateCallStatusErrorLiveData.postValue(DConstants.NO_NETWORK);
+                }
+            })
+        }
+    }
+
+   fun femaleCallAttend(userId: Int, callId: Int,
+                        startTime: String,) {
+        viewModelScope.launch {
+            femaleUsersRepositories.femaleCallAttend(userId,callId,startTime, object:NetworkCallback<FemaleCallAttendResponse> {
+                override fun onResponse(
+                    call: Call<FemaleCallAttendResponse>,
+                    response: Response<FemaleCallAttendResponse>
+                ) {
+                    femaleCallAttendResponseLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<FemaleCallAttendResponse>, t: Throwable) {
+                    femaleCallAttendErrorLiveData.postValue(DConstants.LOGIN_ERROR);
+                }
+
+                override fun onNoNetwork() {
+                    femaleCallAttendErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }
