@@ -102,20 +102,61 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_profiles"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
 
     <TextView
-        android:id="@+id/tv_audio"
+        android:id="@+id/tv_Nointernet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Internet"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_18sdp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_audio1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="@string/audio_text"
-        android:textColor="@color/white"
-        android:fontFamily="@font/poppins_medium"
+        android:text="@string/audio"
+        android:textColor="@color/purple"
+        android:fontFamily="@font/poppins_semibold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_coin_audio"
+        app:layout_constraintEnd_toStartOf="@+id/iv_coin_audio"
+        app:layout_constraintTop_toTopOf="@+id/iv_coin_audio" />
+
+    <ImageView
+        android:id="@+id/iv_coin_audio"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@drawable/coin_d"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_audio2"
+        app:layout_constraintEnd_toStartOf="@+id/tv_audio2"
+        app:layout_constraintTop_toTopOf="@+id/tv_audio2"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_audio2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="60 / mins"
+        android:textColor="@color/purple"
+        android:fontFamily="@font/poppins_semibold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/fab_audio"
         app:layout_constraintEnd_toStartOf="@+id/fab_audio"
@@ -147,14 +188,41 @@
         app:srcCompat="@drawable/audio"
         app:tint="@color/purple" />
 
+
+
     <TextView
-        android:id="@+id/tv_video"
+        android:id="@+id/tv_video1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="@string/video_text"
-        android:fontFamily="@font/poppins_medium"
-        android:textColor="@color/white"
+        android:text="@string/video"
+        android:fontFamily="@font/poppins_semibold"
+        android:textColor="@color/green"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_coin_video"
+        app:layout_constraintEnd_toStartOf="@+id/iv_coin_video"
+        app:layout_constraintTop_toTopOf="@+id/iv_coin_video" />
+
+    <ImageView
+        android:id="@+id/iv_coin_video"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@drawable/coin_d"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_video2"
+        app:layout_constraintEnd_toStartOf="@+id/tv_video2"
+        app:layout_constraintTop_toTopOf="@+id/tv_video2"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_video2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="60 / mins"
+        android:fontFamily="@font/poppins_semibold"
+        android:textColor="@color/green"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/fab_video"
         app:layout_constraintEnd_toStartOf="@+id/fab_video"

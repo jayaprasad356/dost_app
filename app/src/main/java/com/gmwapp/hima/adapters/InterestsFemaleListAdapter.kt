@@ -33,25 +33,28 @@ class InterestsFemaleListAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val interest: Interests = interests[position]
 
-        holder.binding.main.setOnClickListener(View.OnClickListener {
-            onItemSelectionListener.onItemSelected(interest)
-            interest.isSelected = interest.isSelected == null || interest.isSelected == false
-            interests[position] = interest
-            notifyDataSetChanged()
-        })
-        if(interest.isSelected == true){
-            holder.binding.main.isEnabled  = true
-            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_selected)
-            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.black))
-        } else if(isLimitreached){
-            holder.binding.main.isEnabled  = false
-            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_disabled)
-            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_disabled_text_color))
-        }else{
-            holder.binding.main.isEnabled  = true
-            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest)
-            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_text_color))
-        }
+//        holder.binding.main.setOnClickListener(View.OnClickListener {
+//            onItemSelectionListener.onItemSelected(interest)
+//            interest.isSelected = interest.isSelected == null || interest.isSelected == false
+//            interests[position] = interest
+//            notifyDataSetChanged()
+//        })
+//
+//        if(interest.isSelected == true){
+//            holder.binding.main.isEnabled  = true
+//            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_selected)
+//            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.black))
+//        } else if(isLimitreached){
+//            holder.binding.main.isEnabled  = false
+//            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_disabled)
+//            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_disabled_text_color))
+//        }else{
+//            holder.binding.main.isEnabled  = true
+//            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest)
+//            holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_text_color))
+//        }
+
+
         holder.binding.tvInterest.text = interest.name
         holder.binding.ivInterest.setImageResource(interest.image)
     }

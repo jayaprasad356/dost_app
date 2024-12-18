@@ -38,8 +38,8 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginTop="8dp"
         android:layout_marginStart="4dp"
         android:contentDescription="@string/edit"
@@ -137,6 +137,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <ImageView
+        android:visibility="gone"
         android:id="@+id/iv_bonus"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -149,6 +150,7 @@
         tools:ignore="ContentDescription" />
 
     <View
+        android:visibility="gone"
         android:id="@+id/v_divider"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -161,6 +163,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="@dimen/_50sdp"
         android:id="@+id/rv_plans"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -184,9 +187,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/d_button_bg"
         android:text="@string/send_otp"
-        android:visibility="gone"
         android:backgroundTint="@color/white"
         android:textSize="14sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/poppins_semibold"
         android:textColor="#1e152a"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
