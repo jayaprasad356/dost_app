@@ -411,7 +411,7 @@ interface ApiInterface {
     ): Call<FemaleCallAttendResponse>
 
     @FormUrlEncoded
-    @POST("api/female_call_attend")
+    @POST("api/call_female_user")
     fun callFemaleUser(
         @Field("user_id") userId: Int,
         @Field("call_user_id") callUserId: Int,
