@@ -117,9 +117,6 @@ open class BaseFragment : Fragment() {
                             }
                             var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
                             foregroundView?.updateTime(remainingTime)
-                            if (remainingTime == 0) {  // Ends call after 5 minutes
-                                ZegoUIKitPrebuiltCallService.endCall()
-                            }
                         }
                     }
                 }
