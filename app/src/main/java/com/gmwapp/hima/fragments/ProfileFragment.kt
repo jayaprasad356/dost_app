@@ -1,13 +1,16 @@
 package com.gmwapp.hima.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -81,8 +84,12 @@ class ProfileFragment : BaseFragment() {
         }
 
         binding.ivEditProfile.setOnSingleClickListener {
-            val intent = Intent(context, EditProfileActivity::class.java)
-            startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE)
+            if (isInternetAvailable()) {
+                val intent = Intent(context, EditProfileActivity::class.java)
+                startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE)
+            } else {
+                Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.clTransactions.setOnSingleClickListener {
@@ -123,5 +130,11 @@ class ProfileFragment : BaseFragment() {
                 binding.tvSupportMail.paintFlags = binding.tvSupportMail.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             }
         })
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnected
     }
 }

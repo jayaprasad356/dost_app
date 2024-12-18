@@ -46,20 +46,30 @@ class WalletActivity : BaseActivity() {
                 Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
             }
 
-            if(it.success && it.data!=null) {
-                val coinAdapter = CoinAdapter(this,it.data,object :
-                    OnItemSelectionListener<CoinsResponseData> {
+            if (it.success && it.data != null) {
+                // Create the adapter
+                val coinAdapter = CoinAdapter(this, it.data, object : OnItemSelectionListener<CoinsResponseData> {
                     override fun onItemSelected(coin: CoinsResponseData) {
+                        // Update button text and make it visible when an item is selected
                         binding.btnAddCoins.text = getString(R.string.add_quantity_coins, coin.coins)
                         binding.btnAddCoins.visibility = View.VISIBLE
                     }
 
                     val number: CoinsResponseData?
-                        get() = TODO("Not yet implemented")
+                        get() = null
                 })
-                binding.rvPlans.setAdapter(coinAdapter)
 
+                // Set the adapter
+                binding.rvPlans.adapter = coinAdapter
+
+                // Set default button text and visibility for the first item
+                if (it.data.isNotEmpty()) {
+                    val firstCoin = it.data[0]
+                    binding.btnAddCoins.text = getString(R.string.add_quantity_coins, firstCoin.coins)
+                    binding.btnAddCoins.visibility = View.VISIBLE
+                }
             }
+
         })
     }
 }

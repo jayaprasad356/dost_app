@@ -1,7 +1,11 @@
 package com.gmwapp.hima.activities
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -9,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.adapters.TransactionAdapter
 import com.gmwapp.hima.databinding.ActivityTransactionsBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,12 +34,22 @@ class TransactionsActivity : BaseActivity() {
             finish()
         }
 
-        binding.btnAddCoins.setOnClickListener({
+        binding.btnAddCoins.setOnSingleClickListener({
             val intent = Intent(this, WalletActivity::class.java)
             startActivity(intent)
         })
         BaseApplication.getInstance()?.getPrefs()?.getUserData()
-            ?.let { transactionsViewModel.getTransactions(it.id) }
+            ?.let {
+
+                if (this.let { it1 -> isInternetAvailable(it1) } == true) {
+                    transactionsViewModel.getTransactions(it.id)
+                } else {
+
+                    binding.tvNointernet.visibility = View.VISIBLE
+
+                }
+
+            }
         transactionsViewModel.transactionsResponseLiveData.observe(this, Observer {
 
             if(it.success){
@@ -58,4 +73,15 @@ class TransactionsActivity : BaseActivity() {
         })
 
     }
+
+
+
+        // Check for Internet Connection
+        fun isInternetAvailable(context: Context): Boolean {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+        }
 }

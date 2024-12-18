@@ -49,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btn_cancel"
-        android:textColor="#97989c"/>
+        android:textColor="@color/white"/>
 
     <com.gmwapp.hima.widgets.DButton
         android:id="@+id/btn_cancel"

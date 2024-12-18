@@ -38,8 +38,8 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginTop="8dp"
         android:layout_marginStart="4dp"
         android:contentDescription="@string/edit"
@@ -187,9 +187,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/d_button_bg"
         android:text="@string/send_otp"
-        android:visibility="gone"
         android:backgroundTint="@color/white"
         android:textSize="14sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/poppins_semibold"
         android:textColor="#1e152a"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

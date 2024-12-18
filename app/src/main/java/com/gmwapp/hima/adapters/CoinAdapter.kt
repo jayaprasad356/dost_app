@@ -31,11 +31,21 @@ class CoinAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val coin: CoinsResponseData = coins[position]
 
-        if(coin.isSelected == true){
-            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_coin_selected)
-        } else{
-            holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_coin)
+        // Set the default selected item to position 0
+        if (position == 0 && coins.none { it.isSelected == true }) {
+            coin.isSelected = true
         }
+
+        // Update the UI based on selection
+        if (coin.isSelected == true) {
+            holder.binding.cvCoin.strokeWidth = 3
+            holder.binding.cvCoin.strokeColor = activity.resources.getColor(R.color.black)
+        } else {
+            holder.binding.cvCoin.strokeWidth = 0
+            holder.binding.cvCoin.strokeColor = activity.resources.getColor(R.color.white)
+        }
+
+        // Handle item click
         holder.binding.main.setOnClickListener {
             onItemSelectionListener.onItemSelected(coin)
             coins.onEach { it.isSelected = false }
@@ -43,15 +53,16 @@ class CoinAdapter(
             coins[position] = coin
             notifyDataSetChanged()
         }
+
+        // Set coin details
         holder.binding.tvCoins.text = coin.coins.toString()
         if (coin.save == null) {
             holder.binding.tvDiscountPrice.visibility = View.GONE
         } else {
-         //   holder.binding.tvDiscountPrice.paintFlags = holder.binding.tvDiscountPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             holder.binding.tvDiscountPrice.visibility = View.VISIBLE
-            holder.binding.tvDiscountPrice.text = "save " +coin.save+ " %"
+            holder.binding.tvDiscountPrice.text = "Save ${coin.save} %"
         }
-        holder.binding.tvPrice.text = activity.getString(R.string.rupee_text,coin.price)
+        holder.binding.tvPrice.text = activity.getString(R.string.rupee_text, coin.price)
     }
 
     override fun getItemCount(): Int {

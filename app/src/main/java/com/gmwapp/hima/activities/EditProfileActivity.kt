@@ -164,7 +164,7 @@ class EditProfileActivity : BaseActivity() {
                 } else {
                     selectedInterests.add(interest.name)
                 }
-                interestsListAdapter?.updateLimitReached(selectedInterests.size == 4)
+                interestsListAdapter?.updateLimitReached(selectedInterests.size == 5)
                 updateButton()
             }
         })
