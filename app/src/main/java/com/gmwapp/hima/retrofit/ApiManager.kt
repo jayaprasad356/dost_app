@@ -2,6 +2,7 @@ package com.gmwapp.hima.retrofit
 
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
+import com.gmwapp.hima.retrofit.responses.CallFemaleUserResponse
 import com.gmwapp.hima.retrofit.responses.CallsListResponse
 import com.gmwapp.hima.retrofit.responses.CoinsResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
@@ -192,6 +193,21 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<FemaleCallAttendResponse> =
                 getApiInterface().femaleCallAttend(userId, callId, startedTime)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun callFemaleUser(
+        userId: Int,
+        callUserId: Int,
+        callType: String,
+        callback: NetworkCallback<CallFemaleUserResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<CallFemaleUserResponse> =
+                getApiInterface().callFemaleUser(userId, callUserId, callType)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -393,6 +409,14 @@ interface ApiInterface {
         @Field("call_id") callId: Int,
         @Field("started_time") startedTime: String
     ): Call<FemaleCallAttendResponse>
+
+    @FormUrlEncoded
+    @POST("api/female_call_attend")
+    fun callFemaleUser(
+        @Field("user_id") userId: Int,
+        @Field("call_user_id") callUserId: Int,
+        @Field("call_type") callType: String
+    ): Call<CallFemaleUserResponse>
 
     @FormUrlEncoded
     @POST("api/update_connected_call")

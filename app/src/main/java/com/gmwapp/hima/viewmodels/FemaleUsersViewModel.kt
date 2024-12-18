@@ -7,6 +7,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.repositories.FemaleUsersRepositories
 import com.gmwapp.hima.repositories.TransactionsRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.CallFemaleUserResponse
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
@@ -33,6 +34,9 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
 
     val femaleCallAttendResponseLiveData = MutableLiveData<FemaleCallAttendResponse>()
     val femaleCallAttendErrorLiveData = MutableLiveData<String>()
+
+    val callFemaleUserResponseLiveData = MutableLiveData<CallFemaleUserResponse>()
+    val callFemaleUserErrorLiveData = MutableLiveData<String>()
 
     fun getFemaleUsers(userId: Int) {
         viewModelScope.launch {
@@ -114,6 +118,28 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
 
                 override fun onNoNetwork() {
                     femaleCallAttendErrorLiveData.postValue(DConstants.NO_NETWORK);
+                }
+            })
+        }
+    }
+
+   fun callFemaleUser(userId: Int, callUserId: Int,
+                      callType: String,) {
+        viewModelScope.launch {
+            femaleUsersRepositories.callFemaleUser(userId,callUserId,callType, object:NetworkCallback<CallFemaleUserResponse> {
+                override fun onResponse(
+                    call: Call<CallFemaleUserResponse>,
+                    response: Response<CallFemaleUserResponse>
+                ) {
+                    callFemaleUserResponseLiveData.postValue(response.body());
+                }
+
+                override fun onFailure(call: Call<CallFemaleUserResponse>, t: Throwable) {
+                    callFemaleUserErrorLiveData.postValue(DConstants.LOGIN_ERROR);
+                }
+
+                override fun onNoNetwork() {
+                    callFemaleUserErrorLiveData.postValue(DConstants.NO_NETWORK);
                 }
             })
         }

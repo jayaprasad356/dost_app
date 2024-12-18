@@ -2,6 +2,7 @@ package com.gmwapp.hima.repositories
 
 import com.gmwapp.hima.retrofit.ApiManager
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.CallFemaleUserResponse
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
@@ -38,6 +39,17 @@ class FemaleUsersRepositories @Inject constructor(private val apiManager: ApiMan
     ) {
         apiManager.femaleCallAttend(
             userId, callId, startTime, callback
+        )
+    }
+
+    fun callFemaleUser(
+        userId: Int,
+        callUserId: Int,
+        callType: String,
+        callback: NetworkCallback<CallFemaleUserResponse>
+    ) {
+        apiManager.callFemaleUser(
+            userId, callUserId, callType, callback
         )
     }
 

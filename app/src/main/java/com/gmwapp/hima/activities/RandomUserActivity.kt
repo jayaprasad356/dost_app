@@ -115,15 +115,30 @@ class RandomUserActivity : BaseActivity() {
             if (cancelled) {
                 finish()
             } else {
-                val receiverId = intent.getStringExtra(DConstants.RECEIVER_ID)
+                val receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
                 val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
                 val callType = intent.getStringExtra(DConstants.CALL_TYPE)
                 val balanceTime = intent.getStringExtra(DConstants.BALANCE_TIME)
-                val callId = intent.getIntExtra(DConstants.CALL_ID, 0)
-                setupCall(
-                    receiverId.toString(), receiverName.toString(), callType.toString(), balanceTime, callId
-                )
-                addRoomStateChangedListener(callId)
+                val userData = BaseApplication.getInstance()?.getPrefs()
+                    ?.getUserData()
+                userData?.id?.let { femaleUsersViewModel.callFemaleUser(it, receiverId, callType.toString()) }
+
+                femaleUsersViewModel.callFemaleUserResponseLiveData.observe(this, Observer {
+                    if(it!=null && it.success){
+                        val callId = it.data?.call_id
+                        if(callId!=null) {
+                            setupCall(
+                                receiverId.toString(),
+                                receiverName.toString(),
+                                callType.toString(),
+                                balanceTime,
+                                callId
+                            )
+                            addRoomStateChangedListener(callId)
+                        }
+                    }
+                })
+
             }
         } else {
             val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
