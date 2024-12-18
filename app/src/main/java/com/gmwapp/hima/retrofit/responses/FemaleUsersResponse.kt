@@ -12,7 +12,6 @@ data class FemaleUsersResponseData(
     val image: String,
     val language: String,
     val balance: Int,
-    val balance_time: String?,
     val interests: String,
     val describe_yourself: String,
 )
