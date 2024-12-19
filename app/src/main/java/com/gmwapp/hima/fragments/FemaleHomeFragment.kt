@@ -89,6 +89,8 @@ class FemaleHomeFragment : BaseFragment() {
                     initializeCall()
                 }
             }
+        }else{
+            initializeCall()
         }
     }
 
