@@ -83,7 +83,7 @@ open class BaseActivity : AppCompatActivity() {
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
-        callInvitationConfig.outgoingCallRingtone = "rhythm"
+        callInvitationConfig.outgoingCallRingtone = null;
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
 
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
