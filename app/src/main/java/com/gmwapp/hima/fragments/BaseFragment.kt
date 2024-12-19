@@ -118,7 +118,7 @@ open class BaseFragment : Fragment() {
                             }
                             var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
                             foregroundView?.updateTime(remainingTime)
-                            if (balanceTime!=null && remainingTime == 0) {
+                            if (balanceTime!=null && remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
                             }
                         }

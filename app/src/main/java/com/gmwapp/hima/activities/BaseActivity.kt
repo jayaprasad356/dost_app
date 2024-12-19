@@ -133,7 +133,7 @@ open class BaseActivity : AppCompatActivity() {
                             )
                             var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
                             foregroundView?.updateTime(remainingTime)
-                            if (remainingTime == 0) {
+                            if (remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
                             }
                         }
