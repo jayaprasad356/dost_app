@@ -180,6 +180,7 @@ class RandomUserActivity : BaseActivity() {
             binding.tvWaitHint.text = text
         }
         binding.btnCancel.setOnClickListener({
+            ZegoUIKitPrebuiltCallService.endCall()
             finish()
         })
         isReceiverDetailsAvailable = intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
@@ -213,6 +214,7 @@ class RandomUserActivity : BaseActivity() {
         ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
             object : OutgoingCallButtonListener {
                 override fun onOutgoingCallCancelButtonPressed() {
+                    ZegoUIKitPrebuiltCallService.endCall()
                     finish()
                 }
             }
@@ -227,10 +229,12 @@ class RandomUserActivity : BaseActivity() {
                 }
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
+                    ZegoUIKitPrebuiltCallService.endCall()
                     finish()
                 }
 
                 override fun onIncomingCallTimeout(callID: String?, caller: ZegoCallUser?) {
+                    ZegoUIKitPrebuiltCallService.endCall()
                     finish()
                 }
 
@@ -241,16 +245,19 @@ class RandomUserActivity : BaseActivity() {
                 override fun onOutgoingCallRejectedCauseBusy(
                     callID: String?, callee: ZegoCallUser?
                 ) {
+                    ZegoUIKitPrebuiltCallService.endCall()
                     initializeCall(true)
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
+                    ZegoUIKitPrebuiltCallService.endCall()
                     initializeCall(true)
                 }
 
                 override fun onOutgoingCallTimeout(
                     callID: String?, callees: MutableList<ZegoCallUser>?
                 ) {
+                    ZegoUIKitPrebuiltCallService.endCall()
                     initializeCall(true)
                 }
             }

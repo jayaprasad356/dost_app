@@ -67,6 +67,7 @@ open class BaseFragment : Fragment() {
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
+        callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = "rhythm"
@@ -113,7 +114,7 @@ open class BaseFragment : Fragment() {
                                 if (balanceTime != null) {
                                     val split = balanceTime!!.split(":")
                                     balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
-                                    
+
                                 }
                             } catch (e: Exception) {
                             }

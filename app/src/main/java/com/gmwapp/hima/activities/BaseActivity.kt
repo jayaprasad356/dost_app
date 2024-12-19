@@ -81,7 +81,7 @@ open class BaseActivity : AppCompatActivity() {
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
-        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = false
+        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = "rhythm"
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
