@@ -16,6 +16,8 @@ import com.gmwapp.hima.activities.EarningsActivity
 import com.gmwapp.hima.activities.GrantPermissionsActivity
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
+import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.permissionx.guolindev.PermissionX
@@ -24,6 +26,8 @@ import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import retrofit2.Call
+import retrofit2.Response
 import xyz.kumaraswamy.autostart.Autostart
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -188,16 +192,23 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
-                    val prefs = BaseApplication.getInstance()?.getPrefs()
-                    val userData = prefs?.getUserData()
 
-                    femaleUsersViewModel.femaleCallAttendResponseLiveData.observe(viewLifecycleOwner, Observer {
-                        if(it!=null && it.success){
-                            balanceTime = it.data?.remaining_time;
+                    var startTime = dateFormat.format(Date()) // Set call start time in IST
+                    femaleUsersViewModel.femaleCallAttend(receivedId,callId, startTime, object:
+                        NetworkCallback<FemaleCallAttendResponse> {
+                        override fun onResponse(
+                            call: Call<FemaleCallAttendResponse>,
+                            response: Response<FemaleCallAttendResponse>
+                        ) {
+                            balanceTime = response.body()?.data?.remaining_time;
+                        }
+
+                        override fun onFailure(call: Call<FemaleCallAttendResponse>, t: Throwable) {
+                        }
+
+                        override fun onNoNetwork() {
                         }
                     })
-                    var startTime = dateFormat.format(Date()) // Set call start time in IST
-                    femaleUsersViewModel.femaleCallAttend(receivedId,callId, startTime)
 
                 }
 
