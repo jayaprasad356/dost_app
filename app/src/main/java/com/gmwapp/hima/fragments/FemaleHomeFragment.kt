@@ -17,12 +17,14 @@ import com.gmwapp.hima.activities.GrantPermissionsActivity
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import xyz.kumaraswamy.autostart.Autostart
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
@@ -30,6 +32,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
+    private var checkingOverlayPermission: Boolean = false;
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
@@ -44,6 +47,13 @@ class FemaleHomeFragment : BaseFragment() {
         initUI()
         askPermissions();
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!checkingOverlayPermission) {
+            checkAutoStartPermission()
+        }
     }
 
     fun askPermissions() {
@@ -65,6 +75,23 @@ class FemaleHomeFragment : BaseFragment() {
         }
     }
 
+    private fun checkAutoStartPermission(){
+        if(AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(requireActivity())) {
+            when (Autostart.getAutoStartState(requireActivity())) {
+                Autostart.State.ENABLED -> {
+                    initializeCall()
+                }
+                Autostart.State.DISABLED -> {
+                    AutoStartPermissionHelper.getInstance().getAutoStartPermission(requireActivity())
+                }
+                Autostart.State.UNEXPECTED_RESULT,
+                Autostart.State.NO_INFO -> {
+                    initializeCall()
+                }
+            }
+        }
+    }
+
     private fun checkOverlayPermission() {
         PermissionX.init(requireActivity()).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
             .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
@@ -73,8 +100,10 @@ class FemaleHomeFragment : BaseFragment() {
                 scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
             }).request(RequestCallback { allGranted, grantedList, deniedList ->
                 if (allGranted) {
-                    initializeCall()
+                    checkingOverlayPermission = false
+                    checkAutoStartPermission()
                 } else {
+                    checkingOverlayPermission = true;
                     checkOverlayPermission()
                 }
             })
