@@ -55,6 +55,7 @@ class RandomUserActivity : BaseActivity() {
 
     private var userId: String = ""
     private var callUserId: String = ""
+    private var callUserName: String = ""
     private var startTime: String = ""
     private var endTime: String = ""
     var targetUserId: String? = null
@@ -320,10 +321,14 @@ class RandomUserActivity : BaseActivity() {
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
                                 CallUpdateWorker::class.java
                             ).setInputData(data).setConstraints(constraints).build()
-                            WorkManager.getInstance(this@RandomUserActivity).enqueue(oneTimeWorkRequest)
+                            WorkManager.getInstance(this@RandomUserActivity)
+                                .enqueue(oneTimeWorkRequest)
                             mediaPlayer?.pause()
                             mediaPlayer?.stop()
                             finish()
+                            val intent = Intent(this@RandomUserActivity, ReviewActivity::class.java)
+                            intent.putExtra(DConstants.RECEIVER_NAME, callUserName)
+                            startActivity(intent)
                         }
                     }
                 }
@@ -361,6 +366,7 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setCustomData(callId.toString())
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
+        callUserName = targetName
         lifecycleScope.launch {
             if (instance?.isCalled() == false || instance?.isCalled() == null) {
                 delay(4000)
@@ -372,6 +378,7 @@ class RandomUserActivity : BaseActivity() {
     }
 
     private fun StartVideoCall(targetUserId: String, targetName: String, callId: Int) {
+        callUserName = targetName
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)

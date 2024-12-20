@@ -169,4 +169,5 @@
     <string name="warning">Warning</string>
     <string name="confirm">Confirm</string>
     <string name="coins">Coins</string>
+    <string name="review_hint">How was your call with %s</string>
 </resources>
