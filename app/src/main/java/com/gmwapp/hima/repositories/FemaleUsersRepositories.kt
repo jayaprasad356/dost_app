@@ -9,6 +9,7 @@ import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
 import com.gmwapp.hima.retrofit.responses.UpdateCallStatusResponse
 import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
+import retrofit2.Response
 import javax.inject.Inject
 
 class FemaleUsersRepositories @Inject constructor(private val apiManager: ApiManager) {
@@ -58,10 +59,9 @@ class FemaleUsersRepositories @Inject constructor(private val apiManager: ApiMan
         callId: Int,
         startedTime: String,
         endedTime: String,
-        callback: NetworkCallback<UpdateConnectedCallResponse>
-    ) {
-        apiManager.updateConnectedCall(
-            userId, callId, startedTime,endedTime, callback
+    ) : Response<UpdateConnectedCallResponse> {
+        return apiManager.updateConnectedCall(
+            userId, callId, startedTime,endedTime
         )
     }
 }

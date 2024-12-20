@@ -33,42 +33,14 @@ class CallUpdateWorker @AssistedInject constructor(
                     workerParams.inputData.getInt(DConstants.CALL_ID, 0),
                     workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
                     workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
-                    object : NetworkCallback<UpdateConnectedCallResponse> {
-                        override fun onResponse(
-                            call: Call<UpdateConnectedCallResponse>,
-                            response: Response<UpdateConnectedCallResponse>
-                        ) {
-                            if (response.body() != null) {
-                                Result.success()
-                            } else {
-                                if (runAttemptCount > 5) {
-                                    Result.failure()
-                                } else {
-                                    Result.retry()
-                                }
-                            }
-                        }
-
-                        override fun onFailure(call: Call<UpdateConnectedCallResponse>, t: Throwable) {
-                            if (runAttemptCount > 5) {
-                                Result.failure()
-                            } else {
-                                Result.retry()
-                            }
-                        }
-
-                        override fun onNoNetwork() {
-                            if (runAttemptCount > 5) {
-                                Result.failure()
-                            } else {
-                                Result.retry()
-                            }
-                        }
-                    }).let {
-                    Result.success()
+                ).let {
+                    if (it.isSuccessful) {
+                        Result.success()
+                    } else {
+                        Result.failure()
+                    }
                 }
             }
-
             Result.failure()
         }
 

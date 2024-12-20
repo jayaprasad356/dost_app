@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -204,6 +205,7 @@ class RandomUserActivity : BaseActivity() {
             if (it.success) {
                 val data = it.data
                 data?.call_id?.let { it1 ->
+
                     setupCall(
                         data.call_user_id.toString(),
                         data.call_user_name.toString(),
@@ -303,20 +305,24 @@ class RandomUserActivity : BaseActivity() {
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
-                    endTime = dateFormat.format(Date()) // Set call end time in IST
+                    if(roomID!=null) {
+                        roomID = null;
+                        endTime = dateFormat.format(Date()) // Set call end time in IST
 
-                    val constraints =
-                        Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-                    val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
-                        .putString(DConstants.STARTED_TIME, startTime)
-                        .putString(DConstants.ENDED_TIME, endTime).build()
-                    val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
-                        CallUpdateWorker::class.java
-                    ).setInputData(data).setConstraints(constraints).build()
-                    WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
-                    finish()
+                        val constraints =
+                            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+                                .build()
+                        val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
+                            .putString(DConstants.STARTED_TIME, startTime)
+                            .putString(DConstants.ENDED_TIME, endTime).build()
+                        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                            CallUpdateWorker::class.java
+                        ).setInputData(data).setConstraints(constraints).build()
+                        WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
+                        mediaPlayer?.pause()
+                        mediaPlayer?.stop()
+                        finish()
+                    }
                 }
 
                 else -> {

@@ -219,15 +219,10 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         callId: Int,
         startedTime: String,
         endedTime: String,
-        callback: NetworkCallback<UpdateConnectedCallResponse>
-    ) {
-        if (Helper.checkNetworkConnection()) {
+    ) : Response<UpdateConnectedCallResponse>{
             val apiCall: Call<UpdateConnectedCallResponse> =
                 getApiInterface().updateConnectedCall(userId, callId, startedTime, endedTime)
-            apiCall.enqueue(callback)
-        } else {
-            callback.onNoNetwork()
-        }
+            return apiCall.execute()
     }
 
     fun getEarnings(
