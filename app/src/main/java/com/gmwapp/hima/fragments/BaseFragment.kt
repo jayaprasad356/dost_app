@@ -185,8 +185,11 @@ open class BaseFragment : Fragment() {
                         }
 
                     }
-                config.topMenuBarConfig.isVisible = true
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)
+                config.topMenuBarConfig.hideByClick = false
+                config.topMenuBarConfig.hideAutomatically = true
+                config.bottomMenuBarConfig.hideByClick = false
+                config.bottomMenuBarConfig.hideAutomatically = false
                 return config
             }
         }
