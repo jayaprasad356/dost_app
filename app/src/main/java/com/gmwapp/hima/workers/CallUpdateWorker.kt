@@ -26,23 +26,32 @@ class CallUpdateWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
+        val id = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
         return withContext(Dispatchers.IO) {
-            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
-                femaleUsersRepositories.updateConnectedCall(
-                    it,
-                    workerParams.inputData.getInt(DConstants.CALL_ID, 0),
-                    workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
-                    workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
-                ).let {
-                    if (it.isSuccessful) {
-                        Result.success()
-                    } else {
+            if (id != null) {
+                try {
+                    val updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
+                        id,
+                        workerParams.inputData.getInt(DConstants.CALL_ID, 0),
+                        workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
+                        workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
+                    )
+
+                    if (updateConnectedCall.isSuccessful) {
+                        if (updateConnectedCall.body()?.success == true) {
+                            Result.success()
+                        } else{
+                            Result.failure()
+                        }
+                    }else{
                         Result.failure()
                     }
+                } catch (e: Exception) {
+                    Result.failure()
                 }
+            }else{
+                Result.failure()
             }
-            Result.failure()
         }
-
     }
 }

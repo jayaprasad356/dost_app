@@ -54,7 +54,7 @@ class FemaleUsersRepositories @Inject constructor(private val apiManager: ApiMan
         )
     }
 
-    fun updateConnectedCall(
+    suspend fun updateConnectedCall(
         userId: Int,
         callId: Int,
         startedTime: String,

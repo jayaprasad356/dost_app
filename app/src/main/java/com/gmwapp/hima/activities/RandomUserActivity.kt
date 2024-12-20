@@ -305,23 +305,26 @@ class RandomUserActivity : BaseActivity() {
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
-                    if(roomID!=null) {
-                        roomID = null;
-                        endTime = dateFormat.format(Date()) // Set call end time in IST
+                    lifecycleScope.launch {
+                        delay(500)
+                        if (roomID != null) {
+                            roomID = null
+                            endTime = dateFormat.format(Date()) // Set call end time in IST
 
-                        val constraints =
-                            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
-                                .build()
-                        val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
-                            .putString(DConstants.STARTED_TIME, startTime)
-                            .putString(DConstants.ENDED_TIME, endTime).build()
-                        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
-                            CallUpdateWorker::class.java
-                        ).setInputData(data).setConstraints(constraints).build()
-                        WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
-                        mediaPlayer?.pause()
-                        mediaPlayer?.stop()
-                        finish()
+                            val constraints =
+                                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build()
+                            val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
+                                .putString(DConstants.STARTED_TIME, startTime)
+                                .putString(DConstants.ENDED_TIME, endTime).build()
+                            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                                CallUpdateWorker::class.java
+                            ).setInputData(data).setConstraints(constraints).build()
+                            WorkManager.getInstance(this@RandomUserActivity).enqueue(oneTimeWorkRequest)
+                            mediaPlayer?.pause()
+                            mediaPlayer?.stop()
+                            finish()
+                        }
                     }
                 }
 
