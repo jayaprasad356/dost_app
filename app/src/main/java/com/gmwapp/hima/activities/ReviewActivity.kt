@@ -60,6 +60,7 @@ class ReviewActivity : BaseActivity() {
         binding.ivClose.setOnClickListener({
             finish()
         })
+        binding.rating.rating = 5f
         binding.tvTitle.text = getString(R.string.review_hint, intent.getStringExtra(DConstants.RECEIVER_NAME))
         binding.btnSubmit.setOnClickListener({
             finish()
