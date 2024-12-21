@@ -28,32 +28,32 @@ object Helper {
     fun getInterestObject(context: Context, interest: String): Interests {
         if (interest == "Politics") {
             return Interests(
-                context.getString(R.string.politics), R.drawable.politics, false
+                context.getString(R.string.politics), R.drawable.politics, false,false
             )
 
         } else if (interest == "Art") {
             return Interests(
-                context.getString(R.string.art), R.drawable.art, false
+                context.getString(R.string.art), R.drawable.art, false,false
             )
         } else if (interest == "Sports") {
             return Interests(
-                context.getString(R.string.sports), R.drawable.sports, false
+                context.getString(R.string.sports), R.drawable.sports, false,false
             )
         } else if (interest == "Movies") {
             return Interests(
-                context.getString(R.string.movies), R.drawable.movie, false
+                context.getString(R.string.movies), R.drawable.movie, false,false
             )
         } else if (interest == "Music") {
             return Interests(
-                context.getString(R.string.music), R.drawable.music, false
+                context.getString(R.string.music), R.drawable.music, false,false
             )
         } else if (interest == "Foodie") {
             return Interests(
-                context.getString(R.string.foodie), R.drawable.foodie, false
+                context.getString(R.string.foodie), R.drawable.foodie, false,false
             )
         } else {
             return Interests(
-                context.getString(R.string.travel), R.drawable.travel, false
+                context.getString(R.string.travel), R.drawable.travel, false,false
             )
         }
     }
