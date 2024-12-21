@@ -44,7 +44,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity() {
-    private var receiverId: Int? = null
+    private var isReceiverDetailsAvailable: Boolean = false
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
@@ -111,10 +111,11 @@ class RandomUserActivity : BaseActivity() {
     }
 
     private fun initializeCall(cancelled: Boolean) {
-        if (receiverId != null) {
+        if (isReceiverDetailsAvailable) {
             if (cancelled) {
                 finish()
             } else {
+                val receiverId = intent.getStringExtra(DConstants.RECEIVER_ID)
                 val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
                 val callType = intent.getStringExtra(DConstants.CALL_TYPE)
                 val balanceTime = intent.getStringExtra(DConstants.BALANCE_TIME)
@@ -166,7 +167,7 @@ class RandomUserActivity : BaseActivity() {
         binding.btnCancel.setOnClickListener({
             finish()
         })
-        receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
+        isReceiverDetailsAvailable = intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it.success) {
                 val data = it.data
