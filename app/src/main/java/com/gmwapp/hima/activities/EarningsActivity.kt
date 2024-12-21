@@ -98,6 +98,7 @@ class EarningsActivity : BaseActivity() {
         })
         earningsViewModel.earningsResponseLiveData.observe(this, Observer {
             if (it.data != null) {
+
                 binding.rvEarnings.setLayoutManager(
                     LinearLayoutManager(
                         this, LinearLayoutManager.VERTICAL, false

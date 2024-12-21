@@ -26,7 +26,6 @@ class CallUpdateWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.e("siva", "worker doWork")
         return withContext(Dispatchers.IO) {
             BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
                 femaleUsersRepositories.updateConnectedCall(

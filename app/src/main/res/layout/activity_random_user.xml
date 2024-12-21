@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton
+    <com.gmwapp.hima.widgets.SendCallInvitationButton
         android:visibility="gone"
         android:layout_marginTop="10dp"
         android:id="@+id/voiceCallButton"

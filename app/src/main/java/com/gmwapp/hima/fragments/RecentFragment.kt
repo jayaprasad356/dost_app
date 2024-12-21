@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.CoinAdapter
@@ -39,13 +40,17 @@ class RecentFragment : BaseFragment() {
         userData?.let { recentViewModel.getCallsList(userData.id, userData.gender) }
         recentViewModel.callsListLiveData.observe(viewLifecycleOwner, Observer {
             if(it.success && it.data!=null) {
-                val recentCallsAdapter = RecentCallsAdapter(requireActivity(),it.data,object :
-                    OnItemSelectionListener<CallsListResponseData> {
-                    override fun onItemSelected(coin: CallsListResponseData) {
-                    }
-
-                })
+                binding.rvCalls.setLayoutManager(
+                    LinearLayoutManager(
+                        requireActivity(), LinearLayoutManager.VERTICAL, false
+                    )
+                )
+                val recentCallsAdapter = RecentCallsAdapter(requireActivity(),it.data)
                 binding.rvCalls.setAdapter(recentCallsAdapter)
+                binding.rvCalls.visibility = View.VISIBLE
+                binding.tlTitle.visibility = View.GONE
+                binding.tlTitleDetails.visibility = View.GONE
+                binding.btnConnect.visibility = View.GONE
 
             }
         })

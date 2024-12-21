@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.constants.DConstants
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
@@ -20,9 +22,11 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
     override fun onForegroundViewCreated(uiKitUser: ZegoUIKitUser) {
         // init your custom view
-        Log.e("siva","2 "+uiKitUser.toString())
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        val userData = prefs?.getUserData()
 
-        val view = inflate(context, R.layout.widget_custom_call, this)
+        val inflate = inflate(context, if(userData?.gender == DConstants.MALE) R.layout.widget_custom_call else R.layout.widget_custom_call_female, this)
+        val view = inflate
         tvRemainingTime = view.findViewById<View>(R.id.tv_remaining_time) as TextView?
     }
 
