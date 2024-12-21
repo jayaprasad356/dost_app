@@ -38,17 +38,13 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
         android:contentDescription="@string/account_privacy"
         android:rotation="180"
         android:src="@drawable/right_arrow"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.02"
         app:layout_constraintStart_toStartOf="@id/gl_left_margin"
         app:layout_constraintTop_toTopOf="@id/gl_top_margin"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.05"
         app:tint="#feffff"
         tools:ignore="MissingConstraints" />
 
@@ -59,7 +55,8 @@
         android:layout_marginStart="16dp"
         android:text="@string/edit_profile"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="24sp"
+        android:gravity="center"
         android:fontFamily="@font/poppins_regular"
         app:layout_constraintBottom_toBottomOf="@+id/iv_back"
         app:layout_constraintStart_toEndOf="@+id/iv_back"
@@ -101,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/your_avatar"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/v_top_margin" />
@@ -231,7 +229,8 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/user_name_hint"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_regular"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cv_user_name" />
 

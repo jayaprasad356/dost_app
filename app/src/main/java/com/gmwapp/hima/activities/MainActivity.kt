@@ -53,10 +53,17 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         userName = userData?.name
     }
     private fun initUI() {
-        val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
-        bottomSheet.show(
-            supportFragmentManager, "BottomSheetWelcomeBonus"
-        )
+
+        if (BaseApplication.getInstance()?.getPrefs()
+                ?.getUserData()?.gender == DConstants.MALE
+        ) {
+
+            val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
+            bottomSheet.show(
+                supportFragmentManager, "BottomSheetWelcomeBonus"
+            )
+        }
+
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
         binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
