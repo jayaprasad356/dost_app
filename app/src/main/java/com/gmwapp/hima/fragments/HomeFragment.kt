@@ -68,13 +68,13 @@ class HomeFragment : BaseFragment() {
 
         }
 
-        binding.fabAudio.setOnClickListener({
+        binding.fabAudio.setOnSingleClickListener ({
             val intent = Intent(context, RandomUserActivity::class.java)
             intent.putExtra(DConstants.CALL_TYPE, "audio")
             startActivity(intent)
         })
 
-        binding.fabVideo.setOnClickListener({
+        binding.fabVideo.setOnSingleClickListener({
             val intent = Intent(context, RandomUserActivity::class.java)
             intent.putExtra(DConstants.CALL_TYPE, "video")
             startActivity(intent)

@@ -16,30 +16,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="55dp"
+        android:id="@+id/cl_coins"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="4dp"
         android:layout_marginEnd="12dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_logo"
+        android:paddingEnd="@dimen/_10sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:paddingVertical="@dimen/_3sdp"
         android:background="@drawable/d_button_bg"
-        android:backgroundTint="#464646">
-        <TextView
-            android:id="@+id/tv_coins"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="\u20B9  0"
-            android:textColor="@color/white"
-            android:textSize="14sp"
+        android:backgroundTint="#FEA6BD"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_logo"
+        >
+
+
+        <ImageView
+            android:id="@+id/iv_coin"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/coin_d"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_coins"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:gravity=""
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_coin"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_calls"

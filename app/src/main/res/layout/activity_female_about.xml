@@ -164,7 +164,7 @@
                         android:imeOptions="actionDone"
                         android:singleLine="true"
                         android:inputType="number"
-                        android:textColor="@color/white"
+                        android:textColor="@color/pink"
                         android:textCursorDrawable="@drawable/color_cursor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

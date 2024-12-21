@@ -58,7 +58,7 @@ class EditProfileActivity : BaseActivity() {
         }
 
         binding.tvPreferredLanguage.text = userData?.language
-      //  binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+        //  binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         binding.ivBack.setOnClickListener(View.OnClickListener {
             finish()
         })
@@ -77,7 +77,7 @@ class EditProfileActivity : BaseActivity() {
                     binding.ivSuccess.visibility = View.GONE
                     binding.ivWarning.visibility = View.VISIBLE
                     binding.tvUserNameHint.text = getString(R.string.user_name_hint)
-                    binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                    binding.tvUserNameHint.setTextColor(getColor(android.R.color.white))
                     updateButton()
                 } else {
                     userData?.id?.let {
@@ -106,56 +106,79 @@ class EditProfileActivity : BaseActivity() {
 
         val interests = userData?.interests?.split(",")
         interests?.let { selectedInterests.addAll(it) }
+
+        var isReSelected: Boolean?
+
+
+   //     Toast.makeText(this@EditProfileActivity, selectedInterests.size.toString(), Toast.LENGTH_LONG).show()
+
+        if (selectedInterests.size == 4){
+            isReSelected = true
+        }
+        else{
+            isReSelected = false
+        }
+
         interestsListAdapter = InterestsListAdapter(this, arrayListOf(
             Interests(
                 getString(R.string.politics),
                 R.drawable.politics,
-                interests?.contains(getString(R.string.politics))
+                interests?.contains(getString(R.string.politics)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.art),
                 R.drawable.art,
-                interests?.contains(getString(R.string.art))
+                interests?.contains(getString(R.string.art)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.sports),
                 R.drawable.sports,
-                interests?.contains(getString(R.string.sports))
+                interests?.contains(getString(R.string.sports)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.movies),
                 R.drawable.movie,
-                interests?.contains(getString(R.string.movies))
+                interests?.contains(getString(R.string.movies)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.music),
                 R.drawable.music,
-                interests?.contains(getString(R.string.music))
+                interests?.contains(getString(R.string.music)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.foodie),
                 R.drawable.foodie,
-                interests?.contains(getString(R.string.foodie))
+                interests?.contains(getString(R.string.foodie)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.travel),
                 R.drawable.travel,
-                interests?.contains(getString(R.string.travel))
+                interests?.contains(getString(R.string.travel)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.photography),
                 R.drawable.photography,
-                interests?.contains(getString(R.string.photography))
+                interests?.contains(getString(R.string.photography)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.love),
                 R.drawable.love,
-                interests?.contains(getString(R.string.love))
+                interests?.contains(getString(R.string.love)),
+                isReSelected
             ),
             Interests(
                 getString(R.string.cooking),
                 R.drawable.cooking,
-                interests?.contains(getString(R.string.cooking))
+                interests?.contains(getString(R.string.cooking)),
+                isReSelected
             ),
         ), false, object : OnItemSelectionListener<Interests> {
             override fun onItemSelected(interest: Interests) {
@@ -164,10 +187,14 @@ class EditProfileActivity : BaseActivity() {
                 } else {
                     selectedInterests.add(interest.name)
                 }
-                interestsListAdapter?.updateLimitReached(selectedInterests.size == 5)
+                interestsListAdapter?.updateLimitReached(selectedInterests.size == 4)
+           //     Toast.makeText(this@EditProfileActivity, selectedInterests.size.toString(), Toast.LENGTH_LONG).show()
                 updateButton()
             }
         })
+
+
+
         binding.rvAvatars.setOnScrollChangeListener(View.OnScrollChangeListener { view: View, i: Int, i1: Int, i2: Int, i3: Int ->
             updateButton()
         })
@@ -200,7 +227,7 @@ class EditProfileActivity : BaseActivity() {
                 binding.ivSuccess.visibility = View.VISIBLE
                 binding.ivWarning.visibility = View.GONE
                 binding.tvUserNameHint.text = getString(R.string.user_name_hint)
-                binding.tvUserNameHint.setTextColor(getColor(R.color.user_name_hint_text))
+                binding.tvUserNameHint.setTextColor(getColor(R.color.white))
             } else {
                 isValidUserName = false
                 binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_error)
@@ -208,7 +235,7 @@ class EditProfileActivity : BaseActivity() {
                 binding.ivSuccess.visibility = View.GONE
                 binding.ivWarning.visibility = View.VISIBLE
                 binding.tvUserNameHint.text = it.message
-                binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                binding.tvUserNameHint.setTextColor(getColor(android.R.color.white))
             }
             updateButton()
         })
@@ -226,7 +253,7 @@ class EditProfileActivity : BaseActivity() {
                 binding.ivSuccess.visibility = View.GONE
                 binding.ivWarning.visibility = View.VISIBLE
                 binding.tvUserNameHint.text = it
-                binding.tvUserNameHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                binding.tvUserNameHint.setTextColor(getColor(android.R.color.white))
                 updateButton()
             }
         })
@@ -270,22 +297,26 @@ class EditProfileActivity : BaseActivity() {
     }
 
     private fun updateButton() {
+
+
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         val interests = userData?.interests?.split(",")
         val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
         val index = layoutManager.findLastCompletelyVisibleItemPosition()
         if(index < 0) return
-        val sameInterests =
-            interests?.containsAll(selectedInterests) == true && interests.size == selectedInterests.size
+        val sameInterests = interests?.containsAll(selectedInterests) == true && interests.size == selectedInterests.size
 
         if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || !sameInterests || profileViewModel.avatarsListLiveData.value?.data?.get(index)?.id != userData.avatar_id)) {
             binding.btnUpdate.isEnabled = true
-         //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
+            //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
             binding.btnUpdate.isEnabled = false
-         //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
+            //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         }
     }
+
+
+
 }
 
 

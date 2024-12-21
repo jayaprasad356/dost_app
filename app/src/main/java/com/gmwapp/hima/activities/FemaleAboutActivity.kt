@@ -47,13 +47,14 @@ class FemaleAboutActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border)
+      //  binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border)
         binding.cvSummary.setBackgroundResource(R.drawable.card_view_border)
 
 //        binding.etEnterYourAge.setOnTouchListener { v, _ ->
 //            binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_age_selected)
 //            false
 //        }
+
         binding.etEnterYourAge.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
@@ -61,22 +62,22 @@ class FemaleAboutActivity : BaseActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.toString().isNotEmpty() && s.toString().toInt() < 18) {
                     isValidAge = false
-                    binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
+                   // binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
                     binding.tvEnterYourAgeHint.text =
                         getString(R.string.you_must_be_at_least_18_years_old)
-                    binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                    binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.white))
                 } else if (s.toString().isNotEmpty() && s.toString().toInt() > 99) {
                     isValidAge = false
-                    binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
+                  //  binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_error)
                     binding.tvEnterYourAgeHint.text =
                         getString(R.string.you_must_be_below_100_years_old)
-                    binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.holo_red_dark))
+                    binding.tvEnterYourAgeHint.setTextColor(getColor(android.R.color.white))
                 } else{
                     isValidAge = true
-                    binding.cvEnterYourAge.setBackgroundResource(R.drawable.d_button_bg_user_name)
+                   // binding.cvEnterYourAge.setBackgroundResource(R.drawable.d_button_bg_user_name)
                     binding.tvEnterYourAgeHint.text =
                         getString(R.string.enter_your_age_hint)
-                    binding.tvEnterYourAgeHint.setTextColor(getColor(R.color.user_name_hint_text))
+                    binding.tvEnterYourAgeHint.setTextColor(getColor(R.color.white))
                 }
                 updateButton()
             }
@@ -134,34 +135,34 @@ class FemaleAboutActivity : BaseActivity() {
         binding.rvInterests.setLayoutManager(staggeredGridLayoutManager)
         interestsListAdapter = FemaleInterestsListAdapter(this, arrayListOf(
             Interests(
-                getString(R.string.politics), R.drawable.politics, false
+                getString(R.string.politics), R.drawable.politics, false,false
             ),
             Interests(
-                getString(R.string.art), R.drawable.art, false
+                getString(R.string.art), R.drawable.art, false,false
             ),
             Interests(
-                getString(R.string.sports), R.drawable.sports, false
+                getString(R.string.sports), R.drawable.sports, false,false
             ),
             Interests(
-                getString(R.string.movies), R.drawable.movie, false
+                getString(R.string.movies), R.drawable.movie, false,false
             ),
             Interests(
-                getString(R.string.music), R.drawable.music, false
+                getString(R.string.music), R.drawable.music, false,false
             ),
             Interests(
-                getString(R.string.foodie), R.drawable.foodie, false
+                getString(R.string.foodie), R.drawable.foodie, false,false
             ),
             Interests(
-                getString(R.string.travel), R.drawable.travel, false
+                getString(R.string.travel), R.drawable.travel, false,false
             ),
             Interests(
-                getString(R.string.photography), R.drawable.photography, false
+                getString(R.string.photography), R.drawable.photography, false,false
             ),
             Interests(
-                getString(R.string.love), R.drawable.love, false
+                getString(R.string.love), R.drawable.love, false,false
             ),
             Interests(
-                getString(R.string.cooking), R.drawable.cooking, false
+                getString(R.string.cooking), R.drawable.cooking, false,false
             ),
         ), false, object : OnItemSelectionListener<Interests> {
             override fun onItemSelected(interest: Interests) {
