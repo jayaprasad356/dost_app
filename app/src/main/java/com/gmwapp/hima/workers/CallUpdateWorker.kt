@@ -26,51 +26,32 @@ class CallUpdateWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
+        val id = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
         return withContext(Dispatchers.IO) {
-            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
-                femaleUsersRepositories.updateConnectedCall(
-                    it,
-                    workerParams.inputData.getInt(DConstants.CALL_ID, 0),
-                    workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
-                    workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
-                    object : NetworkCallback<UpdateConnectedCallResponse> {
-                        override fun onResponse(
-                            call: Call<UpdateConnectedCallResponse>,
-                            response: Response<UpdateConnectedCallResponse>
-                        ) {
-                            if (response.body() != null) {
-                                Result.success()
-                            } else {
-                                if (runAttemptCount > 5) {
-                                    Result.failure()
-                                } else {
-                                    Result.retry()
-                                }
-                            }
-                        }
+            if (id != null) {
+                try {
+                    val updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
+                        id,
+                        workerParams.inputData.getInt(DConstants.CALL_ID, 0),
+                        workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
+                        workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
+                    )
 
-                        override fun onFailure(call: Call<UpdateConnectedCallResponse>, t: Throwable) {
-                            if (runAttemptCount > 5) {
-                                Result.failure()
-                            } else {
-                                Result.retry()
-                            }
+                    if (updateConnectedCall.isSuccessful) {
+                        if (updateConnectedCall.body()?.success == true) {
+                            Result.success()
+                        } else{
+                            Result.failure()
                         }
-
-                        override fun onNoNetwork() {
-                            if (runAttemptCount > 5) {
-                                Result.failure()
-                            } else {
-                                Result.retry()
-                            }
-                        }
-                    }).let {
-                    Result.success()
+                    }else{
+                        Result.failure()
+                    }
+                } catch (e: Exception) {
+                    Result.failure()
                 }
+            }else{
+                Result.failure()
             }
-
-            Result.failure()
         }
-
     }
 }

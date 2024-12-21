@@ -31,6 +31,7 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
     }
 
     fun updateTime(seconds: Int) {
+        tvRemainingTime?.visibility = View.VISIBLE
         val mins = seconds / 60
         val remainingSecs = seconds % 60
         val result =

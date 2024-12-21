@@ -81,9 +81,9 @@ open class BaseActivity : AppCompatActivity() {
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
-        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = false
+        callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
-        callInvitationConfig.outgoingCallRingtone = "rhythm"
+        callInvitationConfig.outgoingCallRingtone = null;
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
 
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
@@ -133,7 +133,7 @@ open class BaseActivity : AppCompatActivity() {
                             )
                             var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
                             foregroundView?.updateTime(remainingTime)
-                            if (remainingTime == 0) {
+                            if (remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
                             }
                         }
@@ -189,8 +189,11 @@ open class BaseActivity : AppCompatActivity() {
                         }
 
                     }
-                config.topMenuBarConfig.isVisible = true
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)
+                config.topMenuBarConfig.hideByClick = false
+                config.topMenuBarConfig.hideAutomatically = true
+                config.bottomMenuBarConfig.hideByClick = false
+                config.bottomMenuBarConfig.hideAutomatically = false
                 return config
             }
         }
