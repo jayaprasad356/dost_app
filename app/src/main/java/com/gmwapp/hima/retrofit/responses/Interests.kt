@@ -4,4 +4,5 @@ data class Interests(
     val name: String,
     val image: Int,
     var isSelected: Boolean?,
+    var isReSelected: Boolean?,
 )

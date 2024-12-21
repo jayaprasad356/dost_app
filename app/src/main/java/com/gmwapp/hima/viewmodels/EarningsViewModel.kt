@@ -24,7 +24,7 @@ class EarningsViewModel @Inject constructor(private val earningsRepositories: Ea
 
     fun getEarnings(userId: Int) {
         viewModelScope.launch {
-            earningsRepositories.getEarnings(1, object:NetworkCallback<EarningsResponse> {
+            earningsRepositories.getEarnings(userId, object:NetworkCallback<EarningsResponse> {
                 override fun onResponse(
                     call: Call<EarningsResponse>,
                     response: Response<EarningsResponse>
