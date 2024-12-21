@@ -3,11 +3,14 @@ package com.gmwapp.hima.fragments
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -36,26 +39,35 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
-    private var checkingOverlayPermission: Boolean = false;
+    private var checkingOverlayPermission: Boolean = false
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
         timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
     }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            initializeCall()
+        } else {
+            askNotificationPermission(); }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentFemaleHomeBinding.inflate(layoutInflater)
 
         initUI()
-        askPermissions();
+        askPermissions()
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        if(!checkingOverlayPermission) {
+        if (!checkingOverlayPermission) {
             checkAutoStartPermission()
         }
     }
@@ -74,27 +86,50 @@ class FemaleHomeFragment : BaseFragment() {
                 )
             } != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(permissionNeeded, CALL_PERMISSIONS_REQUEST_CODE)
-        }else{
+        } else {
             checkOverlayPermission()
         }
     }
 
-    private fun checkAutoStartPermission(){
-        if(AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(requireActivity())) {
+    private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                initializeCall()
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                val intent = Intent(context, GrantPermissionsActivity::class.java)
+                startActivity(intent)
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+
+    private fun checkAutoStartPermission() {
+        if (AutoStartPermissionHelper.getInstance()
+                .isAutoStartPermissionAvailable(requireActivity())
+        ) {
             when (Autostart.getAutoStartState(requireActivity())) {
                 Autostart.State.ENABLED -> {
-                    initializeCall()
+                    askNotificationPermission()
                 }
+
                 Autostart.State.DISABLED -> {
-                    AutoStartPermissionHelper.getInstance().getAutoStartPermission(requireActivity())
+                    AutoStartPermissionHelper.getInstance()
+                        .getAutoStartPermission(requireActivity())
                 }
-                Autostart.State.UNEXPECTED_RESULT,
-                Autostart.State.NO_INFO -> {
-                    initializeCall()
+
+                Autostart.State.UNEXPECTED_RESULT, Autostart.State.NO_INFO -> {
+                    askNotificationPermission()
                 }
             }
-        }else{
-            initializeCall()
+        } else {
+            askNotificationPermission()
         }
     }
 
@@ -109,7 +144,7 @@ class FemaleHomeFragment : BaseFragment() {
                     checkingOverlayPermission = false
                     checkAutoStartPermission()
                 } else {
-                    checkingOverlayPermission = true;
+                    checkingOverlayPermission = true
                     checkOverlayPermission()
                 }
             })
@@ -194,21 +229,27 @@ class FemaleHomeFragment : BaseFragment() {
                 ZegoRoomStateChangedReason.LOGINED -> {
 
                     var startTime = dateFormat.format(Date()) // Set call start time in IST
-                    femaleUsersViewModel.femaleCallAttend(receivedId,callId, startTime, object:
-                        NetworkCallback<FemaleCallAttendResponse> {
-                        override fun onResponse(
-                            call: Call<FemaleCallAttendResponse>,
-                            response: Response<FemaleCallAttendResponse>
-                        ) {
-                            balanceTime = response.body()?.data?.remaining_time;
-                        }
+                    femaleUsersViewModel.femaleCallAttend(
+                        receivedId,
+                        callId,
+                        startTime,
+                        object : NetworkCallback<FemaleCallAttendResponse> {
+                            override fun onResponse(
+                                call: Call<FemaleCallAttendResponse>,
+                                response: Response<FemaleCallAttendResponse>
+                            ) {
+                                balanceTime = response.body()?.data?.remaining_time
+                            }
 
-                        override fun onFailure(call: Call<FemaleCallAttendResponse>, t: Throwable) {
-                        }
+                            override fun onFailure(
+                                call: Call<FemaleCallAttendResponse>,
+                                t: Throwable
+                            ) {
+                            }
 
-                        override fun onNoNetwork() {
-                        }
-                    })
+                            override fun onNoNetwork() {
+                            }
+                        })
 
                 }
 
