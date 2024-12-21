@@ -42,9 +42,9 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
-    var receivedId: Int = 0;
-    var callId: Int = 0;
-    var balanceTime: String?=null;
+    var receivedId: Int = 0
+    var callId: Int = 0
+    var balanceTime: String? = null
     private var foregroundView: CustomCallView? = null
     private val profileViewModel: ProfileViewModel by viewModels()
     fun showErrorMessage(message: String) {
@@ -67,6 +67,7 @@ open class BaseFragment : Fragment() {
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
+        callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = "rhythm"
@@ -96,7 +97,7 @@ open class BaseFragment : Fragment() {
                                 ZegoMenuBarButtonName.TOGGLE_MICROPHONE_BUTTON,
                                 ZegoMenuBarButtonName.SWITCH_AUDIO_OUTPUT_BUTTON
                             )
-                        );
+                        )
                         oneOnOneVideoCall
                     }
                 }
@@ -113,11 +114,17 @@ open class BaseFragment : Fragment() {
                                 if (balanceTime != null) {
                                     val split = balanceTime!!.split(":")
                                     balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+
                                 }
                             } catch (e: Exception) {
                             }
                             var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
-                            foregroundView?.updateTime(remainingTime)
+                            if (remainingTime > 0) {
+                                foregroundView?.updateTime(remainingTime)
+                            }
+                            if (balanceTime != null && remainingTime <= 0) {
+                                ZegoUIKitPrebuiltCallService.endCall()
+                            }
                         }
                     }
                 }
@@ -137,8 +144,9 @@ open class BaseFragment : Fragment() {
                         val imageView = ImageView(parent.context)
                         val requestOptions = RequestOptions().circleCrop()
 
-                        Glide.with(parent.context).load(uiKitUser.avatar?.ifEmpty { BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image }).apply(requestOptions)
-                            .into(imageView)
+                        Glide.with(parent.context).load(uiKitUser.avatar?.ifEmpty {
+                            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.image
+                        }).apply(requestOptions).into(imageView)
                         // Set different avatars for different users based on the user parameter in the callback.
                         if (uiKitUser.userID == userID) {
                             val avatarUrl =
@@ -148,11 +156,15 @@ open class BaseFragment : Fragment() {
                                 Glide.with(parent.context).load(avatarUrl).apply(requestOptions)
                                     .into(imageView)
                             }
-                        }else{
+                        } else {
                             receivedId = uiKitUser.userID.toInt()
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(UsersImage(profileViewModel, uiKitUser.userID.toInt()).execute().get())
-                                .apply(requestOptions).into(imageView)
+                            Glide.with(parent.context).load(
+                                UsersImage(
+                                    profileViewModel,
+                                    uiKitUser.userID.toInt()
+                                ).execute().get()
+                            ).apply(requestOptions).into(imageView)
 
                         }
                         return imageView
@@ -173,8 +185,11 @@ open class BaseFragment : Fragment() {
                         }
 
                     }
-                config.topMenuBarConfig.isVisible = true;
-                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON);
+                config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)
+                config.topMenuBarConfig.hideByClick = false
+                config.topMenuBarConfig.hideAutomatically = true
+                config.bottomMenuBarConfig.hideByClick = false
+                config.bottomMenuBarConfig.hideAutomatically = false
                 return config
             }
         }

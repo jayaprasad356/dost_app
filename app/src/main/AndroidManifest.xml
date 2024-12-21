@@ -63,12 +63,23 @@
         <activity android:name="com.gmwapp.hima.activities.YoutubeActivity" />
         <activity android:name="com.gmwapp.hima.activities.RandomUserActivity" />
         <activity android:name="com.gmwapp.hima.activities.GrantPermissionsActivity" />
+        <activity android:name="com.gmwapp.hima.activities.ReviewActivity" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
-
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/logo" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
     </application>
 
 </manifest>

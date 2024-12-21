@@ -214,20 +214,13 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         }
     }
 
-    fun updateConnectedCall(
+    suspend fun updateConnectedCall(
         userId: Int,
         callId: Int,
         startedTime: String,
         endedTime: String,
-        callback: NetworkCallback<UpdateConnectedCallResponse>
-    ) {
-        if (Helper.checkNetworkConnection()) {
-            val apiCall: Call<UpdateConnectedCallResponse> =
-                getApiInterface().updateConnectedCall(userId, callId, startedTime, endedTime)
-            apiCall.enqueue(callback)
-        } else {
-            callback.onNoNetwork()
-        }
+    ) : Response<UpdateConnectedCallResponse>{
+            return getApiInterface().updateConnectedCall(userId, callId, startedTime, endedTime)
     }
 
     fun getEarnings(
@@ -420,12 +413,12 @@ interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/update_connected_call")
-    fun updateConnectedCall(
+    suspend fun updateConnectedCall(
         @Field("user_id") userId: Int,
         @Field("call_id") callId: Int,
         @Field("started_time") startedTime: String,
         @Field("ended_time") endedTime: String,
-    ): Call<UpdateConnectedCallResponse>
+    ): Response<UpdateConnectedCallResponse>
 
     @FormUrlEncoded
     @POST("api/withdrawals_list")

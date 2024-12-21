@@ -127,6 +127,8 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.work.runtime)
     implementation ("androidx.work:work-runtime-ktx:2.10.0")
+    implementation ("com.github.judemanutd:autostarter:1.1.0")
+    implementation ("com.github.XomaDev:MIUI-autostart:v1.3")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
