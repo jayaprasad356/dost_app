@@ -130,6 +130,9 @@ dependencies {
     implementation ("com.github.judemanutd:autostarter:1.1.0")
     implementation ("com.github.XomaDev:MIUI-autostart:v1.3")
 
+    implementation ("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
