@@ -72,6 +72,10 @@ class RandomUserActivity : BaseActivity() {
         askPermissions()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        stopCall()
+    }
     private fun checkOverlayPermission() {
         try {
             PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
@@ -195,9 +199,7 @@ class RandomUserActivity : BaseActivity() {
             binding.tvWaitHint.text = text
         }
         binding.btnCancel.setOnClickListener({
-            ZegoUIKitPrebuiltCallService.endCall()
-            mediaPlayer?.pause()
-            mediaPlayer?.stop()
+            stopCall()
             finish()
         })
         isReceiverDetailsAvailable =
@@ -237,9 +239,7 @@ class RandomUserActivity : BaseActivity() {
         ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
             object : OutgoingCallButtonListener {
                 override fun onOutgoingCallCancelButtonPressed() {
-                    ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
+                    stopCall()
                     finish()
                 }
             }
@@ -254,16 +254,12 @@ class RandomUserActivity : BaseActivity() {
                 }
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
-                    ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
+                    stopCall()
                     finish()
                 }
 
                 override fun onIncomingCallTimeout(callID: String?, caller: ZegoCallUser?) {
-                    ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
+                    stopCall()
                     finish()
                 }
 
@@ -275,15 +271,11 @@ class RandomUserActivity : BaseActivity() {
                     callID: String?, callee: ZegoCallUser?
                 ) {
                     ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
                     initializeCall(true)
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
                     ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
                     initializeCall(true)
                 }
 
@@ -291,8 +283,6 @@ class RandomUserActivity : BaseActivity() {
                     callID: String?, callees: MutableList<ZegoCallUser>?
                 ) {
                     ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
                     initializeCall(true)
                 }
             }
@@ -343,6 +333,12 @@ class RandomUserActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun stopCall(){
+        ZegoUIKitPrebuiltCallService.endCall()
+        mediaPlayer?.pause()
+        mediaPlayer?.stop()
     }
 
     private fun setupCall(

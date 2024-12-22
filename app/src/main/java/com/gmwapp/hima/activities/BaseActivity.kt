@@ -3,7 +3,6 @@ package com.gmwapp.hima.activities
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Rect
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
@@ -41,9 +40,6 @@ import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationC
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Arrays
 import kotlin.math.abs
 
@@ -81,9 +77,10 @@ open class BaseActivity : AppCompatActivity() {
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
+        callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
-        callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = null;
+        com.zegocloud.uikit.prebuilt.call.core.notification.RingtoneManager.stopRingTone()
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
 
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
