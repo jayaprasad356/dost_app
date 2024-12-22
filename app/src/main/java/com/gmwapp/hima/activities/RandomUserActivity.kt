@@ -311,7 +311,10 @@ class RandomUserActivity : BaseActivity() {
                             val constraints =
                                 Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
                                     .build()
-                            val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
+                            val data: Data = Data.Builder()
+                                .putInt(DConstants.USER_ID, BaseApplication.getInstance()?.getPrefs()
+                                    ?.getUserData()?.id?:0)
+                                .putInt(DConstants.CALL_ID, callId)
                                 .putString(DConstants.STARTED_TIME, startTime)
                                 .putString(DConstants.ENDED_TIME, endTime).build()
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(

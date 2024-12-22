@@ -14,6 +14,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.activities.EarningsActivity
 import com.gmwapp.hima.activities.GrantPermissionsActivity
@@ -22,6 +27,7 @@ import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.gmwapp.hima.workers.CallUpdateWorker
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
@@ -54,6 +60,8 @@ class FemaleHomeFragment : BaseFragment() {
         } else {
             askNotificationPermission(); }
     }
+    private var startTime: String = ""
+    private var endTime: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -228,7 +236,7 @@ class FemaleHomeFragment : BaseFragment() {
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
 
-                    var startTime = dateFormat.format(Date()) // Set call start time in IST
+                    startTime = dateFormat.format(Date()) // Set call start time in IST
                     femaleUsersViewModel.femaleCallAttend(
                         receivedId,
                         callId,
@@ -254,6 +262,21 @@ class FemaleHomeFragment : BaseFragment() {
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
+                    endTime = dateFormat.format(Date()) // Set call end time in IST
+
+                    val constraints =
+                        Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build()
+                    val data: Data = Data.Builder()
+                        .putInt(DConstants.USER_ID, receivedId)
+                        .putInt(DConstants.CALL_ID, callId)
+                        .putString(DConstants.STARTED_TIME, startTime)
+                        .putString(DConstants.ENDED_TIME, endTime).build()
+                    val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                        CallUpdateWorker::class.java
+                    ).setInputData(data).setConstraints(constraints).build()
+                    WorkManager.getInstance(requireActivity())
+                        .enqueue(oneTimeWorkRequest)
                 }
 
                 else -> {
