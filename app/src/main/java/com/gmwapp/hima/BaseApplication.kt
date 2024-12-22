@@ -1,6 +1,8 @@
 package com.gmwapp.hima
 
 import android.app.Application
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.gmwapp.hima.utils.DPreferences
@@ -30,7 +32,7 @@ class BaseApplication : Application(), Configuration.Provider {
         mInstance = this
         mPreferences = DPreferences(this)
         FirebaseApp.initializeApp(this)
-
+        registerReceiver(ShutdownReceiver(), IntentFilter(Intent.ACTION_SHUTDOWN));
     }
 
     fun getPrefs(): DPreferences? {
