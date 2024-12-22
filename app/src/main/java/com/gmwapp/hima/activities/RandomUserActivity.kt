@@ -275,11 +275,15 @@ class RandomUserActivity : BaseActivity() {
                     callID: String?, callee: ZegoCallUser?
                 ) {
                     ZegoUIKitPrebuiltCallService.endCall()
+                    mediaPlayer?.pause()
+                    mediaPlayer?.stop()
                     initializeCall(true)
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
                     ZegoUIKitPrebuiltCallService.endCall()
+                    mediaPlayer?.pause()
+                    mediaPlayer?.stop()
                     initializeCall(true)
                 }
 
@@ -287,6 +291,8 @@ class RandomUserActivity : BaseActivity() {
                     callID: String?, callees: MutableList<ZegoCallUser>?
                 ) {
                     ZegoUIKitPrebuiltCallService.endCall()
+                    mediaPlayer?.pause()
+                    mediaPlayer?.stop()
                     initializeCall(true)
                 }
             }
