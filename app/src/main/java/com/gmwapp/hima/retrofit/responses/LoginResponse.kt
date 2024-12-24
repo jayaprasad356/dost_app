@@ -1,5 +1,7 @@
 package com.gmwapp.hima.retrofit.responses
 
+import com.google.gson.annotations.SerializedName
+
 data class LoginResponse(
     val success: Boolean,
     val registered: Boolean,
@@ -10,6 +12,7 @@ data class LoginResponse(
 data class UserData (
     val id: Int,
     val name: String,
+    @SerializedName("user_gender")
     val gender: String,
     val image: String,
     val language: String,

@@ -102,24 +102,9 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
     }
 
    fun femaleCallAttend(userId: Int, callId: Int,
-                        startTime: String,) {
+                        startTime: String,callback: NetworkCallback<FemaleCallAttendResponse>) {
         viewModelScope.launch {
-            femaleUsersRepositories.femaleCallAttend(userId,callId,startTime, object:NetworkCallback<FemaleCallAttendResponse> {
-                override fun onResponse(
-                    call: Call<FemaleCallAttendResponse>,
-                    response: Response<FemaleCallAttendResponse>
-                ) {
-                    femaleCallAttendResponseLiveData.postValue(response.body());
-                }
-
-                override fun onFailure(call: Call<FemaleCallAttendResponse>, t: Throwable) {
-                    femaleCallAttendErrorLiveData.postValue(DConstants.LOGIN_ERROR);
-                }
-
-                override fun onNoNetwork() {
-                    femaleCallAttendErrorLiveData.postValue(DConstants.NO_NETWORK);
-                }
-            })
+            femaleUsersRepositories.femaleCallAttend(userId,callId,startTime, callback)
         }
     }
 

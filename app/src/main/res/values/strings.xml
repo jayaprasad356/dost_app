@@ -161,12 +161,16 @@
     <string name="enable_camera_and_microphone">Enable camera and microphone</string>
     <string name="permissions_hint">Allow &appname; to access your camera and microphone to join calls within the app</string>
     <string name="camera">Camera</string>
-    <string name="camera_hint"><![CDATA[Settings > Apps > App management > &appname; > Permission > Camera]]></string>
-    <string name="microphone_hint"><![CDATA[Settings > Apps > App management > &appname; > Permission > Microphone]]></string>
+    <string name="camera_hint"><![CDATA[Settings > Apps > App management > HI ma > Permission > Camera]]></string>
+    <string name="microphone_hint"><![CDATA[Settings > Apps > App management > HI ma > Permission > Microphone]]></string>
+    <string name="notofications_hint"><![CDATA[Settings > Apps > App management > HI ma > Permission > Notifications]]></string>
     <string name="microphone">Microphone</string>
     <string name="please_enter_the_valid_otp">Please enter the valid OTP</string>
     <string name="warning_end_call">Are you sure you want to end your call?</string>
     <string name="warning">Warning</string>
     <string name="confirm">Confirm</string>
     <string name="coins">Coins</string>
+    <string name="review_hint">How was your call with %s</string>
+    <string name="default_notification_channel_id">com.gmwapp.hima</string>
+    <string name="notifications">Notifications</string>
 </resources>
