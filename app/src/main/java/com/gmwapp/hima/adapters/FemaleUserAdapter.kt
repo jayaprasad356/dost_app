@@ -15,6 +15,7 @@ import com.gmwapp.hima.databinding.AdapterFemaleUserBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.retrofit.responses.Interests
 import com.gmwapp.hima.utils.Helper
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -46,12 +47,31 @@ class FemaleUserAdapter(
             .apply(RequestOptions.bitmapTransform(RoundedCorners(28)))
             .into(holder.binding.ivProfile)
 
-        holder.binding.cvAudio.setOnClickListener({
-            onAudioListener.onItemSelected(femaleUser)
-        })
-        holder.binding.cvVideo.setOnClickListener({
-            onVideoListener.onItemSelected(femaleUser)
-        })
+
+
+
+
+        val  audioStatus = femaleUser.audio_status
+        val  videoStatus = femaleUser.video_status
+
+        if (audioStatus == 1) {
+            holder.binding.cvAudio.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.purple))
+            holder.binding.cvAudio.setOnSingleClickListener{
+                onAudioListener.onItemSelected(femaleUser)
+            }
+        }
+        if (videoStatus == 1) {
+            holder.binding.cvVideo.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.green))
+            holder.binding.cvVideo.setOnSingleClickListener{
+                onVideoListener.onItemSelected(femaleUser)
+            }
+        }
+
+        if (audioStatus == 0 && videoStatus == 0) {
+            holder.binding.cvAudio.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.inactive_call))
+            holder.binding.cvVideo.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.inactive_call))
+        }
+
         holder.binding.tvName.text = femaleUser.name
         holder.binding.tvLanguage.text = femaleUser.language
 

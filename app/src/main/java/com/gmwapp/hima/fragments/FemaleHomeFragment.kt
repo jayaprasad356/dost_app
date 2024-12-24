@@ -16,6 +16,7 @@ import com.gmwapp.hima.activities.EarningsActivity
 import com.gmwapp.hima.activities.GrantPermissionsActivity
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
@@ -109,7 +110,7 @@ class FemaleHomeFragment : BaseFragment() {
     }
 
     private fun initUI() {
-        binding.clCoins.setOnClickListener({
+        binding.clCoins.setOnSingleClickListener({
             val intent = Intent(context, EarningsActivity::class.java)
             startActivity(intent)
         })

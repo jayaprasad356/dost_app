@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_left_margin"
         android:layout_width="wrap_content"
@@ -67,9 +68,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_logo"
-    >
-
-
+        >
         <ImageView
             android:id="@+id/iv_coin"
             android:layout_width="@dimen/_24sdp"
@@ -79,8 +78,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-        />
-
+            />
 
         <TextView
             android:id="@+id/tv_coins"
@@ -94,9 +92,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_coin"
             app:layout_constraintTop_toTopOf="parent"
-           />
-
-
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -108,6 +104,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
+
+    <!-- Background Dim Effect -->
+    <View
+        android:id="@+id/dimBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_Nointernet"
@@ -130,12 +134,17 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/audio"
-        android:textColor="@color/purple"
+        android:textColor="@color/white"
         android:fontFamily="@font/poppins_semibold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/iv_coin_audio"
         app:layout_constraintEnd_toStartOf="@+id/iv_coin_audio"
-        app:layout_constraintTop_toTopOf="@+id/iv_coin_audio" />
+        app:layout_constraintTop_toTopOf="@+id/iv_coin_audio"
+        android:shadowColor="@color/purple"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        />
 
     <ImageView
         android:id="@+id/iv_coin_audio"
@@ -148,19 +157,24 @@
         app:layout_constraintTop_toTopOf="@+id/tv_audio2"
         />
 
-
     <TextView
         android:id="@+id/tv_audio2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="60 / mins"
-        android:textColor="@color/purple"
+        android:text="60 / min"
+        android:textColor="@color/white"
         android:fontFamily="@font/poppins_semibold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/fab_audio"
         app:layout_constraintEnd_toStartOf="@+id/fab_audio"
-        app:layout_constraintTop_toTopOf="@+id/fab_audio" />
+        app:layout_constraintTop_toTopOf="@+id/fab_audio"
+        android:shadowColor="@color/purple"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+
+        />
 
     <com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton
         android:visibility="gone"
@@ -188,8 +202,6 @@
         app:srcCompat="@drawable/audio"
         app:tint="@color/purple" />
 
-
-
     <TextView
         android:id="@+id/tv_video1"
         android:layout_width="wrap_content"
@@ -197,11 +209,16 @@
         android:layout_marginEnd="8dp"
         android:text="@string/video"
         android:fontFamily="@font/poppins_semibold"
-        android:textColor="@color/green"
+        android:textColor="@color/white"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/iv_coin_video"
         app:layout_constraintEnd_toStartOf="@+id/iv_coin_video"
-        app:layout_constraintTop_toTopOf="@+id/iv_coin_video" />
+        app:layout_constraintTop_toTopOf="@+id/iv_coin_video"
+        android:shadowColor="@color/green"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        />
 
     <ImageView
         android:id="@+id/iv_coin_video"
@@ -214,19 +231,23 @@
         app:layout_constraintTop_toTopOf="@+id/tv_video2"
         />
 
-
     <TextView
         android:id="@+id/tv_video2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="60 / mins"
+        android:text="60 / min"
         android:fontFamily="@font/poppins_semibold"
-        android:textColor="@color/green"
+        android:textColor="@color/white"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/fab_video"
         app:layout_constraintEnd_toStartOf="@+id/fab_video"
-        app:layout_constraintTop_toTopOf="@+id/fab_video" />
+        app:layout_constraintTop_toTopOf="@+id/fab_video"
+        android:shadowColor="@color/green"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_video"
@@ -263,5 +284,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

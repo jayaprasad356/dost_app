@@ -13,6 +13,7 @@ import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.EarningsAdapter
 import com.gmwapp.hima.databinding.ActivityEarningsBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.gmwapp.hima.viewmodels.EarningsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +32,7 @@ class EarningsActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
         }
 
@@ -81,7 +82,7 @@ class EarningsActivity : BaseActivity() {
                             userData?.language,
                             BuildConfig.VERSION_CODE
                         )
-                        binding.tvSupportMail.setOnClickListener {
+                        binding.tvSupportMail.setOnSingleClickListener {
                             val intent = Intent(Intent.ACTION_VIEW)
 
                             val data =

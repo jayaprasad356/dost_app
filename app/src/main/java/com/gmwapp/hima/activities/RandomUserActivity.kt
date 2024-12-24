@@ -21,6 +21,7 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.permissionx.guolindev.PermissionX
@@ -179,7 +180,7 @@ class RandomUserActivity : BaseActivity() {
         if (text != null) {
             binding.tvWaitHint.text = text
         }
-        binding.btnCancel.setOnClickListener({
+        binding.btnCancel.setOnSingleClickListener({
             finish()
         })
         isReceiverDetailsAvailable = intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)

@@ -21,6 +21,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityLoginBinding
 import com.gmwapp.hima.dialogs.BottomSheetCountry
 import com.gmwapp.hima.retrofit.responses.Country
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,7 +49,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
     private fun initUI() {
         binding.cvLogin.setBackgroundResource(R.drawable.card_view_border)
 
-        binding.btnSendOtp.setOnClickListener {
+        binding.btnSendOtp.setOnSingleClickListener {
             binding.btnSendOtp.isEnabled = false
 
             // Retrieve mobile number
@@ -76,7 +77,7 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             }
         }
 
-        binding.clCountry.setOnClickListener {
+        binding.clCountry.setOnSingleClickListener {
             val bottomSheet = BottomSheetCountry()
             bottomSheet.show(
                 supportFragmentManager, "BottomSheetCountry"

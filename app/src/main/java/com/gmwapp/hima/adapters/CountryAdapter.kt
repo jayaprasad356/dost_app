@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.AdapterCountryBinding
 import com.gmwapp.hima.retrofit.responses.Country
+import com.gmwapp.hima.utils.setOnSingleClickListener
 
 
 class CountryAdapter(
@@ -28,7 +29,7 @@ class CountryAdapter(
 
         holder.binding.tvCountry.text = country.name
         holder.binding.ivCountry.setImageResource(country.image)
-        holder.binding.main.setOnClickListener {
+        holder.binding.main.setOnSingleClickListener {
             onItemSelectionListener.onItemSelected(country)
         }
     }

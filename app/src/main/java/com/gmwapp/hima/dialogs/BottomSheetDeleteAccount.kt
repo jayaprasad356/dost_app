@@ -13,6 +13,7 @@ import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.BottomSheetDeleteAccountBinding
 import com.gmwapp.hima.databinding.BottomSheetLogoutBinding
 import com.gmwapp.hima.retrofit.responses.Country
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +46,7 @@ class BottomSheetDeleteAccount : BottomSheetDialogFragment() {
     }
 
     private fun initUI() {
-        binding.btnDeleteAccount.setOnClickListener({
+        binding.btnDeleteAccount.setOnSingleClickListener({
             onButtonClickListener?.onButtonClick()
 
         })
