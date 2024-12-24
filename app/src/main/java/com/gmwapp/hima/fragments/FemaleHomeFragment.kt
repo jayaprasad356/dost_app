@@ -27,6 +27,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.judemanutd.autostarter.AutoStartPermissionHelper
@@ -191,7 +192,7 @@ class FemaleHomeFragment : BaseFragment() {
     }
 
     private fun initUI() {
-        binding.clCoins.setOnClickListener({
+        binding.clCoins.setOnSingleClickListener({
             val intent = Intent(context, EarningsActivity::class.java)
             startActivity(intent)
         })

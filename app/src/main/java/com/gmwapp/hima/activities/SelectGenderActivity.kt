@@ -10,6 +10,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.AvatarsListAdapter
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivitySelectGenderBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,10 +32,10 @@ class SelectGenderActivity : BaseActivity() {
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
-        binding.ivBack.setOnClickListener(View.OnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
-        })
-        binding.btnContinue.setOnClickListener {
+        }
+        binding.btnContinue.setOnSingleClickListener {
             var intent:Intent? = null
             if (selectedGender == DConstants.MALE) {
                 intent = Intent(this, SelectLanguageActivity::class.java)
@@ -52,7 +53,7 @@ class SelectGenderActivity : BaseActivity() {
             startActivity(intent)
 
         }
-        binding.btnMale.setOnClickListener {
+        binding.btnMale.setOnSingleClickListener {
             selectedGender = DConstants.MALE
             profileViewModel.getAvatarsList(selectedGender)
             binding.btnMale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)
@@ -62,7 +63,7 @@ class SelectGenderActivity : BaseActivity() {
             binding.btnMale.isEnabled = false
             binding.btnFemale.isEnabled = true
         }
-        binding.btnFemale.setOnClickListener {
+        binding.btnFemale.setOnSingleClickListener {
             selectedGender = DConstants.FEMALE
             profileViewModel.getAvatarsList(selectedGender)
             binding.btnMale.setBackgroundColor(getColor(android.R.color.transparent))

@@ -16,8 +16,9 @@ class InterestsListAdapter(
     private val interests: ArrayList<Interests>,
     private var isLimitreached: Boolean,
     val onItemSelectionListener: OnItemSelectionListener<Interests>
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var selectedCount = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val itemHolder = ItemHolder(
@@ -32,30 +33,38 @@ class InterestsListAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val interest: Interests = interests[position]
 
-        holder.binding.main.setOnClickListener(View.OnClickListener {
-            onItemSelectionListener.onItemSelected(interest)
-            interest.isSelected = interest.isSelected == null || interest.isSelected == false
-            interests[position] = interest
-            notifyDataSetChanged()
-        })
-        if(interest.isSelected == true){
-            holder.binding.main.isEnabled  = true
+        // Count the number of selected items
+        selectedCount = interests.count { it.isSelected == true }
+
+        holder.binding.main.setOnClickListener {
+            if (selectedCount < 4 || interest.isSelected == true) {  // Allow selection if less than 4 or already selected
+                onItemSelectionListener.onItemSelected(interest)
+                interest.isSelected = interest.isSelected == null || interest.isSelected == false
+                interests[position] = interest
+                notifyDataSetChanged()
+            }
+        }
+
+        // Update UI based on selection and limit reached
+        if (interest.isSelected == true) {
+            holder.binding.main.isEnabled = true
             holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_selected)
             holder.binding.tvInterest.setTextColor(activity.getColor(R.color.black))
-        } else if(isLimitreached){
-            holder.binding.main.isEnabled  = false
+        } else if (isLimitreached) {
+            holder.binding.main.isEnabled = false
             holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_disabled)
             holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_disabled_text_color))
-        }else{
-            holder.binding.main.isEnabled  = true
+        } else {
+            holder.binding.main.isEnabled = true
             holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest)
             holder.binding.tvInterest.setTextColor(activity.getColor(R.color.interest_text_color))
         }
+
         holder.binding.tvInterest.text = interest.name
         holder.binding.ivInterest.setImageResource(interest.image)
     }
 
-    fun updateLimitReached(isLimitreached: Boolean){
+    fun updateLimitReached(isLimitreached: Boolean) {
         this.isLimitreached = isLimitreached
     }
 
@@ -64,6 +73,5 @@ class InterestsListAdapter(
     }
 
     internal class ItemHolder(val binding: AdapterInterestBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-    }
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.databinding.ActivityAccountPrivacyBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,14 +30,14 @@ class AccountPrivacyActivity : BaseActivity() {
     private fun initUI() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         accountViewModel.getSettings()
-        binding.cvDeleteAccount.setOnClickListener {
+        binding.cvDeleteAccount.setOnSingleClickListener {
             val intent = Intent(this, DeleteAccountActivity::class.java)
             startActivity(intent)
         }
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
         }
-        binding.cvPrivacyPolicy.setOnClickListener {
+        binding.cvPrivacyPolicy.setOnSingleClickListener {
             try {
                 val intent = Intent(this, WebviewActivity::class.java)
                 startActivity(intent)

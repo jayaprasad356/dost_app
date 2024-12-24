@@ -28,19 +28,17 @@
 
     <ImageView
         android:id="@+id/iv_logo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/edit"
         android:scaleType="fitXY"
         android:src="@drawable/logo"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.04"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.12"
         app:tint="@color/white"
         tools:ignore="MissingConstraints" />
 

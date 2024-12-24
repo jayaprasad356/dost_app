@@ -12,6 +12,7 @@ import com.gmwapp.hima.adapters.CoinAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.ActivityWalletBinding
 import com.gmwapp.hima.retrofit.responses.CoinsResponseData
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.WalletViewModel
 import com.gmwapp.hima.widgets.SpacesItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,9 +31,9 @@ class WalletActivity : BaseActivity() {
 
     private fun initUI() {
         val layoutManager = GridLayoutManager(this, 3)
-        binding.ivBack.setOnClickListener(View.OnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
-        })
+        }
 //        binding.rvPlans.addItemDecoration(SpacesItemDecoration(20))
         binding.rvPlans.setLayoutManager(layoutManager)
 //        binding.rvPlans.addItemDecoration(SpacesItemDecoration(10))

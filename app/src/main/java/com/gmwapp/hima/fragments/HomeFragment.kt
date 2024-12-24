@@ -130,8 +130,9 @@ class HomeFragment : BaseFragment() {
         binding.fabRandom.extend()
         binding.fabAudio.hide()
         binding.fabVideo.hide()
-        binding.fabRandom.setOnClickListener {
+        binding.fabRandom.setOnSingleClickListener {
             if (!isAllFabVisible) {
+                showDimBackground()
                 binding.fabAudio.show()
                 binding.fabVideo.show()
                 binding.tvAudio1.visibility = View.VISIBLE
@@ -141,15 +142,14 @@ class HomeFragment : BaseFragment() {
                 binding.ivCoinAudio.visibility = View.VISIBLE
                 binding.ivCoinVideo.visibility = View.VISIBLE
 
-                // change the bg color
+                // Change the bg color to white when expanded
                 binding.fabRandom.backgroundTintList = resources.getColorStateList(R.color.white)
 
-                // Change the icon tint
+                // Change the icon tint to black
                 binding.fabRandom.setIconTintResource(R.color.black)
 
-
-                // Change the icon and extend the parent FAB
-                binding.fabRandom.setIconResource(R.drawable.ic_close) // Replace with your icon for shrinked state
+                // Change the icon to close when expanded
+                binding.fabRandom.setIconResource(R.drawable.ic_close)
 
                 binding.fabRandom.shrink()
                 isAllFabVisible = true
@@ -163,20 +163,38 @@ class HomeFragment : BaseFragment() {
                 binding.ivCoinAudio.visibility = View.GONE
                 binding.ivCoinVideo.visibility = View.GONE
 
+                hideDimBackground()
 
+                // Reset the bg color to blue when collapsed
                 binding.fabRandom.backgroundTintList = resources.getColorStateList(R.color.blue)
 
-
+                // Reset the icon tint to white
                 binding.fabRandom.setIconTintResource(R.color.white)
 
-
-                // Change the icon and extend the parent FAB
-                binding.fabRandom.setIconResource(R.drawable.random) // Replace with your icon for shrinked state
+                // Change the icon to random when collapsed
+                binding.fabRandom.setIconResource(R.drawable.random)
                 binding.fabRandom.extend()
 
                 isAllFabVisible = false
             }
         }
+    }
+
+    private fun showDimBackground() {
+        binding.dimBackground.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).setDuration(400).start()
+        }
+    }
+
+    private fun hideDimBackground() {
+        binding.dimBackground.animate()
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction {
+                binding.dimBackground.visibility = View.GONE
+            }.start()
     }
 
 
@@ -189,5 +207,7 @@ class HomeFragment : BaseFragment() {
         return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
     }
+
+
 
 }
