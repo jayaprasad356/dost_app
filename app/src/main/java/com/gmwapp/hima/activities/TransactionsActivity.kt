@@ -30,7 +30,7 @@ class TransactionsActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
         }
 

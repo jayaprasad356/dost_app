@@ -107,78 +107,61 @@ class EditProfileActivity : BaseActivity() {
         val interests = userData?.interests?.split(",")
         interests?.let { selectedInterests.addAll(it) }
 
-        var isReSelected: Boolean?
 
 
-   //     Toast.makeText(this@EditProfileActivity, selectedInterests.size.toString(), Toast.LENGTH_LONG).show()
 
-        if (selectedInterests.size == 4){
-            isReSelected = true
-        }
-        else{
-            isReSelected = false
-        }
 
         interestsListAdapter = InterestsListAdapter(this, arrayListOf(
             Interests(
                 getString(R.string.politics),
                 R.drawable.politics,
-                interests?.contains(getString(R.string.politics)),
-                isReSelected
+                interests?.contains(getString(R.string.politics))
             ),
             Interests(
                 getString(R.string.art),
                 R.drawable.art,
-                interests?.contains(getString(R.string.art)),
-                isReSelected
+                interests?.contains(getString(R.string.art))
             ),
             Interests(
                 getString(R.string.sports),
                 R.drawable.sports,
-                interests?.contains(getString(R.string.sports)),
-                isReSelected
+                interests?.contains(getString(R.string.sports))
+
             ),
             Interests(
                 getString(R.string.movies),
                 R.drawable.movie,
-                interests?.contains(getString(R.string.movies)),
-                isReSelected
+                interests?.contains(getString(R.string.movies))
             ),
             Interests(
                 getString(R.string.music),
                 R.drawable.music,
-                interests?.contains(getString(R.string.music)),
-                isReSelected
+                interests?.contains(getString(R.string.music))
             ),
             Interests(
                 getString(R.string.foodie),
                 R.drawable.foodie,
-                interests?.contains(getString(R.string.foodie)),
-                isReSelected
+                interests?.contains(getString(R.string.foodie))
             ),
             Interests(
                 getString(R.string.travel),
                 R.drawable.travel,
-                interests?.contains(getString(R.string.travel)),
-                isReSelected
+                interests?.contains(getString(R.string.travel))
             ),
             Interests(
                 getString(R.string.photography),
                 R.drawable.photography,
-                interests?.contains(getString(R.string.photography)),
-                isReSelected
+                interests?.contains(getString(R.string.photography))
             ),
             Interests(
                 getString(R.string.love),
                 R.drawable.love,
-                interests?.contains(getString(R.string.love)),
-                isReSelected
+                interests?.contains(getString(R.string.love))
             ),
             Interests(
                 getString(R.string.cooking),
                 R.drawable.cooking,
-                interests?.contains(getString(R.string.cooking)),
-                isReSelected
+                interests?.contains(getString(R.string.cooking))
             ),
         ), false, object : OnItemSelectionListener<Interests> {
             override fun onItemSelected(interest: Interests) {
@@ -187,7 +170,7 @@ class EditProfileActivity : BaseActivity() {
                 } else {
                     selectedInterests.add(interest.name)
                 }
-                interestsListAdapter?.updateLimitReached(selectedInterests.size == 4)
+                interestsListAdapter?.updateLimitReached(selectedInterests.size == 5)
            //     Toast.makeText(this@EditProfileActivity, selectedInterests.size.toString(), Toast.LENGTH_LONG).show()
                 updateButton()
             }
@@ -308,8 +291,10 @@ class EditProfileActivity : BaseActivity() {
 
         if (isValidUserName && (userData?.name != binding.etUserName.text.toString() || !sameInterests || profileViewModel.avatarsListLiveData.value?.data?.get(index)?.id != userData.avatar_id)) {
             binding.btnUpdate.isEnabled = true
+//            Toast.makeText(this@EditProfileActivity, "1".toString(), Toast.LENGTH_LONG).show()
             //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {
+//            Toast.makeText(this@EditProfileActivity, "2", Toast.LENGTH_LONG).show()
             binding.btnUpdate.isEnabled = false
             //   binding.btnUpdate.setBackgroundResource(R.drawable.d_button_bg_disabled)
         }

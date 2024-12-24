@@ -25,7 +25,7 @@ class BottomSheetWelcomeBonus : BottomSheetDialogFragment() {
         binding = BottomSheetWelcomeBonusBinding.inflate(layoutInflater)
         binding.tvBonusOriginal.paintFlags = binding.tvBonusOriginal.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
-        binding.tvViewMorePlans.setOnSingleClickListener {
+        binding.tvViewMorePlans.setOnClickListener() {
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
         }

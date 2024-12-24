@@ -10,6 +10,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.AdapterDeleteReasonsBinding
 import com.gmwapp.hima.retrofit.responses.Reason
+import com.gmwapp.hima.utils.setOnSingleClickListener
 
 
 class DeleteReasonAdapter(
@@ -32,7 +33,7 @@ class DeleteReasonAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val reason: Reason = reasons[position]
 
-        holder.binding.main.setOnClickListener {
+        holder.binding.main.setOnSingleClickListener {
             onItemSelectionListener.onItemSelected(reason)
             if (reason.name == "Other") {
                 isOther = reason.isSelected != true

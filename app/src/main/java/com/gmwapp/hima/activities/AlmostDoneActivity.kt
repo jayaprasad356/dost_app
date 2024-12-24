@@ -12,6 +12,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityAlmostDoneBinding
 import com.gmwapp.hima.retrofit.responses.UserData
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +45,7 @@ class AlmostDoneActivity : BaseActivity() {
                         val body = getString(R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,
                             BuildConfig.VERSION_CODE
                         )
-                        binding.tvSupportMail.setOnClickListener {
+                        binding.tvSupportMail.setOnSingleClickListener {
                             val intent = Intent(Intent.ACTION_VIEW)
 
                             val data = Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")

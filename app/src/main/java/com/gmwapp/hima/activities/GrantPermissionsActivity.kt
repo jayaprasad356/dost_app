@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.util.Log
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.databinding.ActivityGrantPermissionsBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 
 class GrantPermissionsActivity : BaseActivity() {
     lateinit var binding: ActivityGrantPermissionsBinding
@@ -19,10 +20,10 @@ class GrantPermissionsActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
         }
-        binding.btnContinue.setOnClickListener {
+        binding.btnContinue.setOnSingleClickListener {
             try {
                 finish()
                 startActivity(

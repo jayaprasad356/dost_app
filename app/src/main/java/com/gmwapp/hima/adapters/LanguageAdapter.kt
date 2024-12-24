@@ -8,6 +8,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.AdapterLanguageBinding
 import com.gmwapp.hima.retrofit.responses.Language
+import com.gmwapp.hima.utils.setOnSingleClickListener
 
 
 class LanguageAdapter(
@@ -59,7 +60,7 @@ class LanguageAdapter(
         } else {
             holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_language)
         }
-        holder.binding.main.setOnClickListener {
+        holder.binding.main.setOnSingleClickListener {
             onItemSelectionListener.onItemSelected(language)
             languages.onEach { it.isSelected = false }
             language.isSelected = true

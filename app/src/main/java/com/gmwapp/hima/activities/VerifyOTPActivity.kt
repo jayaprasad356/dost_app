@@ -13,6 +13,7 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityVerifyOtpBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,9 +39,9 @@ class VerifyOTPActivity : BaseActivity() {
         binding.tvOtpMobileNumber.text = " $mobileNumber"
         binding.tvOtpMobileNumber.paintFlags =
             binding.tvOtpMobileNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-        binding.ivEdit.setOnClickListener(View.OnClickListener {
+        binding.ivEdit.setOnSingleClickListener {
             finish()
-        })
+        }
         loginViewModel.sendOTPResponseLiveData.observe(this, Observer {
             binding.pbLoader.visibility = View.GONE
             binding.btnResendOtp.setText(getString(R.string.resend_otp))
@@ -95,7 +96,7 @@ class VerifyOTPActivity : BaseActivity() {
             }
         })
 
-        binding.btnResendOtp.setOnClickListener({
+        binding.btnResendOtp.setOnSingleClickListener({
             binding.btnResendOtp.setText("")
             binding.pbLoader.visibility = View.VISIBLE
             loginViewModel.sendOTP(mobileNumber, countryCode, otp)
@@ -118,7 +119,7 @@ class VerifyOTPActivity : BaseActivity() {
             }
         }
         )
-        binding.btnVerifyOtp.setOnClickListener {
+        binding.btnVerifyOtp.setOnSingleClickListener {
             val enteredOTP = binding.pvOtp.text.toString().toInt()
             val default = "011011".toInt() // Convert default to Int
             if (enteredOTP == otp) {

@@ -98,7 +98,7 @@ class RecentCallsAdapter(
             holder.binding.tvAmount.visibility = View.VISIBLE
             holder.binding.tvAmount.text = activity.getString(R.string.rupee_text, call.income)
         }
-        holder.binding.tvTime.text = call.started_time + " \u2022 Bullet " + call.duration
+        holder.binding.tvTime.text = call.started_time + " \u2022" + call.duration
     }
 
     override fun getItemCount(): Int {

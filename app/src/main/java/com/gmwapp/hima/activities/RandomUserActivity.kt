@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.permissionx.guolindev.PermissionX
@@ -198,7 +199,6 @@ class RandomUserActivity : BaseActivity() {
             ZegoUIKitPrebuiltCallService.endCall()
             mediaPlayer?.pause()
             mediaPlayer?.stop()
-            finish()
         })
         isReceiverDetailsAvailable =
             intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)

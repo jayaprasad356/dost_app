@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.databinding.ActivityYoutubeBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -47,13 +48,13 @@ class YoutubeActivity : BaseActivity() {
                 }
             }
         })
-        binding.btnComplete.setOnClickListener({
+        binding.btnComplete.setOnSingleClickListener({
             val intent = Intent(this, AlmostDoneActivity::class.java)
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
             finish()
         })
-        binding.tvSkip.setOnClickListener({
+        binding.tvSkip.setOnSingleClickListener({
             val intent = Intent(this, AlmostDoneActivity::class.java)
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)

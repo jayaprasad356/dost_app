@@ -15,6 +15,7 @@ import com.gmwapp.hima.adapters.CountryAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.BottomSheetCountryBinding
 import com.gmwapp.hima.retrofit.responses.Country
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Locale
 
@@ -76,9 +77,9 @@ class BottomSheetCountry : BottomSheetDialogFragment() {
                 get() = TODO("Not yet implemented")
         })
         binding.rvCountries.setAdapter(countryAdapter)
-        binding.ivClose.setOnClickListener(View.OnClickListener {
+        binding.ivClose.setOnSingleClickListener {
             binding.etCountry.setText("")
-        })
+        }
         binding.etCountry.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
