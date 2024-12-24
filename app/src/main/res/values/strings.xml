@@ -92,7 +92,7 @@
     <string name="srilanka">Sri Lanka (+94)</string>
     <string name="malaysia">Malaysia (+60)</string>
     <string name="search_for_country">Search for Country</string>
-    <string name="retry_in">Retry in: 00:%s</string>
+    <string name="retry_in">Retry in (00:%s)</string>
     <string name="delete_warning_1">Information related to account will be kept for 30 days and will be completely purged after no activity for continuous 30 days</string>
     <string name="delete_warning_2">"After the account is deleted, you will no longer be able to log in or use the account, and the account cannot be recovered. "</string>
     <string name="view_more">View more</string>
@@ -173,4 +173,8 @@
     <string name="review_hint">How was your call with %s</string>
     <string name="default_notification_channel_id">com.gmwapp.hima</string>
     <string name="notifications">Notifications</string>
+    <string name="mobile_number">Mobile number</string>
+    <string name="we_don_t_share_your_number_with_anyone">We don’t share your number with anyone</string>
+    <string name="otp_send_this_number">OTP Send this number</string>
+    <string name="change_no">Change No.</string>
 </resources>

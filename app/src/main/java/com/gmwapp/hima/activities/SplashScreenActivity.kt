@@ -63,7 +63,7 @@ class SplashScreenActivity : BaseActivity() {
         });
         if (userData == null) {
             intent = Intent(
-                this@SplashScreenActivity, LoginActivity::class.java
+                this@SplashScreenActivity, NewLoginActivity::class.java
             )
         } else {
             if(userData?.gender == DConstants.MALE) {
