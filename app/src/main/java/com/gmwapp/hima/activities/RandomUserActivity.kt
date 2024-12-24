@@ -73,6 +73,10 @@ class RandomUserActivity : BaseActivity() {
         askPermissions()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        stopCall()
+    }
     private fun checkOverlayPermission() {
         try {
             PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
@@ -196,9 +200,8 @@ class RandomUserActivity : BaseActivity() {
             binding.tvWaitHint.text = text
         }
         binding.btnCancel.setOnClickListener({
-            ZegoUIKitPrebuiltCallService.endCall()
-            mediaPlayer?.pause()
-            mediaPlayer?.stop()
+            stopCall()
+            finish()
         })
         isReceiverDetailsAvailable =
             intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
@@ -237,9 +240,7 @@ class RandomUserActivity : BaseActivity() {
         ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
             object : OutgoingCallButtonListener {
                 override fun onOutgoingCallCancelButtonPressed() {
-                    ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
+                    stopCall()
                     finish()
                 }
             }
@@ -254,16 +255,12 @@ class RandomUserActivity : BaseActivity() {
                 }
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
-                    ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
+                    stopCall()
                     finish()
                 }
 
                 override fun onIncomingCallTimeout(callID: String?, caller: ZegoCallUser?) {
-                    ZegoUIKitPrebuiltCallService.endCall()
-                    mediaPlayer?.pause()
-                    mediaPlayer?.stop()
+                    stopCall()
                     finish()
                 }
 
@@ -315,7 +312,10 @@ class RandomUserActivity : BaseActivity() {
                             val constraints =
                                 Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
                                     .build()
-                            val data: Data = Data.Builder().putInt(DConstants.CALL_ID, callId)
+                            val data: Data = Data.Builder()
+                                .putInt(DConstants.USER_ID, BaseApplication.getInstance()?.getPrefs()
+                                    ?.getUserData()?.id?:0)
+                                .putInt(DConstants.CALL_ID, callId)
                                 .putString(DConstants.STARTED_TIME, startTime)
                                 .putString(DConstants.ENDED_TIME, endTime).build()
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
@@ -337,6 +337,12 @@ class RandomUserActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun stopCall(){
+        ZegoUIKitPrebuiltCallService.endCall()
+        mediaPlayer?.pause()
+        mediaPlayer?.stop()
     }
 
     private fun setupCall(
