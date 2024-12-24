@@ -9,6 +9,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.AdapterInterestBinding
 import com.gmwapp.hima.retrofit.responses.Interests
+import com.gmwapp.hima.utils.setOnSingleClickListener
 
 
 class FemaleInterestsListAdapter(
@@ -32,12 +33,12 @@ class FemaleInterestsListAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val interest: Interests = interests[position]
 
-        holder.binding.main.setOnClickListener(View.OnClickListener {
+        holder.binding.main.setOnSingleClickListener{
             onItemSelectionListener.onItemSelected(interest)
             interest.isSelected = interest.isSelected == null || interest.isSelected == false
             interests[position] = interest
             notifyDataSetChanged()
-        })
+        }
         if(interest.isSelected == true){
             holder.binding.main.isEnabled  = true
             holder.binding.main.setBackgroundResource(R.drawable.d_button_bg_interest_selected)

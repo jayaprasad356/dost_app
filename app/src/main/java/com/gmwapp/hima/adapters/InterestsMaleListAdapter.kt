@@ -33,7 +33,7 @@ class InterestsMaleListAdapter(
         val holder: ItemHolder = holderParent as ItemHolder
         val interest: Interests = interests[position]
 
-//        holder.binding.main.setOnClickListener(View.OnClickListener {
+//        holder.binding.main.setOnSingleClickListener(View.OnClickListener {
 //            onItemSelectionListener.onItemSelected(interest)
 //            interest.isSelected = interest.isSelected == null || interest.isSelected == false
 //            interests[position] = interest

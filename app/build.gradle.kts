@@ -130,6 +130,8 @@ dependencies {
     implementation ("com.github.judemanutd:autostarter:1.1.0")
     implementation ("com.github.XomaDev:MIUI-autostart:v1.3")
 
+    
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

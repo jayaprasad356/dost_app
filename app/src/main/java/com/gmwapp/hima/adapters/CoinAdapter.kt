@@ -10,6 +10,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.AdapterCoinBinding
 import com.gmwapp.hima.retrofit.responses.CoinsResponseData
+import com.gmwapp.hima.utils.setOnSingleClickListener
 
 
 class CoinAdapter(
@@ -38,15 +39,17 @@ class CoinAdapter(
 
         // Update the UI based on selection
         if (coin.isSelected == true) {
-            holder.binding.cvCoin.strokeWidth = 3
-            holder.binding.cvCoin.strokeColor = activity.resources.getColor(R.color.black)
+            holder.binding.cvCoin.strokeWidth = 4
+            holder.binding.cvCoin.strokeColor = activity.resources.getColor(R.color.yellow_dark)
+            holder.binding.llPrice.setBackgroundColor(activity.resources.getColor(R.color.yellow_dark))
         } else {
             holder.binding.cvCoin.strokeWidth = 0
             holder.binding.cvCoin.strokeColor = activity.resources.getColor(R.color.white)
+            holder.binding.llPrice.setBackgroundColor(activity.resources.getColor(R.color.pink_extra_light))
         }
 
         // Handle item click
-        holder.binding.main.setOnClickListener {
+        holder.binding.main.setOnSingleClickListener {
             onItemSelectionListener.onItemSelected(coin)
             coins.onEach { it.isSelected = false }
             coin.isSelected = true

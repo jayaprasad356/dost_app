@@ -14,6 +14,7 @@ import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivitySelectLanguageBinding
 import com.gmwapp.hima.retrofit.responses.Language
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.SpacesItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,9 +35,9 @@ class SelectLanguageActivity : BaseActivity() {
     private fun initUI() {
         val layoutManager = GridLayoutManager(this, 2)
         binding.rvLanguages.addItemDecoration(SpacesItemDecoration(20))
-        binding.ivBack.setOnClickListener(View.OnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
-        })
+        }
         profileViewModel.registerErrorLiveData.observe(this, Observer {
             Toast.makeText(this@SelectLanguageActivity, it, Toast.LENGTH_LONG).show()
         })
@@ -79,7 +80,7 @@ class SelectLanguageActivity : BaseActivity() {
                 Toast.makeText(this@SelectLanguageActivity, it.message, Toast.LENGTH_LONG).show()
             }
         })
-        binding.btnContinue.setOnClickListener {
+        binding.btnContinue.setOnSingleClickListener {
             val gender = intent.getStringExtra(DConstants.GENDER).toString()
             if (gender == DConstants.MALE) {
                 profileViewModel.register(
