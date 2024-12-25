@@ -206,7 +206,7 @@ class RandomUserActivity : BaseActivity() {
         isReceiverDetailsAvailable =
             intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 val data = it.data
                 data?.call_id?.let { it1 ->
 
@@ -221,7 +221,7 @@ class RandomUserActivity : BaseActivity() {
                 data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
             } else {
                 Toast.makeText(
-                    this@RandomUserActivity, it.message, Toast.LENGTH_LONG
+                    this@RandomUserActivity, it?.message, Toast.LENGTH_LONG
                 ).show()
                 mediaPlayer?.pause()
                 mediaPlayer?.stop()

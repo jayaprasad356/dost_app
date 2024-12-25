@@ -203,10 +203,10 @@ class FemaleHomeFragment : BaseFragment() {
             binding.sVideo.isChecked = userData.video_status == 1
         }
         femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 prefs?.setUserData(it.data)
             } else {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, it?.message, Toast.LENGTH_SHORT).show()
                 binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
                 binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
             }

@@ -203,7 +203,7 @@ class EditProfileActivity : BaseActivity() {
         setCenterLayoutManager(binding.rvAvatars)
         userData?.gender?.let { profileViewModel.getAvatarsList(it) }
         profileViewModel.userValidationLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 isValidUserName = true
                 binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_user_name)
                 binding.pbUserNameLoader.visibility = View.GONE
@@ -217,7 +217,7 @@ class EditProfileActivity : BaseActivity() {
                 binding.pbUserNameLoader.visibility = View.GONE
                 binding.ivSuccess.visibility = View.GONE
                 binding.ivWarning.visibility = View.VISIBLE
-                binding.tvUserNameHint.text = it.message
+                binding.tvUserNameHint.text = it?.message
                 binding.tvUserNameHint.setTextColor(getColor(android.R.color.white))
             }
             updateButton()

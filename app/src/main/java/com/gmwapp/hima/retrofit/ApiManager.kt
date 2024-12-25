@@ -322,11 +322,11 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
 
 interface ApiInterface {
     @FormUrlEncoded
-    @POST("api/login")
+    @POST("login")
     fun login(@Field("mobile") mobile: String): Call<LoginResponse>
 
     @FormUrlEncoded
-    @POST("api/send_otp")
+    @POST("send_otp")
     fun sendOTP(
         @Field("mobile") mobile: String,
         @Field("country_code") countryCode: Int,
@@ -334,15 +334,15 @@ interface ApiInterface {
     ): Call<SendOTPResponse>
 
     @FormUrlEncoded
-    @POST("api/avatar_list")
+    @POST("avatar_list")
     fun getAvatarsList(@Field("gender") gender: String): Call<AvatarsListResponse>
 
     @FormUrlEncoded
-    @POST("api/calls_list")
+    @POST("calls_list")
     fun getCallsList(@Field("user_id") userId: Int,@Field("gender") gender: String): Call<CallsListResponse>
 
     @FormUrlEncoded
-    @POST("api/register")
+    @POST("register")
     fun register(
         @Field("mobile") mobile: String,
         @Field("language") language: String,
@@ -351,19 +351,19 @@ interface ApiInterface {
     ): Call<RegisterResponse>
 
     @FormUrlEncoded
-    @POST("api/userdetails")
+    @POST("userdetails")
     fun getUser(
         @Field("user_id") user_id: Int,
     ): Call<RegisterResponse>
 
     @FormUrlEncoded
-    @POST("api/userdetails")
+    @POST("userdetails")
     fun getUserSync(
         @Field("user_id") user_id: Int,
     ): Call<RegisterResponse>
 
     @FormUrlEncoded
-    @POST("api/register")
+    @POST("register")
     fun registerFemale(
         @Field("mobile") mobile: String,
         @Field("language") language: String,
@@ -376,19 +376,19 @@ interface ApiInterface {
         ): Call<RegisterResponse>
 
     @FormUrlEncoded
-    @POST("api/transaction_list")
+    @POST("transaction_list")
     fun getTransactions(@Field("user_id") userId: Int): Call<TransactionsResponse>
 
     @FormUrlEncoded
-    @POST("api/female_users_list")
+    @POST("female_users_list")
     fun getFemaleUsers(@Field("user_id") userId: Int): Call<FemaleUsersResponse>
 
     @FormUrlEncoded
-    @POST("api/random_user")
+    @POST("random_user")
     fun getRandomUser(@Field("user_id") userId: Int,@Field("call_type") callType: String): Call<RandomUsersResponse>
 
     @FormUrlEncoded
-    @POST("api/calls_status_update")
+    @POST("calls_status_update")
     fun updateCallStatus(
         @Field("user_id") userId: Int,
         @Field("call_type") call_type: String,
@@ -396,7 +396,7 @@ interface ApiInterface {
     ): Call<UpdateCallStatusResponse>
 
     @FormUrlEncoded
-    @POST("api/female_call_attend")
+    @POST("female_call_attend")
     fun femaleCallAttend(
         @Field("user_id") userId: Int,
         @Field("call_id") callId: Int,
@@ -404,7 +404,7 @@ interface ApiInterface {
     ): Call<FemaleCallAttendResponse>
 
     @FormUrlEncoded
-    @POST("api/call_female_user")
+    @POST("call_female_user")
     fun callFemaleUser(
         @Field("user_id") userId: Int,
         @Field("call_user_id") callUserId: Int,
@@ -412,7 +412,7 @@ interface ApiInterface {
     ): Call<CallFemaleUserResponse>
 
     @FormUrlEncoded
-    @POST("api/update_connected_call")
+    @POST("update_connected_call")
     suspend fun updateConnectedCall(
         @Field("user_id") userId: Int,
         @Field("call_id") callId: Int,
@@ -421,11 +421,11 @@ interface ApiInterface {
     ): Response<UpdateConnectedCallResponse>
 
     @FormUrlEncoded
-    @POST("api/withdrawals_list")
+    @POST("withdrawals_list")
     fun getEarnings(@Field("user_id") userId: Int): Call<EarningsResponse>
 
     @FormUrlEncoded
-    @POST("api/update_profile")
+    @POST("update_profile")
     fun updateProfile(
         @Field("user_id") userId: Int,
         @Field("avatar_id") avatarId: Int,
@@ -434,33 +434,33 @@ interface ApiInterface {
     ): Call<UpdateProfileResponse>
 
     @FormUrlEncoded
-    @POST("api/coins_list")
+    @POST("coins_list")
     fun getCoins(@Field("user_id") userId: Int): Call<CoinsResponse>
 
     @FormUrlEncoded
-    @POST("api/delete_users")
+    @POST("delete_users")
     fun deleteUsers(
         @Field("user_id") userId: Int, @Field("delete_reason") deleteReason: String
     ): Call<DeleteUserResponse>
 
     @FormUrlEncoded
-    @POST("api/user_validations")
+    @POST("user_validations")
     fun userValidation(
         @Field("user_id") userId: Int, @Field("name") name: String
     ): Call<UserValidationResponse>
 
     @FormUrlEncoded
-    @POST("api/speech_text")
+    @POST("speech_text")
     fun getSpeechText(
         @Field("user_id") userId: Int, @Field("language") language: String
     ): Call<SpeechTextResponse>
 
     @Multipart
-    @POST("api/update_voice")
+    @POST("update_voice")
     fun updateVoice(
         @Part("user_id") userId: Int, @Part voice: MultipartBody.Part
     ): Call<VoiceUpdateResponse>
 
-    @POST("api/settings_list")
+    @POST("settings_list")
     fun getSettings(): Call<SettingsResponse>
 }

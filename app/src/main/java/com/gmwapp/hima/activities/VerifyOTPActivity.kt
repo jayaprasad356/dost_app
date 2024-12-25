@@ -59,10 +59,11 @@ class VerifyOTPActivity : BaseActivity() {
             binding.pbVerifyOtpLoader.visibility = View.GONE
             binding.btnVerifyOtp.setText(getString(R.string.verify_otp))
             binding.btnVerifyOtp.isEnabled = true
-            if (it.success) {
+            if (it!=null && it.success) {
                 if (it.registered) {
                     it.data?.let { it1 ->
                         BaseApplication.getInstance()?.getPrefs()?.setUserData(it1)
+                        BaseApplication.getInstance()?.getPrefs()?.setAuthenticationToken(it.token)
                     }
                     var intent:Intent? = null
                     if(it.data?.gender == DConstants.MALE) {

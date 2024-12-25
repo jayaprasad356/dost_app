@@ -60,8 +60,28 @@ class DPreferences(context: Context) {
         }
     }
 
+    fun setAuthenticationToken(authenticationToken: String?) {
+        try {
+            mPrefsWrite.putString(
+                AUTHENTICATION_TOKEN, Gson().toJson(authenticationToken)
+            )
+            mPrefsWrite.apply()
+        } catch (e: Exception) {
+            e.message?.let { Log.e("Dpreferences", it) }
+        }
+    }
+
+    fun getAuthenticationToken(): String? {
+        try {
+            return mPrefsRead.getString(AUTHENTICATION_TOKEN, "")
+        } catch (e: Exception) {
+            return null
+        }
+    }
+
     companion object {
-        private const val SETTINGS_DATA = "settings_data"
+        private const val AUTHENTICATION_TOKEN: String = "authentication_token"
+        private const val SETTINGS_DATA: String = "settings_data"
         private const val USER_DATA = "user_data"
         private const val PREFS = "Hima"
     }

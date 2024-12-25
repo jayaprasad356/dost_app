@@ -1,5 +1,6 @@
 package com.gmwapp.hima.dagger
 
+import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.retrofit.ApiInterface
 import com.google.gson.GsonBuilder
@@ -7,12 +8,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
+import okhttp3.Interceptor.*
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -29,6 +36,15 @@ object AppModule {
     fun providesOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         val okClientBuilder = OkHttpClient.Builder().connectTimeout(100, TimeUnit.SECONDS)
             .readTimeout(100, TimeUnit.SECONDS)
+
+        okClientBuilder.addInterceptor(object : Interceptor {
+            @Throws(IOException::class)
+            override fun intercept(chain: Chain): Response {
+                val request: Request.Builder = chain.request().newBuilder()
+                request.header("Authorization", "Bearer "+BaseApplication.getInstance()?.getPrefs()?.getAuthenticationToken())
+                return chain.proceed(request.build())
+            }
+        })
         if (BuildConfig.DEBUG) {
             okClientBuilder.addInterceptor(httpLoggingInterceptor)
         }

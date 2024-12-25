@@ -42,8 +42,10 @@ class SelectLanguageActivity : BaseActivity() {
             Toast.makeText(this@SelectLanguageActivity, it, Toast.LENGTH_LONG).show()
         })
         profileViewModel.registerLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
+                BaseApplication.getInstance()?.getPrefs()?.setAuthenticationToken(it.token)
+
                 if (it.data?.gender == DConstants.MALE) {
                     val intent = Intent(this, MainActivity::class.java)
                     intent.putExtra(
@@ -77,7 +79,7 @@ class SelectLanguageActivity : BaseActivity() {
                     }
                 }
             } else {
-                Toast.makeText(this@SelectLanguageActivity, it.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this@SelectLanguageActivity, it?.message, Toast.LENGTH_LONG).show()
             }
         })
         binding.btnContinue.setOnSingleClickListener {

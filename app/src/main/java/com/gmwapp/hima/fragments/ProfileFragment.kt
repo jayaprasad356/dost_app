@@ -111,7 +111,7 @@ class ProfileFragment : BaseFragment() {
 
         accountViewModel.getSettings()
         accountViewModel.settingsLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.success && it.data?.isNotEmpty() == true) {
+            if (it!=null && it.success && it.data?.isNotEmpty() == true) {
                 prefs?.setSettingsData(it.data[0])
                 val supportMail = prefs?.getSettingsData()?.support_mail
                 binding.tvSupportMail.text = supportMail

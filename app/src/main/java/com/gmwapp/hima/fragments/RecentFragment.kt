@@ -39,7 +39,7 @@ class RecentFragment : BaseFragment() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userData?.let { recentViewModel.getCallsList(userData.id, userData.gender) }
         recentViewModel.callsListLiveData.observe(viewLifecycleOwner, Observer {
-            if(it.success && it.data!=null) {
+            if(it!=null && it.success && it.data!=null) {
                 binding.rvCalls.setLayoutManager(
                     LinearLayoutManager(
                         requireActivity(), LinearLayoutManager.VERTICAL, false
