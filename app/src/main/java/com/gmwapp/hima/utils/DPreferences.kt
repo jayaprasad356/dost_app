@@ -63,7 +63,7 @@ class DPreferences(context: Context) {
     fun setAuthenticationToken(authenticationToken: String?) {
         try {
             mPrefsWrite.putString(
-                AUTHENTICATION_TOKEN, Gson().toJson(authenticationToken)
+                AUTHENTICATION_TOKEN, authenticationToken
             )
             mPrefsWrite.apply()
         } catch (e: Exception) {
