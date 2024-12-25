@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
@@ -42,7 +43,11 @@ object AppModule {
             override fun intercept(chain: Chain): Response {
                 val request: Request.Builder = chain.request().newBuilder()
                 request.header("Authorization", "Bearer "+BaseApplication.getInstance()?.getPrefs()?.getAuthenticationToken())
-                return chain.proceed(request.build())
+                val response = chain.proceed(request.build())
+                if(response.code == 401){
+                    EventBus.getDefault().post(UnauthorizedEvent());
+                }
+                return response
             }
         })
         if (BuildConfig.DEBUG) {
