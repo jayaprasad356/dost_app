@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -22,7 +22,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
-import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.permissionx.guolindev.PermissionX
@@ -71,12 +70,11 @@ class RandomUserActivity : BaseActivity() {
         setContentView(binding.root)
         initUI()
         askPermissions()
+        onBackPressedDispatcher.addCallback(this ) {
+        }
+
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        stopCall()
-    }
     private fun checkOverlayPermission() {
         try {
             PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
