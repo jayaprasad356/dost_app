@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.dagger.UnauthorizedEvent
 import com.gmwapp.hima.utils.UsersImage
@@ -86,6 +87,9 @@ open class BaseActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UnauthorizedEvent?) {
+        Toast.makeText(
+            this@BaseActivity, getString(R.string.please_login_again_to_continue), Toast.LENGTH_SHORT
+        ).show()
         val prefs = BaseApplication.getInstance()?.getPrefs()
         prefs?.clearUserData()
         val intent = Intent(this, LoginActivity::class.java)
