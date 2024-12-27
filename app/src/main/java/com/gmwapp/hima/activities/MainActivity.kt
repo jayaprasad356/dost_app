@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
@@ -51,6 +52,19 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userID = userData?.id.toString()
         userName = userData?.name
+        onBackPressedDispatcher.addCallback(this ) {
+            if (isBackPressedAlready) {
+               finish()
+            } else {
+                Toast.makeText(
+                    this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT
+                ).show()
+                isBackPressedAlready = true
+                Handler().postDelayed({
+                    isBackPressedAlready = false
+                }, 3000)
+            }
+        }
     }
     private fun initUI() {
 
@@ -67,20 +81,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
         binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
-    }
-
-    override fun onBackPressed() {
-        if (isBackPressedAlready) {
-            super.onBackPressed()
-        } else {
-            Toast.makeText(
-                this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT
-            ).show()
-            isBackPressedAlready = true
-            Handler().postDelayed({
-                isBackPressedAlready = false
-            }, 3000)
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
