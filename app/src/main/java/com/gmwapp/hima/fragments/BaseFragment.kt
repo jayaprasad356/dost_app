@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,8 +14,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
-import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
-import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallEmptyView
@@ -32,7 +29,6 @@ import com.zegocloud.uikit.prebuilt.call.config.ZegoHangUpConfirmDialogInfo
 import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
-import com.zegocloud.uikit.prebuilt.call.event.BackPressEvent
 import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
@@ -72,6 +68,9 @@ open class BaseFragment : Fragment() {
         callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = "rhythm"
 
+        ZegoUIKitPrebuiltCallService.events.callEvents.setOnlySelfInRoomListener {
+            ZegoUIKitPrebuiltCallService.endCall()
+        }
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
                 callId = invitationData.customData.toInt()
