@@ -106,8 +106,7 @@ open class BaseActivity : AppCompatActivity() {
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
         callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
-        callInvitationConfig.outgoingCallRingtone = null;
-        com.zegocloud.uikit.prebuilt.call.core.notification.RingtoneManager.stopRingTone()
+        callInvitationConfig.outgoingCallRingtone = "silent";
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
 
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
