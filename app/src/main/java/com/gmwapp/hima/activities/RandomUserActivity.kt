@@ -52,6 +52,7 @@ class RandomUserActivity : BaseActivity() {
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
     private var roomID: String? = null
+    private var usersCount: Int = 0
 
     private var userId: String = ""
     private var callUserId: String = ""
@@ -159,10 +160,16 @@ class RandomUserActivity : BaseActivity() {
 
             }
         } else {
-            val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-            val callType = intent.getStringExtra(DConstants.CALL_TYPE)
-            userData?.let {
-                callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+            if(usersCount<4) {
+                usersCount++
+                val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+                val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+                userData?.let {
+                    callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+                }
+            }else{
+                stopCall()
+                finish()
             }
         }
     }
