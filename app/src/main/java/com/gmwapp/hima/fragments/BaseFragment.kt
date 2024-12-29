@@ -38,6 +38,7 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
+    protected var lastActiveTime: Long? = null;
     var receivedId: Int = 0
     var callId: Int = 0
     var balanceTime: String? = null
@@ -123,7 +124,17 @@ open class BaseFragment : Fragment() {
                             }
                             if (balanceTime != null && remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
+                                config.durationConfig = null;
+                                setupZegoUIKit(userID, userName);
                             }
+                            ZegoUIKitPrebuiltCallService.sendInRoomCommand("active", arrayListOf(null)
+                            ) {}
+                            if(lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000){
+                                ZegoUIKitPrebuiltCallService.endCall()
+                                config.durationConfig = null;
+                                setupZegoUIKit(userID, userName);
+                            }
+
                         }
                     }
                 }
@@ -193,6 +204,9 @@ open class BaseFragment : Fragment() {
             }
         }
 
+        ZegoUIKitPrebuiltCallService.events.callEvents.addInRoomCommandListener { zegoUIKitUser, s ->
+            lastActiveTime = System.currentTimeMillis();
+        }
         ZegoUIKitPrebuiltCallService.init(
             BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig
         )

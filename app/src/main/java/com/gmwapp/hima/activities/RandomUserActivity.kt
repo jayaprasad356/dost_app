@@ -297,6 +297,7 @@ class RandomUserActivity : BaseActivity() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    lastActiveTime = System.currentTimeMillis();
                     mediaPlayer?.pause()
                     mediaPlayer?.stop()
                     roomID = room
@@ -309,6 +310,7 @@ class RandomUserActivity : BaseActivity() {
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
+                        lastActiveTime = null
                         delay(500)
                         if (roomID != null) {
                             roomID = null
