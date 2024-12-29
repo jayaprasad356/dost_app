@@ -32,11 +32,10 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
     fun updateTime(seconds: Int) {
         tvRemainingTime?.visibility = View.VISIBLE
-        val mins = seconds / 60
-        val remainingSecs = seconds % 60
-        val result =
-            (if (mins > 9) mins.toString() else "0" + mins) + ":" + (if (remainingSecs > 9) remainingSecs.toString() else "0" + remainingSecs)
-        tvRemainingTime?.text = result
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60;
+        val secs = seconds % 60;
+        tvRemainingTime?.text = String.format("%02d:%02d:%02d", hours, minutes, secs)
     }
 
     override fun onCameraStateChanged(isCameraOn: Boolean) {

@@ -131,7 +131,7 @@ dependencies {
     implementation ("androidx.work:work-runtime-ktx:2.10.0")
     implementation (libs.autostarter)
     implementation ("com.github.XomaDev:MIUI-autostart:v1.3")
-
+    implementation ("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
 
 

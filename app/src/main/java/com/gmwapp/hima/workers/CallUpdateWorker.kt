@@ -26,32 +26,28 @@ class CallUpdateWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        val id = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
         return withContext(Dispatchers.IO) {
-            if (id != null) {
-                try {
-                    val updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
-                        id,
-                        workerParams.inputData.getInt(DConstants.CALL_ID, 0),
-                        workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
-                        workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
-                    )
+            try {
+                val updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
+                    workerParams.inputData.getInt(DConstants.USER_ID, 0),
+                    workerParams.inputData.getInt(DConstants.CALL_ID, 0),
+                    workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
+                    workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
+                )
 
-                    if (updateConnectedCall.isSuccessful) {
-                        if (updateConnectedCall.body()?.success == true) {
-                            Result.success()
-                        } else{
-                            Result.failure()
-                        }
-                    }else{
+                if (updateConnectedCall.isSuccessful) {
+                    if (updateConnectedCall.body()?.success == true) {
+                        Result.success()
+                    } else {
                         Result.failure()
                     }
-                } catch (e: Exception) {
+                } else {
                     Result.failure()
                 }
-            }else{
+            } catch (e: Exception) {
                 Result.failure()
             }
+
         }
     }
 }

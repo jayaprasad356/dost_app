@@ -150,7 +150,7 @@ class SendCallInvitationButton : ZegoSendCallInvitationButton {
         )
 
         val offlineResourceID = if (TextUtils.isEmpty(resourceID)) {
-            "zegouikit_call"
+            "zego_call"
         } else {
             resourceID
         }
