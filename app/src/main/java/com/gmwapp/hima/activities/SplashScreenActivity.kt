@@ -64,7 +64,7 @@ class SplashScreenActivity : BaseActivity() {
 
 
         viewModel.appUpdateResponseLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                  latestVersion = it.data[0].app_version
                  link = it.data[0].link
                  description = it.data[0].description
