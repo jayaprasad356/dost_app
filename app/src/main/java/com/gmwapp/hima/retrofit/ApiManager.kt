@@ -424,7 +424,7 @@ interface ApiInterface {
 
 
     @FormUrlEncoded
-    @POST("api/reports")
+    @POST("reports")
     fun getReports(@Field("user_id") userId: Int): Call<ReportsResponse>
 
     @FormUrlEncoded
