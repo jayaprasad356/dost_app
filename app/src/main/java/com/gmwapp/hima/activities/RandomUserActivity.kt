@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -22,7 +22,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
-import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.permissionx.guolindev.PermissionX
@@ -53,6 +52,7 @@ class RandomUserActivity : BaseActivity() {
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
     private var roomID: String? = null
+    private var usersCount: Int = 0
 
     private var userId: String = ""
     private var callUserId: String = ""
@@ -71,12 +71,11 @@ class RandomUserActivity : BaseActivity() {
         setContentView(binding.root)
         initUI()
         askPermissions()
+        onBackPressedDispatcher.addCallback(this ) {
+        }
+
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        stopCall()
-    }
     private fun checkOverlayPermission() {
         try {
             PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
@@ -161,10 +160,16 @@ class RandomUserActivity : BaseActivity() {
 
             }
         } else {
-            val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
-            val callType = intent.getStringExtra(DConstants.CALL_TYPE)
-            userData?.let {
-                callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+            if(usersCount<4) {
+                usersCount++
+                val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+                val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+                userData?.let {
+                    callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
+                }
+            }else{
+                stopCall()
+                finish()
             }
         }
     }
@@ -206,7 +211,7 @@ class RandomUserActivity : BaseActivity() {
         isReceiverDetailsAvailable =
             intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 val data = it.data
                 data?.call_id?.let { it1 ->
 
@@ -221,7 +226,7 @@ class RandomUserActivity : BaseActivity() {
                 data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
             } else {
                 Toast.makeText(
-                    this@RandomUserActivity, it.message, Toast.LENGTH_LONG
+                    this@RandomUserActivity, it?.message, Toast.LENGTH_LONG
                 ).show()
                 mediaPlayer?.pause()
                 mediaPlayer?.stop()

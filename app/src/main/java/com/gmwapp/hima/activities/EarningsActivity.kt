@@ -58,7 +58,7 @@ class EarningsActivity : BaseActivity() {
                 binding.tvCurrentBalance.text = balance.toString()
             }
         accountViewModel.settingsLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 if (it.data != null) {
                     if (it.data.size > 0) {
                         val settingsData1 = it.data[0]

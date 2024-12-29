@@ -64,8 +64,8 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
             }
         }
         profileViewModel.speechTextLiveData.observe(this, Observer {
-            val data = it.data
-            if (it.success && data != null && data.size > 0) {
+            val data = it?.data
+            if (data != null && it.success && data.size > 0) {
                 val bottomSheet = BottomSheetVoiceIdentification()
                 val bundle = Bundle()
                 bundle.putString(DConstants.TEXT, data[0].text)
@@ -76,7 +76,7 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
                 )
             } else {
                 Toast.makeText(
-                    this@VoiceIdentificationActivity, it.message, Toast.LENGTH_LONG
+                    this@VoiceIdentificationActivity, it?.message, Toast.LENGTH_LONG
                 ).show()
             }
         })
@@ -96,13 +96,13 @@ class VoiceIdentificationActivity : BaseActivity(), OnItemSelectionListener<Stri
             requestPermissions()
         }
         profileViewModel.voiceUpdateLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
                 val intent = Intent(this, YoutubeActivity::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(
-                    this@VoiceIdentificationActivity, it.message, Toast.LENGTH_LONG
+                    this@VoiceIdentificationActivity, it?.message, Toast.LENGTH_LONG
                 ).show()
             }
         })
