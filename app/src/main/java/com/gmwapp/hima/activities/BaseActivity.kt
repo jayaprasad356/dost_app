@@ -110,6 +110,7 @@ open class BaseActivity : AppCompatActivity() {
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
         callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
+        callInvitationConfig.endCallWhenInitiatorLeave = true
         callInvitationConfig.outgoingCallRingtone = "silent"
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
 

@@ -66,6 +66,7 @@ open class BaseFragment : Fragment() {
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
         callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
+        callInvitationConfig.endCallWhenInitiatorLeave = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = "rhythm"
 
