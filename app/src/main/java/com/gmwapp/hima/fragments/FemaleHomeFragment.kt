@@ -202,6 +202,24 @@ class FemaleHomeFragment : BaseFragment() {
             binding.sAudio.isChecked = userData.audio_status == 1
             binding.sVideo.isChecked = userData.video_status == 1
         }
+
+        binding.tvCoins.text = "₹" + userData?.balance.toString()
+
+
+        femaleUsersViewModel.getReports(userData?.id!!)
+
+
+        femaleUsersViewModel.reportResponseLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+
+                binding.tvApproxEarnings.text = it.data[0].today_earnings.toString()
+                binding.tvTotalCalls.text = it.data[0].today_calls.toString()
+
+            } else {
+              //  Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+
         femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
             if (it.success) {
                 prefs?.setUserData(it.data)
@@ -233,6 +251,10 @@ class FemaleHomeFragment : BaseFragment() {
                 )
             }
         })
+
+
+
+
     }
 
     private fun addRoomStateChangedListener() {

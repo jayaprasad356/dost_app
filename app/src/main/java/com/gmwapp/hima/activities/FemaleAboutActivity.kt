@@ -49,7 +49,7 @@ class FemaleAboutActivity : BaseActivity() {
 
     private fun initUI() {
       //  binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border)
-        binding.cvSummary.setBackgroundResource(R.drawable.card_view_border)
+  //      binding.cvSummary.setBackgroundResource(R.drawable.card_view_border)
 
 //        binding.etEnterYourAge.setOnTouchListener { v, _ ->
 //            binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_age_selected)
@@ -95,15 +95,20 @@ class FemaleAboutActivity : BaseActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                updateButton()
+
                 if (!TextUtils.isEmpty(s)) {
                     binding.tvRemainingText.text = getString(
                         R.string.description_remaining_text, s.length
                     )
                 }
+
+                updateButton()
+
+
             }
 
             override fun afterTextChanged(s: Editable) {
+                updateButton()
             }
         })
         binding.btnContinue.setOnSingleClickListener {
@@ -181,7 +186,7 @@ class FemaleAboutActivity : BaseActivity() {
     }
 
     private fun updateButton() {
-        if (isValidAge && selectedInterests.size > 0 && binding.etSummary.text.isNotEmpty()) {
+        if (isValidAge && selectedInterests.size > 0 && binding.etSummary.text.length >= 15) {
             binding.btnContinue.isEnabled = true
          //   binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {

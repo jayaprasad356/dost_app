@@ -1,12 +1,10 @@
-<!DOCTYPE resources [
-    <!ENTITY appname "HI ma">
-    ]>
+<!DOCTYPE resources [<!ENTITY appname "HI ma">]>
 <resources>
     <string name="app_name">&appname;</string>
     <string name="login_to_get_started">Login to get started</string>
     <string name="you_will_receive_an_otp_on_this_number">You will receive an OTP on this number.</string>
     <string name="send_otp">Send OTP</string>
-    <string name="terms_and_conditions_text"><![CDATA[I accept terms & conditions of %s. I also agree to receiving updates on WhatsApp/SMS.]]></string>
+    <string name="terms_and_conditions_text"><![CDATA[I accept terms & conditions of HI ma. I also agree to receiving updates on WhatsApp/SMS.]]></string>
     <string name="please_enter_otp_sent_to">Please enter OTP sent to </string>
     <string name="enter_otp">Enter OTP</string>
     <string name="verify_otp">Verify OTP</string>
@@ -92,7 +90,7 @@
     <string name="srilanka">Sri Lanka (+94)</string>
     <string name="malaysia">Malaysia (+60)</string>
     <string name="search_for_country">Search for Country</string>
-    <string name="retry_in">Retry in: 00:%s</string>
+    <string name="retry_in">Retry in (00:%s)</string>
     <string name="delete_warning_1">Information related to account will be kept for 30 days and will be completely purged after no activity for continuous 30 days</string>
     <string name="delete_warning_2">"After the account is deleted, you will no longer be able to log in or use the account, and the account cannot be recovered. "</string>
     <string name="view_more">View more</string>
@@ -144,7 +142,8 @@
     <string name="transaction_id">Transaction ID:%s</string>
     <string name="skip">Skip</string>
     <string name="getting_started">Getting Started</string>
-    <string name="getting_started_hint">Watch the training video to become a successful Super &appname; and start earning!</string>
+    <string name="getting_started_hint">Watch the training video to become a successful Super &appname;
+        and start earning!</string>
     <string name="complete">Complete</string>
     <string name="withdraw">Withdraw</string>
     <string name="audio">Audio</string>
@@ -173,4 +172,9 @@
     <string name="review_hint">How was your call with %s</string>
     <string name="default_notification_channel_id">com.gmwapp.hima</string>
     <string name="notifications">Notifications</string>
+    <string name="mobile_number">Mobile number</string>
+    <string name="we_don_t_share_your_number_with_anyone">We don’t share your number with anyone</string>
+    <string name="otp_send_this_number">OTP Send this number</string>
+    <string name="change_no">Change No.</string>
+    <string name="no_data_found">No Data Found</string>
 </resources>
