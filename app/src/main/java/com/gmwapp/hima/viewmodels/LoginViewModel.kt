@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.repositories.LoginRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.AppUpdateResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,9 @@ class LoginViewModel @Inject constructor(private val loginRepositories: LoginRep
 
     val sendOTPResponseLiveData = MutableLiveData<SendOTPResponse>()
     val sendOTPErrorLiveData = MutableLiveData<String>()
+
+    val appUpdateResponseLiveData = MutableLiveData<AppUpdateResponse>()
+    val appUpdateErrorLiveData = MutableLiveData<String>()
 
     fun login(mobile: String) {
         viewModelScope.launch {
@@ -45,6 +49,27 @@ class LoginViewModel @Inject constructor(private val loginRepositories: LoginRep
             })
         }
     }
+
+    fun appUpdate() {
+        viewModelScope.launch {
+            loginRepositories.appupdate(object:NetworkCallback<AppUpdateResponse> {
+                override fun onResponse(
+                    call: Call<AppUpdateResponse>,
+                    response: Response<AppUpdateResponse>
+                ) {
+                    appUpdateResponseLiveData.postValue(response.body());
+            }
+                override fun onFailure(call: Call<AppUpdateResponse>, t: Throwable) {
+
+                }
+                override fun onNoNetwork() {
+
+                }
+            })
+
+        }
+    }
+
 
     fun sendOTP(mobile: String, countryCode:Int, otp:Int) {
         viewModelScope.launch {
