@@ -30,5 +30,6 @@ data class UserData (
     val audio_status:Int?,
     val video_status:Int?,
     val balance:Float?,
+    val coins:Int?,
 
 )

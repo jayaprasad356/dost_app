@@ -42,7 +42,7 @@ open class BaseFragment : Fragment() {
     var callId: Int = 0
     var balanceTime: String? = null
     private var foregroundView: CustomCallView? = null
-    private val profileViewModel: ProfileViewModel by viewModels()
+    val profileViewModel: ProfileViewModel by viewModels()
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(

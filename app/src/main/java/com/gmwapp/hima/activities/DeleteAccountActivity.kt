@@ -117,7 +117,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         profileViewModel.deleteUserLiveData.observe(this, Observer {
             if (it!=null && it.success) {
                 prefs?.clearUserData()
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(this, NewLoginActivity::class.java)
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             } else {
