@@ -24,6 +24,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentHomeBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.retrofit.responses.Reason
+import com.gmwapp.hima.retrofit.responses.UserData
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -42,54 +43,67 @@ class HomeFragment : BaseFragment() {
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
         initUI()
+        setupSwipeToRefresh()
         return binding.root
     }
 
-
     private fun initUI() {
-        binding.clCoins.setOnSingleClickListener({
+        binding.clCoins.setOnSingleClickListener {
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
-        })
+        }
+
 
 
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userData?.id?.let {
             if (context?.let { it1 -> isInternetAvailable(it1) } == true) {
-                femaleUsersViewModel.getFemaleUsers(
-                    it
-                )
-            }
-            else {
-
+                loadFemaleUsers(it)
+            } else {
                 binding.tvNointernet.visibility = View.VISIBLE
-
             }
-
         }
+        userData?.id?.let { profileViewModel.getUsers(it) }
 
-        binding.fabAudio.setOnSingleClickListener ({
+        profileViewModel.getUserLiveData.observe(viewLifecycleOwner, Observer {
+            it.data?.let { it1 ->
+                BaseApplication.getInstance()?.getPrefs()?.setUserData(it1)
+            }
+            binding.tvCoins.text = it.data?.coins.toString()
+
+        })
+
+
+
+        binding.fabAudio.setOnSingleClickListener {
             val intent = Intent(context, RandomUserActivity::class.java)
             intent.putExtra(DConstants.CALL_TYPE, "audio")
             startActivity(intent)
-        })
+        }
 
-        binding.fabVideo.setOnSingleClickListener({
+        binding.fabVideo.setOnSingleClickListener {
             val intent = Intent(context, RandomUserActivity::class.java)
             intent.putExtra(DConstants.CALL_TYPE, "video")
             startActivity(intent)
-        })
+        }
 
         femaleUsersViewModel.femaleUsersResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it?.data != null) {
-                binding.rvProfiles.setLayoutManager(
-                    LinearLayoutManager(
-                        activity, LinearLayoutManager.VERTICAL, false
-                    )
-                )
 
-                var transactionAdapter = activity?.let { it1 ->
-                    FemaleUserAdapter(it1,
+
+//            if (it?.data != null) {
+//                Toast.makeText(activity, it?.message, Toast.LENGTH_SHORT).show()
+//            }
+//            else if (it.data?.isEmpty() == true) {
+//                Toast.makeText(activity, "No Data Found", Toast.LENGTH_SHORT).show()
+//            }
+
+            if (it?.data != null) {
+                binding.rvProfiles.layoutManager =
+                    LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+                val transactionAdapter = activity?.let { context ->
+                    FemaleUserAdapter(
+                        context,
                         it.data,
                         object : OnItemSelectionListener<FemaleUsersResponseData> {
                             override fun onItemSelected(data: FemaleUsersResponseData) {
@@ -100,7 +114,10 @@ class HomeFragment : BaseFragment() {
                                 intent.putExtra(DConstants.CALL_ID, 0)
                                 intent.putExtra(DConstants.IMAGE, data.image)
                                 intent.putExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, true)
-                                intent.putExtra(DConstants.TEXT, getString(R.string.wait_user_hint, data.name))
+                                intent.putExtra(
+                                    DConstants.TEXT,
+                                    getString(R.string.wait_user_hint, data.name)
+                                )
                                 startActivity(intent)
                             }
                         },
@@ -113,17 +130,40 @@ class HomeFragment : BaseFragment() {
                                 intent.putExtra(DConstants.CALL_ID, 0)
                                 intent.putExtra(DConstants.IMAGE, data.image)
                                 intent.putExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, true)
-                                intent.putExtra(DConstants.TEXT, getString(R.string.wait_user_hint, data.name))
+                                intent.putExtra(
+                                    DConstants.TEXT,
+                                    getString(R.string.wait_user_hint, data.name)
+                                )
                                 startActivity(intent)
                             }
                         })
                 }
-                binding.rvProfiles.setAdapter(transactionAdapter)
+                binding.rvProfiles.adapter = transactionAdapter
             }
 
+            // Stop the swipe-to-refresh loading animation
+            binding.swipeRefreshLayout.isRefreshing = false
         })
 
         initFab()
+    }
+
+    private fun setupSwipeToRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+            userData?.id?.let {
+                if (context?.let { context -> isInternetAvailable(context) } == true) {
+                    loadFemaleUsers(it)
+                } else {
+                    binding.tvNointernet.visibility = View.VISIBLE
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+            }
+        }
+    }
+
+    private fun loadFemaleUsers(userId: Int) {
+        femaleUsersViewModel.getFemaleUsers(userId)
     }
 
     fun initFab() {
@@ -197,17 +237,13 @@ class HomeFragment : BaseFragment() {
             }.start()
     }
 
-
-
     // Check for Internet Connection
     fun isInternetAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
         return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
     }
-
-
-
 }

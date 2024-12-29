@@ -19,7 +19,9 @@ import com.gmwapp.hima.databinding.AdapterRecentCallsBinding
 import com.gmwapp.hima.retrofit.responses.CallsListResponse
 import com.gmwapp.hima.retrofit.responses.CallsListResponseData
 import com.gmwapp.hima.retrofit.responses.CoinsResponseData
+import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.retrofit.responses.TransactionsResponseData
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,6 +31,8 @@ import java.util.TimeZone
 class RecentCallsAdapter(
     val activity: Activity,
     private val callList: ArrayList<CallsListResponseData>,
+    val onAudioListener: OnItemSelectionListener<CallsListResponseData>,
+    val onVideoListener: OnItemSelectionListener<CallsListResponseData>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -63,6 +67,11 @@ class RecentCallsAdapter(
                 )
                 holder.binding.ivAudio.isEnabled = false
             }else{
+                holder.binding.ivAudioCircle.setOnSingleClickListener{
+                    onAudioListener.onItemSelected(call)
+                }
+
+
                 holder.binding.ivAudio.setColorFilter(
                     ContextCompat.getColor(
                         activity,
@@ -82,6 +91,11 @@ class RecentCallsAdapter(
                 holder.binding.ivVideo.isEnabled = false
 
             }else{
+
+                holder.binding.ivVideoCircle.setOnSingleClickListener{
+                    onVideoListener.onItemSelected(call)
+                }
+
                 holder.binding.ivVideo.setColorFilter(
                     ContextCompat.getColor(
                         activity,
@@ -99,6 +113,10 @@ class RecentCallsAdapter(
             holder.binding.tvAmount.text = activity.getString(R.string.rupee_text, call.income)
         }
         holder.binding.tvTime.text = call.started_time + " \u2022" + call.duration
+
+
+
+
     }
 
     override fun getItemCount(): Int {

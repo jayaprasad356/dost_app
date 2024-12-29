@@ -1,6 +1,7 @@
 package com.gmwapp.hima.retrofit
 
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.AppUpdateResponse
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.CallFemaleUserResponse
 import com.gmwapp.hima.retrofit.responses.CallsListResponse
@@ -12,6 +13,7 @@ import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
+import com.gmwapp.hima.retrofit.responses.ReportsResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
 import com.gmwapp.hima.retrofit.responses.SettingsResponse
 import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
@@ -38,6 +40,9 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         return retrofit.create(ApiInterface::class.java)
     }
 
+
+
+
     fun login(
         mobile: String, callback: NetworkCallback<LoginResponse>
     ) {
@@ -48,6 +53,19 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
             callback.onNoNetwork()
         }
     }
+
+    fun appUpdate(
+         callback: NetworkCallback<AppUpdateResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<AppUpdateResponse> = getApiInterface().appUpdate(1)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+
 
     fun sendOTP(
         mobile: String, countryCode: Int, otp: Int, callback: NetworkCallback<SendOTPResponse>
@@ -163,6 +181,18 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<RandomUsersResponse> = getApiInterface().getRandomUser(userId, callType)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+
+    fun getCalldetails(
+        userId: Int, callback: NetworkCallback<ReportsResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<ReportsResponse> = getApiInterface().getReports(userId)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -333,6 +363,11 @@ interface ApiInterface {
         @Field("otp") otp: Int
     ): Call<SendOTPResponse>
 
+
+    @FormUrlEncoded
+    @POST("api/appsettings_list")
+    fun appUpdate(@Field("user_id") userId: Int):Call<AppUpdateResponse>
+
     @FormUrlEncoded
     @POST("api/avatar_list")
     fun getAvatarsList(@Field("gender") gender: String): Call<AvatarsListResponse>
@@ -386,6 +421,11 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("api/random_user")
     fun getRandomUser(@Field("user_id") userId: Int,@Field("call_type") callType: String): Call<RandomUsersResponse>
+
+
+    @FormUrlEncoded
+    @POST("api/reports")
+    fun getReports(@Field("user_id") userId: Int): Call<ReportsResponse>
 
     @FormUrlEncoded
     @POST("api/calls_status_update")
