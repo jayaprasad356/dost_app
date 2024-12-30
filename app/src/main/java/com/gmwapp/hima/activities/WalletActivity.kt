@@ -62,7 +62,7 @@ class WalletActivity : BaseActivity() {
                 Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
             }
 
-            if (it.success && it.data != null) {
+            if (it!=null && it.success && it.data != null) {
                 // Create the adapter
                 val coinAdapter = CoinAdapter(this, it.data, object : OnItemSelectionListener<CoinsResponseData> {
                     override fun onItemSelected(coin: CoinsResponseData) {

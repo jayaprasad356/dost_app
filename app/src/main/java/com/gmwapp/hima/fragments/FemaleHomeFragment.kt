@@ -66,7 +66,7 @@ class FemaleHomeFragment : BaseFragment() {
     }
     private var startTime: String = ""
     private var endTime: String = ""
-    private var roomID: String? = null
+    protected var roomID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -119,6 +119,8 @@ class FemaleHomeFragment : BaseFragment() {
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+        } else {
+            initializeCall()
         }
     }
 
@@ -221,10 +223,10 @@ class FemaleHomeFragment : BaseFragment() {
         })
 
         femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 prefs?.setUserData(it.data)
             } else {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, it?.message, Toast.LENGTH_SHORT).show()
                 binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
                 binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
             }
@@ -262,7 +264,7 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
-
+                    lastActiveTime = System.currentTimeMillis();
                     roomID = room
                     startTime = dateFormat.format(Date()) // Set call start time in IST
                     femaleUsersViewModel.femaleCallAttend(
@@ -291,6 +293,7 @@ class FemaleHomeFragment : BaseFragment() {
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
+                        lastActiveTime = null
                         delay(500)
                         if (roomID != null) {
                             roomID = null

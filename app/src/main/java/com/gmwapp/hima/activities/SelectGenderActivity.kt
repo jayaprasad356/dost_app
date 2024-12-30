@@ -84,7 +84,7 @@ class SelectGenderActivity : BaseActivity() {
         }
         profileViewModel.getAvatarsList("male")
         profileViewModel.avatarsListLiveData.observe(this, Observer {
-            if (it.data != null) {
+            if (it?.data != null) {
                 val avatarsListAdapter = AvatarsListAdapter(
                     this, it.data
                 )

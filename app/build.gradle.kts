@@ -38,11 +38,11 @@ android {
         create("development") {
             dimension = "hima"
           applicationIdSuffix = ".dev"
-            buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com\"")
+            buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com/api/\"")
         }
         create("production") {
             dimension = "hima"
-            buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com\"")
+            buildConfigField( "String", "BASE_URL",  "\"https://himaadmin.graymatterworks.com/api/auth/\"")
         }
     }
     compileOptions {
@@ -124,6 +124,7 @@ dependencies {
 
     //circleimageview
     implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("org.greenrobot:eventbus:3.3.1")
 
     implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.hilt.work)

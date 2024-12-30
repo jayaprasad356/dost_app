@@ -126,14 +126,14 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             binding.pbSendOtpLoader.visibility = View.GONE
             binding.btnSendOtp.setText(getString(R.string.send_otp))
             binding.btnSendOtp.isEnabled = true
-            if (it.success) {
+            if (it!=null && it.success) {
                 val intent = Intent(this, VerifyOTPActivity::class.java)
                 intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
                 intent.putExtra(DConstants.COUNTRY_CODE, binding.tvCountryCode.text.toString().toInt())
                 intent.putExtra(DConstants.OTP, otp)
                 startActivity(intent)
             } else {
-                binding.tvOtpText.text = it.message
+                binding.tvOtpText.text = it?.message
                 binding.tvOtpText.setTextColor(getColor(R.color.error))
                // binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
             }

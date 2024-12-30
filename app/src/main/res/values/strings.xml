@@ -177,4 +177,6 @@
     <string name="otp_send_this_number">OTP Send this number</string>
     <string name="change_no">Change No.</string>
     <string name="no_data_found">No Data Found</string>
+    <string name="please_login_again_to_continue">Please Login again to Continue</string>
+    <string name="audio_mins_txt">10 / min</string>
 </resources>

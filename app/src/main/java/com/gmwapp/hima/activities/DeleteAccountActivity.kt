@@ -115,14 +115,14 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
             ).show()
         })
         profileViewModel.deleteUserLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 prefs?.clearUserData()
                 val intent = Intent(this, NewLoginActivity::class.java)
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             } else {
                 Toast.makeText(
-                    this@DeleteAccountActivity, it.message, Toast.LENGTH_LONG
+                    this@DeleteAccountActivity, it?.message, Toast.LENGTH_LONG
                 ).show()
             }
         })
