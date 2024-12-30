@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/dark_blue</item>
         <item name="android:windowAnimationStyle">
             @style/activityTransition
@@ -13,7 +13,7 @@
     <style name="AppTheme.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/dark_blue</item>
         <item name="android:windowAnimationStyle">
             @style/activityTransition

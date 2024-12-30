@@ -46,7 +46,7 @@ class WebviewActivity : BaseActivity() {
 
         accountViewModel.getSettings()
         accountViewModel.settingsLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 if (it.data != null) {
                     if (it.data.size > 0) {
                         prefs?.setSettingsData(it.data.get(0))

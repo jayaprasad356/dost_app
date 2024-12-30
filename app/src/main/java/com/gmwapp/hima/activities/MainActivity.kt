@@ -8,7 +8,10 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
@@ -47,10 +50,29 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
+        }
         initUI()
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userID = userData?.id.toString()
         userName = userData?.name
+        onBackPressedDispatcher.addCallback(this ) {
+            if (isBackPressedAlready) {
+               finish()
+            } else {
+                Toast.makeText(
+                    this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT
+                ).show()
+                isBackPressedAlready = true
+                Handler().postDelayed({
+                    isBackPressedAlready = false
+                }, 3000)
+            }
+        }
     }
     private fun initUI() {
 
@@ -67,20 +89,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
         binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
-    }
-
-    override fun onBackPressed() {
-        if (isBackPressedAlready) {
-            super.onBackPressed()
-        } else {
-            Toast.makeText(
-                this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT
-            ).show()
-            isBackPressedAlready = true
-            Handler().postDelayed({
-                isBackPressedAlready = false
-            }, 3000)
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

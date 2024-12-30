@@ -3,7 +3,10 @@ package com.gmwapp.hima.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.gmwapp.hima.R
@@ -24,6 +27,12 @@ class SelectGenderActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectGenderBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         initUI()
     }
 
@@ -75,7 +84,7 @@ class SelectGenderActivity : BaseActivity() {
         }
         profileViewModel.getAvatarsList("male")
         profileViewModel.avatarsListLiveData.observe(this, Observer {
-            if (it.data != null) {
+            if (it?.data != null) {
                 val avatarsListAdapter = AvatarsListAdapter(
                     this, it.data
                 )

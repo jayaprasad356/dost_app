@@ -32,13 +32,15 @@ import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
+import android.os.Bundle
+
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.InterestsListAdapter
 import com.gmwapp.hima.adapters.InterestsReviewListAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
-import com.gmwapp.hima.databinding.ActivityRandomUserBinding
 import com.gmwapp.hima.databinding.ActivityReviewBinding
+
 import com.gmwapp.hima.retrofit.responses.Interests
 import com.gmwapp.hima.retrofit.responses.InterestsReview
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
@@ -49,6 +51,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+
 import dagger.hilt.android.AndroidEntryPoint
 
 

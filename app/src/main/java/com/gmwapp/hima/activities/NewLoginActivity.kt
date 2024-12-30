@@ -26,6 +26,8 @@ import android.text.style.ClickableSpan
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
@@ -57,7 +59,6 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         super.onCreate(savedInstanceState)
         binding = ActivityNewLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupOnboarding()
         initUI()
         binding.loginSection.visibility  = View.VISIBLE
@@ -161,11 +162,8 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             if (it.success) {
                 binding.loginSection.visibility  = View.GONE
                 binding.otpSection.visibility  = View.VISIBLE
-                otp?.let { it1 ->
-                    initOtpUI(mobile.toString(), binding.tvCountryCode.text.toString().toInt(),
-                        it1
-                    )
-                }
+
+                initOtpUI(mobile.toString(), otp.toString().toInt(),binding.tvCountryCode.text.toString().toInt())
 //                val intent = Intent(this, VerifyOTPActivity::class.java)
 //                intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
 //                intent.putExtra(DConstants.COUNTRY_CODE, binding.tvCountryCode.text.toString().toInt())
@@ -233,14 +231,6 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
-
-
-
-
-
-
-
-
 
 
     private fun initOtpUI(mobile: String, otp: Int, countryCode: Int) {

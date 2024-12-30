@@ -14,6 +14,8 @@ import android.text.style.ClickableSpan
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
@@ -38,6 +40,12 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         initUI()
     }
 
@@ -118,14 +126,14 @@ class LoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
             binding.pbSendOtpLoader.visibility = View.GONE
             binding.btnSendOtp.setText(getString(R.string.send_otp))
             binding.btnSendOtp.isEnabled = true
-            if (it.success) {
+            if (it!=null && it.success) {
                 val intent = Intent(this, VerifyOTPActivity::class.java)
                 intent.putExtra(DConstants.MOBILE_NUMBER, mobile)
                 intent.putExtra(DConstants.COUNTRY_CODE, binding.tvCountryCode.text.toString().toInt())
                 intent.putExtra(DConstants.OTP, otp)
                 startActivity(intent)
             } else {
-                binding.tvOtpText.text = it.message
+                binding.tvOtpText.text = it?.message
                 binding.tvOtpText.setTextColor(getColor(R.color.error))
                // binding.cvLogin.setBackgroundResource(R.drawable.card_view_border_error)
             }

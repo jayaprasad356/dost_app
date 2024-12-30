@@ -71,8 +71,8 @@
         >
         <ImageView
             android:id="@+id/iv_coin"
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:scaleType="fitXY"
             android:src="@drawable/coin_d"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -81,6 +81,7 @@
             />
 
         <TextView
+            android:layout_marginTop="@dimen/_2sdp"
             android:id="@+id/tv_coins"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -95,16 +96,24 @@
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/iv_logo"
+        >
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_profiles"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
+        />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <!-- Background Dim Effect -->
     <View
         android:id="@+id/dimBackground"
@@ -148,8 +157,8 @@
 
     <ImageView
         android:id="@+id/iv_coin_audio"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:background="@drawable/coin_d"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_audio2"
@@ -162,7 +171,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="60 / min"
+        android:text="@string/audio_mins_txt"
         android:textColor="@color/white"
         android:fontFamily="@font/poppins_semibold"
         android:visibility="gone"
@@ -222,8 +231,8 @@
 
     <ImageView
         android:id="@+id/iv_coin_video"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:background="@drawable/coin_d"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_video2"
@@ -236,7 +245,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="60 / min"
+        android:text="10 / min"
         android:fontFamily="@font/poppins_semibold"
         android:textColor="@color/white"
         android:visibility="gone"

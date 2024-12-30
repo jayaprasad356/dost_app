@@ -6,8 +6,11 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.gmwapp.hima.BaseApplication
@@ -40,6 +43,12 @@ class EditProfileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         initUI()
     }
 
@@ -55,6 +64,7 @@ class EditProfileActivity : BaseActivity() {
         else
         {
             binding.tvGender.text = "Female"
+            binding.etUserName.isEnabled = false
         }
 
         binding.tvPreferredLanguage.text = userData?.language
@@ -104,11 +114,9 @@ class EditProfileActivity : BaseActivity() {
         binding.rvInterests.addItemDecoration(itemDecoration)
         binding.rvInterests.setLayoutManager(staggeredGridLayoutManager)
 
-        val interests = userData?.interests?.split(",")
+        val interests = userData?.interests?.removeSurrounding("[", "]")?.split(",")?.map { it.trim() }
+      //  val interests = interestsString.removeSurrounding("[", "]").split(",").map { it.trim() }
         interests?.let { selectedInterests.addAll(it) }
-
-
-
 
 
         interestsListAdapter = InterestsListAdapter(this, arrayListOf(
@@ -203,7 +211,7 @@ class EditProfileActivity : BaseActivity() {
         setCenterLayoutManager(binding.rvAvatars)
         userData?.gender?.let { profileViewModel.getAvatarsList(it) }
         profileViewModel.userValidationLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 isValidUserName = true
                 binding.cvUserName.setBackgroundResource(R.drawable.d_button_bg_user_name)
                 binding.pbUserNameLoader.visibility = View.GONE
@@ -217,7 +225,7 @@ class EditProfileActivity : BaseActivity() {
                 binding.pbUserNameLoader.visibility = View.GONE
                 binding.ivSuccess.visibility = View.GONE
                 binding.ivWarning.visibility = View.VISIBLE
-                binding.tvUserNameHint.text = it.message
+                binding.tvUserNameHint.text = it?.message
                 binding.tvUserNameHint.setTextColor(getColor(android.R.color.white))
             }
             updateButton()

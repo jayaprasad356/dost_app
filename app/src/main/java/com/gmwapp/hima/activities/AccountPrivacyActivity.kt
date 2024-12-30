@@ -5,7 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
@@ -24,12 +27,18 @@ class AccountPrivacyActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAccountPrivacyBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         initUI()
     }
 
     private fun initUI() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         accountViewModel.getSettings()
+
         binding.cvDeleteAccount.setOnSingleClickListener {
             val intent = Intent(this, DeleteAccountActivity::class.java)
             startActivity(intent)
@@ -49,7 +58,7 @@ class AccountPrivacyActivity : BaseActivity() {
             }
         }
         accountViewModel.settingsLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 if (it.data != null) {
                     if (it.data.size > 0) {
                         prefs?.setSettingsData(it.data.get(0))

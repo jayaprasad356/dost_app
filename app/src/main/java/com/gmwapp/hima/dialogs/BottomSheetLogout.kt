@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.LoginActivity
+import com.gmwapp.hima.activities.NewLoginActivity
 import com.gmwapp.hima.databinding.BottomSheetLogoutBinding
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -33,7 +34,7 @@ class BottomSheetLogout : BottomSheetDialogFragment() {
         binding.btnLogout.setOnSingleClickListener({
             val prefs = BaseApplication.getInstance()?.getPrefs()
             prefs?.clearUserData()
-            val intent = Intent(context, LoginActivity::class.java)
+            val intent = Intent(context, NewLoginActivity::class.java)
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         })

@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gmwapp.hima.BaseApplication
@@ -29,6 +32,12 @@ class SelectLanguageActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectLanguageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         initUI()
     }
 
@@ -42,8 +51,10 @@ class SelectLanguageActivity : BaseActivity() {
             Toast.makeText(this@SelectLanguageActivity, it, Toast.LENGTH_LONG).show()
         })
         profileViewModel.registerLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 BaseApplication.getInstance()?.getPrefs()?.setUserData(it.data)
+                BaseApplication.getInstance()?.getPrefs()?.setAuthenticationToken(it.token)
+
                 if (it.data?.gender == DConstants.MALE) {
                     val intent = Intent(this, MainActivity::class.java)
                     intent.putExtra(
@@ -77,7 +88,7 @@ class SelectLanguageActivity : BaseActivity() {
                     }
                 }
             } else {
-                Toast.makeText(this@SelectLanguageActivity, it.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this@SelectLanguageActivity, it?.message, Toast.LENGTH_LONG).show()
             }
         })
         binding.btnContinue.setOnSingleClickListener {
