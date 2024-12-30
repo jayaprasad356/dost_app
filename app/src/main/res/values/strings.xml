@@ -52,6 +52,11 @@
     <string name="update">Update</string>
     <string name="politics">Politics</string>
     <string name="art">Art</string>
+    <string name="_0_100">%1$d/%2$d</string>
+    <string name="_0100">0/100</string>
+    <string name="not_replying">Not Replying</string>
+    <string name="rude_behaviour">Rude Behaviour</string>
+    <string name="bad_connectivity">Bad Connectivity</string>
     <string name="sports">Sports</string>
     <string name="movies">Movies</string>
     <string name="music">Music</string>
@@ -177,4 +182,18 @@
     <string name="we_don_t_share_your_number_with_anyone">We don’t share your number with anyone</string>
     <string name="otp_send_this_number">OTP Send this number</string>
     <string name="change_no">Change No.</string>
+    <string name="how_was_your_call_with_shyam">How was your call with shyam?</string>
+    <string name="_0_00">₹0.00</string>
+    <string name="enter_amount_to_withdraw">Enter amount to withdraw</string>
+    <string name="_5_tds_deduction">5% TDS Deduction</string>
+    <string name="_0_93">₹0.93</string>
+    <string name="add_payment_method">Add payment method</string>
+    <string name="upi_id">UPI ID</string>
+    <string name="for_instant_money_credit">For instant money credit</string>
+    <string name="verify">Verify</string>
+    <string name="enter_your_upi_id">Enter your UPI ID</string>
+    <string name="go_back_home">Go back home</string>
+    <string name="payment_initiated">Payment Initiated!</string>
+    <string name="payment_of_33_was_initiated_to_nupi_account_123_okicici">Payment of ₹33 was initiated to \nUPI account - 123@okicici</string>
+    <string name="within_24_hours_amount_will_be_credited_to_your_account">Within 24 hours amount will be credited to your account</string>
 </resources>

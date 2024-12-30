@@ -2,16 +2,28 @@ package com.gmwapp.hima.activities
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
@@ -21,33 +33,30 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.adapters.InterestsListAdapter
+import com.gmwapp.hima.adapters.InterestsReviewListAdapter
+import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
 import com.gmwapp.hima.databinding.ActivityReviewBinding
+import com.gmwapp.hima.retrofit.responses.Interests
+import com.gmwapp.hima.retrofit.responses.InterestsReview
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
-import com.permissionx.guolindev.PermissionX
-import com.permissionx.guolindev.callback.ExplainReasonCallback
-import com.permissionx.guolindev.callback.RequestCallback
-import com.zegocloud.uikit.ZegoUIKit
-import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
-import com.zegocloud.uikit.prebuilt.call.invite.internal.OutgoingCallButtonListener
-import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallType
-import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallUser
-import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoInvitationCallListener
-import com.zegocloud.uikit.service.defines.ZegoUIKitUser
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxItemDecoration
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
-import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.TimeZone
 
 
 @AndroidEntryPoint
 class ReviewActivity : BaseActivity() {
-    lateinit var binding: ActivityReviewBinding
+    private var interestsListAdapter: InterestsReviewListAdapter? = null
+    private val selectedInterests: ArrayList<String> = ArrayList()
+    private lateinit var binding: ActivityReviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,14 +66,111 @@ class ReviewActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.ivClose.setOnClickListener({
-            finish()
-        })
+        // Close button functionality
+        binding.ivClose.setOnClickListener { finish() }
+
+        // Set default rating
         binding.rating.rating = 5f
-        binding.tvTitle.text = getString(R.string.review_hint, intent.getStringExtra(DConstants.RECEIVER_NAME))
-        binding.btnSubmit.setOnClickListener({
-            finish()
+
+        // Set title text with dynamic receiver name
+        binding.tvTitle.text = getString(
+            R.string.review_hint,
+            intent.getStringExtra(DConstants.RECEIVER_NAME) ?: "User"
+        )
+
+        binding.etUserName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // Update the character count
+                val charCount = s?.length ?: 0
+                val maxLength = 100 // or whatever the max length is for the EditText
+                binding.tvCharCount.text = getString(R.string._0_100, charCount, maxLength)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Not needed for this case
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Not needed for this case
+            }
         })
+
+        // Submit button functionality
+        binding.btnSubmit.setOnClickListener { finish() }
+
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+
+        // Retrieve existing interests
+        val interests = userData?.interests?.split(",")?.map { it.trim() }
+        interests?.let { selectedInterests.addAll(it) }
+
+        // Initialize RecyclerView and adapter
+        val initialRating = binding.rating.rating
+        interestsListAdapter = InterestsReviewListAdapter(
+            this,
+            createInterestList(interests, initialRating),
+            isLimitreached = selectedInterests.size >= 5,
+            onItemSelectionListener = object : OnItemSelectionListener<InterestsReview> {
+                override fun onItemSelected(interest: InterestsReview) {
+                    if (interest.isSelected == true) {
+                        selectedInterests.remove(interest.name)
+                    } else {
+                        selectedInterests.add(interest.name)
+                    }
+                    interestsListAdapter?.updateLimitReached(selectedInterests.size >= 5)
+                }
+            }
+        )
+
+        val staggeredGridLayoutManager = FlexboxLayoutManager(this).apply {
+            flexWrap = FlexWrap.WRAP
+            alignItems = AlignItems.FLEX_START
+            flexDirection = FlexDirection.ROW
+            justifyContent = JustifyContent.CENTER
+        }
+
+        val itemDecoration = FlexboxItemDecoration(this).apply {
+            setDrawable(ContextCompat.getDrawable(this@ReviewActivity, R.drawable.bg_divider))
+            setOrientation(FlexboxItemDecoration.VERTICAL)
+        }
+
+        binding.rvInterests.apply {
+            adapter = interestsListAdapter
+            layoutManager = staggeredGridLayoutManager
+            addItemDecoration(itemDecoration)
+        }
+
+        // Add listener to update the list based on the rating
+        binding.rating.setOnRatingBarChangeListener { _, rating, _ ->
+            Log.d("ReviewActivity", "Rating changed to: $rating")
+            interestsListAdapter?.updateData(createInterestList(interests, rating))
+        }
     }
 
+    private fun createInterestList(existingInterests: List<String>?, rating: Float): ArrayList<InterestsReview> {
+        Log.d("ReviewActivity", "Creating list for rating: $rating")
+        val interestOptions = when {
+            rating >= 4 -> listOf(
+                getString(R.string.not_replying),
+                getString(R.string.bad_connectivity)
+            )
+            rating >= 2 -> listOf(
+                getString(R.string.rude_behaviour),
+                getString(R.string.abusive_language)
+            )
+            else -> listOf(
+                getString(R.string.not_replying),
+                getString(R.string.abusive_language),
+                getString(R.string.rude_behaviour),
+                getString(R.string.bad_connectivity)
+            )
+        }
+
+        Log.d("ReviewActivity", "Interest options: $interestOptions")
+
+        return interestOptions.map { interest ->
+            InterestsReview(interest, existingInterests?.contains(interest) == true)
+        } as ArrayList<InterestsReview>
+    }
 }
+

@@ -90,4 +90,11 @@
     </style>
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+
+    <!-- Custom hint style -->
+        <style name="CustomHintStyle">
+            <item name="android:textColorHint">@color/light_blue</item>
+            <item name="android:textSize">14sp</item> <!-- Customize hint text size -->
+            <item name="android:fontFamily">@font/poppins_regular</item> <!-- Customize hint font -->
+        </style>
 </resources>

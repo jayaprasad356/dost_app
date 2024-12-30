@@ -65,6 +65,8 @@
         <activity android:name="com.gmwapp.hima.activities.RandomUserActivity" />
         <activity android:name="com.gmwapp.hima.activities.GrantPermissionsActivity" />
         <activity android:name="com.gmwapp.hima.activities.ReviewActivity" />
+        <activity android:name="com.gmwapp.hima.activities.WithdrawActivity" />
+        <activity android:name="com.gmwapp.hima.activities.PaymentInitiatedActivity" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

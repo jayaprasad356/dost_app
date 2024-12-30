@@ -68,10 +68,10 @@ class SplashScreenActivity : BaseActivity() {
         })
 
         if (userData == null) {
-            intent = Intent(this@SplashScreenActivity, LoginActivity::class.java)
+            intent = Intent(this@SplashScreenActivity, NewLoginActivity::class.java)
         } else {
             if (userData?.gender == DConstants.MALE) {
-                intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
+                intent = Intent(this@SplashScreenActivity, PaymentInitiatedActivity::class.java)
             } else {
                 BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
                     profileViewModel.getUsers(it)
