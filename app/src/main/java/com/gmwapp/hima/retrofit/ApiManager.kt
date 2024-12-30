@@ -365,7 +365,7 @@ interface ApiInterface {
 
 
     @FormUrlEncoded
-    @POST("api/appsettings_list")
+    @POST("appsettings_list")
     fun appUpdate(@Field("user_id") userId: Int):Call<AppUpdateResponse>
 
     @FormUrlEncoded
@@ -424,7 +424,7 @@ interface ApiInterface {
 
 
     @FormUrlEncoded
-    @POST("api/reports")
+    @POST("reports")
     fun getReports(@Field("user_id") userId: Int): Call<ReportsResponse>
 
     @FormUrlEncoded

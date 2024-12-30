@@ -52,6 +52,7 @@ import kotlin.math.abs
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
+    protected var lastActiveTime: Long? = null
     private var foregroundView: CustomCallView? = null
     private val profileViewModel: ProfileViewModel by viewModels()
 
@@ -63,19 +64,19 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this)
     }
 
     override fun onStop() {
         super.onStop()
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
     }
 
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
                 this@BaseActivity,
-                getString(com.gmwapp.hima.R.string.please_try_again_later),
+                getString(R.string.please_try_again_later),
                 Toast.LENGTH_LONG
             ).show()
         } else {
@@ -88,7 +89,9 @@ open class BaseActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UnauthorizedEvent?) {
         Toast.makeText(
-            this@BaseActivity, getString(R.string.please_login_again_to_continue), Toast.LENGTH_SHORT
+            this@BaseActivity,
+            getString(R.string.please_login_again_to_continue),
+            Toast.LENGTH_SHORT
         ).show()
         val prefs = BaseApplication.getInstance()?.getPrefs()
         prefs?.clearUserData()
@@ -96,6 +99,7 @@ open class BaseActivity : AppCompatActivity() {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
+
     fun setupZegoUIKit(Userid: Any, userName: String, balanceTime: String?, callId: Int) {
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
@@ -106,7 +110,8 @@ open class BaseActivity : AppCompatActivity() {
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
         callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
-        callInvitationConfig.outgoingCallRingtone = "silent";
+        callInvitationConfig.endCallWhenInitiatorLeave = true
+        callInvitationConfig.outgoingCallRingtone = "silent"
         callInvitationConfig.provider = object : ZegoUIKitPrebuiltCallConfigProvider {
 
             override fun requireConfig(invitationData: ZegoCallInvitationData): ZegoUIKitPrebuiltCallConfig {
@@ -158,6 +163,15 @@ open class BaseActivity : AppCompatActivity() {
                             foregroundView?.updateTime(remainingTime)
                             if (remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
+                                config.durationConfig = null;
+                            }
+
+                            ZegoUIKitPrebuiltCallService.sendInRoomCommand(
+                                "active", arrayListOf(null)
+                            ) {}
+                            if (lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
+                                ZegoUIKitPrebuiltCallService.endCall()
+                                config.durationConfig = null;
                             }
                         }
                     }
@@ -190,8 +204,12 @@ open class BaseActivity : AppCompatActivity() {
                             }
                         } else {
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(UsersImage(profileViewModel, uiKitUser.userID.toInt()).execute().get())
-                                .apply(requestOptions).into(imageView)
+                            Glide.with(parent.context).load(
+                                UsersImage(
+                                    profileViewModel,
+                                    uiKitUser.userID.toInt()
+                                ).execute().get()
+                            ).apply(requestOptions).into(imageView)
 
                         }
                         return imageView
@@ -219,6 +237,9 @@ open class BaseActivity : AppCompatActivity() {
                 config.bottomMenuBarConfig.hideAutomatically = false
                 return config
             }
+        }
+        ZegoUIKitPrebuiltCallService.events.callEvents.addInRoomCommandListener { zegoUIKitUser, s ->
+            lastActiveTime = System.currentTimeMillis()
         }
 
         ZegoUIKitPrebuiltCallService.init(

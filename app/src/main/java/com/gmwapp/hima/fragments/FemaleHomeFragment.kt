@@ -66,7 +66,7 @@ class FemaleHomeFragment : BaseFragment() {
     }
     private var startTime: String = ""
     private var endTime: String = ""
-    private var roomID: String? = null
+    protected var roomID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -264,7 +264,7 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
-
+                    lastActiveTime = System.currentTimeMillis();
                     roomID = room
                     startTime = dateFormat.format(Date()) // Set call start time in IST
                     femaleUsersViewModel.femaleCallAttend(
@@ -293,6 +293,7 @@ class FemaleHomeFragment : BaseFragment() {
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
+                        lastActiveTime = null
                         delay(500)
                         if (roomID != null) {
                             roomID = null

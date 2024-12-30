@@ -1,12 +1,15 @@
 package com.gmwapp.hima.widgets
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
@@ -28,6 +31,13 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         val inflate = inflate(context, if(userData?.gender == DConstants.MALE) R.layout.widget_custom_call else R.layout.widget_custom_call_female, this)
         val view = inflate
         tvRemainingTime = view.findViewById<View>(R.id.tv_remaining_time) as TextView?
+        if(userData?.gender == DConstants.MALE) {
+            var clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
+            clCoins?.setOnClickListener({
+                val intent = Intent(context, WalletActivity::class.java)
+                context?.startActivity(intent)
+            })
+        }
     }
 
     fun updateTime(seconds: Int) {
