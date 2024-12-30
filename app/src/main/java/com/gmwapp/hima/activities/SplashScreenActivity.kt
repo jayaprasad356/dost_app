@@ -103,6 +103,7 @@ class SplashScreenActivity : BaseActivity() {
         })
 
 
+
         if (currentVersion!!.toInt() >= latestVersion.toInt()) {
             if (userData == null) {
                 intent = Intent(this@SplashScreenActivity, NewLoginActivity::class.java)
