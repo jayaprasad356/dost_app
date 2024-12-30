@@ -66,7 +66,6 @@ class FemaleHomeFragment : BaseFragment() {
     }
     private var startTime: String = ""
     private var endTime: String = ""
-    protected var roomID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

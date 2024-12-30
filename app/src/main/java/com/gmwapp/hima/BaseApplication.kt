@@ -20,6 +20,7 @@ import javax.inject.Inject
 class BaseApplication : Application(), Configuration.Provider {
     private var mPreferences: DPreferences? = null
     private var called: Boolean? = null
+    private var endCallUpdatePending: Boolean? = null
     val ONESIGNAL_APP_ID = "2c7d72ae-8f09-48ea-a3c8-68d9c913c592"
 
     @Inject
@@ -63,6 +64,14 @@ class BaseApplication : Application(), Configuration.Provider {
 
     fun isCalled(): Boolean? {
         return this.called
+    }
+
+    fun setEndCallUpdatePending(endCallUpdatePending: Boolean?) {
+        this.endCallUpdatePending = endCallUpdatePending
+    }
+
+    fun isEndCallUpdatePending(): Boolean? {
+        return this.endCallUpdatePending
     }
 
     override val workManagerConfiguration: Configuration

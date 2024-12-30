@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Rect
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
@@ -24,6 +26,7 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.dagger.UnauthorizedEvent
+import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallEmptyView
@@ -61,6 +64,16 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                val app = BaseApplication.getInstance()
+                if(Helper.checkNetworkConnection() && app?.isEndCallUpdatePending() == true){
+                    ZegoUIKitPrebuiltCallService.endCall()
+                    app.setEndCallUpdatePending(null)
+                }
+            }
+        })
     }
 
     override fun onStart() {
@@ -165,6 +178,9 @@ open class BaseActivity : AppCompatActivity() {
                             if (roomID!=null && remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
                                 config.durationConfig = null;
+                                if(!Helper.checkNetworkConnection()){
+                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
+                                }
                             }
 
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand(
@@ -173,6 +189,9 @@ open class BaseActivity : AppCompatActivity() {
                             if (roomID!=null && lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
                                 ZegoUIKitPrebuiltCallService.endCall()
                                 config.durationConfig = null;
+                                if(!Helper.checkNetworkConnection()){
+                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
+                                }
                             }
                         }
                     }
