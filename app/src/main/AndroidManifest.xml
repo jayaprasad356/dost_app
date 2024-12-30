@@ -41,6 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activities.VerifyOTPActivity" />
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.WalletActivity" />
@@ -65,6 +66,9 @@
         <activity android:name=".activities.RandomUserActivity" />
         <activity android:name=".activities.GrantPermissionsActivity" />
         <activity android:name=".activities.ReviewActivity" />
+        <activity android:name=".activities.WithdrawActivity" />
+        <activity android:name=".activities.PaymentInitiatedActivity" />
+
 
         <provider
             android:name="androidx.startup.InitializationProvider"
