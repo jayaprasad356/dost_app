@@ -263,6 +263,7 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
                 if (it.registered) {
                     it.data?.let { it1 ->
                         BaseApplication.getInstance()?.getPrefs()?.setUserData(it1)
+                        BaseApplication.getInstance()?.getPrefs()?.setAuthenticationToken(it.token)
                     }
                     var intent: Intent? = null
                     if (it.data?.gender == DConstants.MALE) {
