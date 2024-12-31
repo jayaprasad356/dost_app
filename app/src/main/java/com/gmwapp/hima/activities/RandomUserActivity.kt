@@ -51,7 +51,6 @@ class RandomUserActivity : BaseActivity() {
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
-    private var roomID: String? = null
     private var usersCount: Int = 0
 
     private var userId: String = ""
