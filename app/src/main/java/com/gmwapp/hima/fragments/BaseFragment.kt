@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallEmptyView
@@ -44,6 +45,7 @@ open class BaseFragment : Fragment() {
     var balanceTime: String? = null
     private var foregroundView: CustomCallView? = null
     val profileViewModel: ProfileViewModel by viewModels()
+    protected var roomID: String? = null
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
@@ -123,16 +125,22 @@ open class BaseFragment : Fragment() {
                             if (remainingTime > 0) {
                                 foregroundView?.updateTime(remainingTime)
                             }
-                            if (balanceTime != null && remainingTime <= 0) {
+                            if (roomID!=null && balanceTime != null && remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
                                 config.durationConfig = null;
+                                if(!Helper.checkNetworkConnection()){
+                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
+                                }
                                 setupZegoUIKit(userID, userName);
                             }
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand("active", arrayListOf(null)
                             ) {}
-                            if(lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000){
+                            if(roomID!=null && lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000){
                                 ZegoUIKitPrebuiltCallService.endCall()
                                 config.durationConfig = null;
+                                if(!Helper.checkNetworkConnection()){
+                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
+                                }
                                 setupZegoUIKit(userID, userName);
                             }
 
