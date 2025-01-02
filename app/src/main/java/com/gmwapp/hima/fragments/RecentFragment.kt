@@ -39,10 +39,20 @@ class RecentFragment : BaseFragment() {
     }
 
     private fun initUI() {
-        binding.btnConnect.text =
-            getString(R.string.connect_with_a_hima, getString(R.string.app_name))
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userData?.let { recentViewModel.getCallsList(userData.id, userData.gender) }
+
+
+
+        recentViewModel.callsListLiveData.observe(viewLifecycleOwner, Observer{
+            if(it!=null && it.success && it.data!=null) {
+                binding.tlTitle.visibility = View.GONE
+            }
+            else {
+                binding.tlTitle.visibility = View.VISIBLE
+            }
+        })
+
         recentViewModel.callsListLiveData.observe(viewLifecycleOwner, Observer {
             if(it!=null && it.success && it.data!=null) {
                 binding.rvCalls.setLayoutManager(
@@ -89,8 +99,6 @@ class RecentFragment : BaseFragment() {
                 binding.rvCalls.setAdapter(recentCallsAdapter)
                 binding.rvCalls.visibility = View.VISIBLE
                 binding.tlTitle.visibility = View.GONE
-                binding.tlTitleDetails.visibility = View.GONE
-                binding.btnConnect.visibility = View.GONE
 
             }
         })

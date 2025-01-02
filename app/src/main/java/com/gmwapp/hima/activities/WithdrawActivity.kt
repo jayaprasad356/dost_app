@@ -2,35 +2,158 @@ package com.gmwapp.hima.activities
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.core.animation.addListener
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.UpiListAdapter
+import com.gmwapp.hima.databinding.ActivityWithdrawBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
+import com.gmwapp.hima.viewmodels.ProfileViewModel
+import com.gmwapp.hima.viewmodels.UpiViewModel
+import com.gmwapp.hima.viewmodels.WithdrawViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class WithdrawActivity : AppCompatActivity() {
 
+@AndroidEntryPoint
+class WithdrawActivity : BaseActivity() {
+
+    lateinit var binding: ActivityWithdrawBinding
+
+    val profileViewModel: ProfileViewModel by viewModels()
+    val withdrawViewModel: WithdrawViewModel by viewModels()
+    val upiViewModel: UpiViewModel by viewModels()
+
+    var bankDetails: Boolean = false
+    var upiid: Boolean = false
+
+    var payment_method = ""
+
+
+
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_withdraw)
+        binding = ActivityWithdrawBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        binding.main.setOnApplyWindowInsetsListener { view, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(top = systemBarsInsets.top, bottom = systemBarsInsets.bottom)
+            insets
+        }
         initUI()
     }
 
     private fun initUI() {
+
+
+
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validateFields()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        binding.etAmount.addTextChangedListener(textWatcher)
+        binding.etUpiId.addTextChangedListener(textWatcher)
+
+
+        binding.tvVerify.setOnSingleClickListener {
+
+            closeKeyboard()
+            val upiId = binding.etUpiId.text.toString()
+            if (isValidUpiId(upiId)) {
+
+                val userId = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
+                if (userId != null) {
+                    upiViewModel.updatedUpi(userId, upiId)
+                }
+
+                binding.ivAddUpi.setBackgroundResource(R.drawable.tick_svg)
+                binding.ivAddUpi.rotation = 0f
+            } else {
+                // Set a different background drawable for invalid UPI ID
+                Toast.makeText(this, "Invalid UPI ID", Toast.LENGTH_SHORT).show()
+            }
+
+
+
+
+        }
+
+
+
         val upiDetailsLayout = findViewById<LinearLayout>(R.id.ll_upi_details)
         val addUpiImage = findViewById<ImageView>(R.id.iv_add_upi)
         val rvUpiTypes = findViewById<RecyclerView>(R.id.rv_upi_types)
         val etUpiId = findViewById<EditText>(R.id.et_upi_id)
-//        val btnWithdraw = findViewById<EditText>(R.id.btn_withdraw)
+
+         payment_method = intent.getStringExtra("payment_method").toString()
+         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+
+
+        binding.tvCurrentBalance.text = "₹" + userData?.balance.toString()
+
+
+
+        if (payment_method == "upi_transfer") {
+            if (userData?.upi_id.isNullOrEmpty()) {
+                upiid = false
+                binding.cvPreferredPaymentMethod.visibility = View.GONE
+            }
+            else {
+                upiid = true
+                binding.cvPreferredPaymentMethod.visibility = View.VISIBLE
+                binding.tvUpi.text = userData?.upi_id
+
+            }
+            binding.cvAddUpi.visibility = View.VISIBLE
+            binding.cvAddBank.visibility = View.GONE
+        }
+        else if (payment_method == "bank_transfer"){
+            binding.cvAddUpi.visibility = View.GONE
+            binding.cvAddBank.visibility = View.VISIBLE
+        }
+
+
+        if (userData?.bank.isNullOrEmpty()) {
+            bankDetails = false
+            binding.ivAddBank.setBackgroundResource(R.drawable.ic_add_upi) // Replace with your valid drawable resource
+
+            // Rotate the drawable by a specified angle (e.g., 45 degrees)
+            binding.ivAddBank.rotation = 0f // This rotates the ImageView by 45 degrees
+        }
+        else {
+            bankDetails = true
+            binding.ivAddBank.setBackgroundResource(R.drawable.tick_circle_svg) // Replace with your valid drawable resource
+            // Rotate the drawable by a specified angle (e.g., 45 degrees)
+            binding.ivAddBank.rotation = 0f // This rotates the ImageView by 45 degrees
+
+        }
+
 
         val textList = listOf("@ybl", "@sbi", "@okicici", "@okaxis")
 
@@ -55,8 +178,68 @@ class WithdrawActivity : AppCompatActivity() {
         rvUpiTypes.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvUpiTypes.adapter = upiAdapter
 
-//        btnWithdraw.setOnClickListener(
-//        )
+
+
+        binding.cvAddBank.setOnSingleClickListener {
+            val intent = Intent(this, BankUpdateActivity::class.java)
+            startActivity(intent)
+
+        }
+
+        binding.btnWithdraw.setOnClickListener {
+            val amount = binding.etAmount.text.toString().toInt()
+            val paymentMethod = payment_method
+
+            val userId = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
+            if (userId != null) {
+                withdrawViewModel.addWithdrawal(userId, amount, paymentMethod)
+            }
+        }
+
+        withdrawViewModel.withdrawResponseLiveData.observe(this, Observer {
+            if (it != null && it.success) {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, PaymentInitiatedActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            else {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        upiViewModel.upiResponseLiveData.observe(this, Observer {
+            if (it != null && it.success) {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
+                    profileViewModel.getUsers(it)
+                }
+            }
+            else {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        profileViewModel.getUserLiveData.observe(this, Observer {
+
+            it.data?.let { it1 ->
+                BaseApplication.getInstance()?.getPrefs()?.setUserData(it1)
+            }
+
+            if (userData?.upi_id.isNullOrEmpty()) {
+                upiid = false
+                binding.cvPreferredPaymentMethod.visibility = View.GONE
+            }
+            else {
+                upiid = true
+                binding.cvPreferredPaymentMethod.visibility = View.VISIBLE
+                binding.tvUpi.text = it.data?.upi_id
+            }
+
+        })
+
+
+
     }
 
     private fun rotateImage(view: ImageView, fromAngle: Float, toAngle: Float) {
@@ -96,4 +279,63 @@ class WithdrawActivity : AppCompatActivity() {
             start()
         }
     }
+
+    private fun isValidUpiId(upiId: String): Boolean {
+        val upiPattern = "^[a-zA-Z0-9.\\-_]+@[a-zA-Z]+$"
+        return upiId.matches(Regex(upiPattern))
+    }
+
+
+    private fun closeKeyboard() {
+        val inputMethodManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val currentFocusedView = this.currentFocus
+        if (currentFocusedView != null) {
+            inputMethodManager.hideSoftInputFromWindow(currentFocusedView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
+    }
+
+    private fun validateFields() {
+        val amount = binding.etAmount.text.toString().trim()
+        val upiId = binding.etUpiId.text.toString().trim()
+
+        // Initially disable the button
+        binding.btnWithdraw.isEnabled = false
+
+        // Check if amount is empty or not a valid number
+        if (amount.isEmpty() || !isValidAmount(amount)) {
+            // Optionally, show a message or highlight the field
+            binding.etAmount.error = "Min withdrwal amount Rs.50"
+        }
+
+
+        if (payment_method == "upi_transfer") {
+            if (isValidUpiId(upiId)) {
+                binding.ivAddUpi.setBackgroundResource(R.drawable.tick_svg)
+                binding.ivAddUpi.rotation = 0f
+            }
+
+            if (amount.isNotEmpty() && isValidAmount(amount) && amount.toDouble() >= 50.0 && upiid) {
+                binding.btnWithdraw.isEnabled = true
+            }
+        }
+        else if (payment_method == "bank_transfer") {
+            if (amount.isNotEmpty() && isValidAmount(amount) && amount.toDouble() >= 50.0 && bankDetails) {
+                binding.btnWithdraw.isEnabled = true
+            }
+
+        }
+
+    }
+
+    // Helper function to check if amount is a valid number
+    private fun isValidAmount(amount: String): Boolean {
+        return try {
+            amount.toDouble() // Attempt to convert the string to a double
+            true
+        } catch (e: NumberFormatException) {
+            false // If conversion fails, return false
+        }
+    }
+
+
 }

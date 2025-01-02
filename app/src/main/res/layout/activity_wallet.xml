@@ -156,7 +156,7 @@
         app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/d_button_bg"
-        android:text="@string/send_otp"
+        android:text="@string/add_coins"
         android:backgroundTint="@color/white"
         android:textSize="14sp"
         android:fontFamily="@font/poppins_semibold"

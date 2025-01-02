@@ -17,6 +17,7 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivitySplashScreenBinding
+import com.gmwapp.hima.retrofit.responses.UserData
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -25,12 +26,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SplashScreenActivity : BaseActivity() {
     lateinit var binding: ActivitySplashScreenBinding
-    private val profileViewModel: ProfileViewModel by viewModels()
-    private val viewModel: LoginViewModel by viewModels()
-    private var currentVersion: Int = 0
-    private var latestVersion: Int = 0
-    private var link: String = ""
-    private var description: String = ""
+    val profileViewModel: ProfileViewModel by viewModels()
+    val viewModel: LoginViewModel by viewModels()
+    var currentVersion = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,28 +46,23 @@ class SplashScreenActivity : BaseActivity() {
         }
 
 
+        viewModel.appUpdate()
+
         var intent: Intent? = null
         val prefs = BaseApplication.getInstance()?.getPrefs()
         var userData = prefs?.getUserData()
 
-            viewModel.appUpdate()
 
 
         try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
-            currentVersion = pInfo.versionCode
+            currentVersion = pInfo.versionCode.toString()
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
 
 
-        viewModel.appUpdateResponseLiveData.observe(this, Observer {
-            if (it!=null && it.success) {
-                 latestVersion = it.data[0].app_version
-                 link = it.data[0].link
-                 description = it.data[0].description
-            }
-        })
+
 
 
 
@@ -81,16 +74,21 @@ class SplashScreenActivity : BaseActivity() {
             intent = when {
                 userData?.status == 2 -> {
                     Intent(this, MainActivity::class.java).apply {
-                        putExtra(DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0))
+                        putExtra(
+                            DConstants.AVATAR_ID,
+                            getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
+                        )
                         putExtra(DConstants.LANGUAGE, userData?.language)
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                 }
+
                 userData?.status == 1 -> {
                     Intent(this, AlmostDoneActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                 }
+
                 else -> {
                     Intent(this, VoiceIdentificationActivity::class.java).apply {
                         putExtra(DConstants.LANGUAGE, userData?.language)
@@ -104,40 +102,69 @@ class SplashScreenActivity : BaseActivity() {
 
 
 
-        if (currentVersion!!.toInt() >= latestVersion.toInt()) {
+        viewModel.appUpdateResponseLiveData.observe(this, Observer {
+            if (it != null && it.success) {
+
+                val latestVersion = it.data[0].app_version.toString()
+
+                val link = it.data[0].link
+                val description = it.data[0].description
+                GotoActivity(userData, latestVersion, link, description)
+            }
+        })
+
+
+    }
+
+    fun GotoActivity(
+        userData: UserData?,
+        latestVersion: String,
+        link: String,
+        description: String
+    ) {
+
+        if (currentVersion >= latestVersion) {
+//            Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
             if (userData == null) {
-                intent = Intent(this@SplashScreenActivity, NewLoginActivity::class.java)
+//                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show()
+
+//                intent = Intent(this@SplashScreenActivity, NewLoginActivity::class.java)
+                val intent = Intent(this@SplashScreenActivity, NewLoginActivity::class.java)
+                startActivity(intent)
+                finish()
+
             } else {
                 if (userData?.gender == DConstants.MALE) {
-                    intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
+//                    Toast.makeText(this, "3", Toast.LENGTH_SHORT).show()
+                  //  intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
+                    val intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
+//                    Toast.makeText(this, "4", Toast.LENGTH_SHORT).show()
                     BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
                         profileViewModel.getUsers(it)
                     }
 
+                }
+
+                intent?.let {
+                    Handler().postDelayed({
+                        startActivity(it)
+                        finish()
+                    }, 3000)
                 }
             }
         } else {
             showUpdateDialog(link, description)
         }
 
-
-
-        intent?.let {
-            Handler().postDelayed({
-                startActivity(it)
-                finish()
-            }, 3000)
-        }
-    }
-
-    class GotoActivity {
-
     }
 
     // Function to check network availability
     private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
         val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
         return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true

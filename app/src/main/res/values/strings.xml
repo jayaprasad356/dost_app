@@ -198,5 +198,14 @@
     <string name="no_data_found">No Data Found</string>
     <string name="please_login_again_to_continue">Please Login again to Continue</string>
     <string name="audio_mins_txt">10 / min</string>
+    <string name="bank_transfer">Bank Transfer</string>
+    <string name="add_bank_details">Add bank details</string>
+    <string name="branch_name">Branch Name</string>
+    <string name="bank_name">Bank Name</string>
+    <string name="ifsc_code">IFSC Code</string>
+    <string name="account_number">Account Number</string>
+    <string name="account_holder_name">Account Holder Name</string>
+    <string name="your_current_balance">Your Current Balance</string>
+    <string name="preferred_payment_method">Preferred payment method</string>
 
 </resources>

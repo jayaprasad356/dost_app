@@ -13,6 +13,8 @@ import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.EarningsAdapter
 import com.gmwapp.hima.databinding.ActivityEarningsBinding
+import com.gmwapp.hima.databinding.BottomSheetSelectPaymentBinding
+import com.gmwapp.hima.dialogs.BottomSheetSelectPayment
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.gmwapp.hima.viewmodels.EarningsViewModel
@@ -36,6 +38,20 @@ class EarningsActivity : BaseActivity() {
             finish()
         }
 
+
+        binding.btnWithdraw.setOnSingleClickListener {
+
+
+//            val intent = Intent(this, WithdrawActivity::class.java)
+//            intent.putExtra("balance", binding.tvEarnings.text.toString()) // Replace key_name and value_to_pass with your actual key and value.
+//            startActivity(intent)
+
+            val bottomSheet: BottomSheetSelectPayment = BottomSheetSelectPayment()
+            bottomSheet.show(supportFragmentManager, "BottomSheetSelectPayment")
+
+        }
+
+
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val settingsData = prefs?.getSettingsData()
         val supportMail = settingsData?.support_mail
@@ -55,7 +71,7 @@ class EarningsActivity : BaseActivity() {
                     binding.ivBalance.visibility = View.GONE
                     binding.tlBalanceHint.visibility = View.GONE
                 }
-                binding.tvCurrentBalance.text = balance.toString()
+                binding.tvCurrentBalance.text = "₹" +balance.toString()
             }
         accountViewModel.settingsLiveData.observe(this, Observer {
             if (it!=null && it.success) {

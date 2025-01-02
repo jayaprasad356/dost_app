@@ -10,6 +10,8 @@ data class LoginResponse(
     val data: UserData?,
 )
 
+
+
 data class UserData (
     val id: Int,
     val name: String,
@@ -31,5 +33,11 @@ data class UserData (
     val video_status:Int?,
     val balance:Float?,
     val coins:Int?,
+    val bank:String?,
+    val account_num:String?,
+    val branch:String?,
+    val ifsc:String?,
+    val holder_name:String?,
+    val upi_id:String?,
 
 )
