@@ -116,7 +116,12 @@ class FemaleHomeFragment : BaseFragment() {
                 val intent = Intent(context, GrantPermissionsActivity::class.java)
                 startActivity(intent)
             } else {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                try {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } catch (e: Exception) {
+                    val intent = Intent(context, GrantPermissionsActivity::class.java)
+                    startActivity(intent)
+                }
             }
         } else {
             initializeCall()
