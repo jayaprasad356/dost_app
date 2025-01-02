@@ -62,7 +62,13 @@ class FemaleHomeFragment : BaseFragment() {
         if (isGranted) {
             initializeCall()
         } else {
-            askNotificationPermission(); }
+            try {
+                askNotificationPermission();
+            } catch (e: Exception) {
+                val intent = Intent(context, GrantPermissionsActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
     private var startTime: String = ""
     private var endTime: String = ""
@@ -105,26 +111,31 @@ class FemaleHomeFragment : BaseFragment() {
 
     private fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                initializeCall()
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                val intent = Intent(context, GrantPermissionsActivity::class.java)
-                startActivity(intent)
-            } else {
-                try {
-                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                } catch (e: Exception) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(
+                        requireActivity(),
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    initializeCall()
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                     val intent = Intent(context, GrantPermissionsActivity::class.java)
                     startActivity(intent)
+                } else {
+                    try {
+                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } catch (e: Exception) {
+                        val intent = Intent(context, GrantPermissionsActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
+            } else {
+                initializeCall()
             }
-        } else {
-            initializeCall()
+        } catch (e: Exception) {
+            val intent = Intent(context, GrantPermissionsActivity::class.java)
+            startActivity(intent)
         }
     }
 
