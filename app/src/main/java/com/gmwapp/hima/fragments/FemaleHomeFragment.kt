@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
+
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
     private var checkingOverlayPermission: Boolean = false
@@ -61,12 +62,7 @@ class FemaleHomeFragment : BaseFragment() {
         if (isGranted) {
             initializeCall()
         } else {
-            Toast.makeText(
-                requireContext(),
-                "Notification permission denied. Some features may not work as expected.",
-                Toast.LENGTH_LONG
-            ).show()
-        }
+            askNotificationPermission(); }
     }
     private var startTime: String = ""
     private var endTime: String = ""
@@ -81,7 +77,14 @@ class FemaleHomeFragment : BaseFragment() {
         return binding.root
     }
 
-    private fun askPermissions() {
+    override fun onResume() {
+        super.onResume()
+        if (!checkingOverlayPermission) {
+            checkAutoStartPermission()
+        }
+    }
+
+    fun askPermissions() {
         val permissionNeeded =
             arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
 
@@ -101,32 +104,25 @@ class FemaleHomeFragment : BaseFragment() {
     }
 
     private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val permission = Manifest.permission.POST_NOTIFICATIONS
-            when {
-                ContextCompat.checkSelfPermission(
+            if (ContextCompat.checkSelfPermission(
                     requireActivity(),
-                    permission
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    initializeCall()
-                }
-
-                shouldShowRequestPermissionRationale(permission) -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Notification permission is required to notify you about important updates.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                else -> {
-                    requestPermissionLauncher.launch(permission)
-                }
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                initializeCall()
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                val intent = Intent(context, GrantPermissionsActivity::class.java)
+                startActivity(intent)
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            initializeCall() // For API < 33, no need for POST_NOTIFICATIONS permission
+            initializeCall()
         }
     }
+
 
     private fun checkAutoStartPermission() {
         if (AutoStartPermissionHelper.getInstance()
@@ -166,6 +162,7 @@ class FemaleHomeFragment : BaseFragment() {
                     checkOverlayPermission()
                 }
             })
+
     }
 
     override fun onRequestPermissionsResult(
@@ -209,19 +206,23 @@ class FemaleHomeFragment : BaseFragment() {
 
         binding.tvCoins.text = "₹" + userData?.balance.toString()
 
+
         femaleUsersViewModel.getReports(userData?.id!!)
+
 
         femaleUsersViewModel.reportResponseLiveData.observe(viewLifecycleOwner, Observer {
             if (it.success) {
+
                 binding.tvApproxEarnings.text = it.data[0].today_earnings.toString()
                 binding.tvTotalCalls.text = it.data[0].today_calls.toString()
+
             } else {
-                // Handle error case
+              //  Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
             }
         })
 
         femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null && it.success) {
+            if (it!=null && it.success) {
                 prefs?.setUserData(it.data)
             } else {
                 Toast.makeText(context, it?.message, Toast.LENGTH_SHORT).show()
@@ -234,27 +235,35 @@ class FemaleHomeFragment : BaseFragment() {
             binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
             binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
         })
-        binding.sAudio.setOnCheckedChangeListener { _, isChecked ->
+        binding.sAudio.setOnCheckedChangeListener({ buttonView, isChecked ->
             userData?.id?.let {
                 femaleUsersViewModel.updateCallStatus(
                     it, DConstants.AUDIO, if (isChecked) 1 else 0
                 )
             }
-        }
-        binding.sVideo.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+
+            }
+        })
+        binding.sVideo.setOnCheckedChangeListener({ buttonView, isChecked ->
             userData?.id?.let {
                 femaleUsersViewModel.updateCallStatus(
                     it, DConstants.VIDEO, if (isChecked) 1 else 0
                 )
             }
-        }
+        })
+
+
+
+
     }
 
     private fun addRoomStateChangedListener() {
+
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
-                    lastActiveTime = System.currentTimeMillis()
+                    lastActiveTime = System.currentTimeMillis();
                     roomID = room
                     startTime = dateFormat.format(Date()) // Set call start time in IST
                     femaleUsersViewModel.femaleCallAttend(
@@ -278,7 +287,9 @@ class FemaleHomeFragment : BaseFragment() {
                             override fun onNoNetwork() {
                             }
                         })
+
                 }
+
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
                         lastActiveTime = null
@@ -293,27 +304,20 @@ class FemaleHomeFragment : BaseFragment() {
                             val data: Data = Data.Builder()
                                 .putInt(DConstants.USER_ID, receivedId)
                                 .putInt(DConstants.CALL_ID, callId)
-                                .putString(DConstants.ENDED_TIME, endTime)
                                 .putString(DConstants.STARTED_TIME, startTime)
-                                .build()
-                            val callUpdateRequest = OneTimeWorkRequest.Builder(CallUpdateWorker::class.java)
-                                .setInputData(data)
-                                .setConstraints(constraints)
-                                .build()
-                            WorkManager.getInstance(requireContext())
-                                .enqueue(callUpdateRequest)
-                        }
-                    }
+                                .putString(DConstants.ENDED_TIME, endTime).build()
+                            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                                CallUpdateWorker::class.java
+                            ).setInputData(data).setConstraints(constraints).build()
+                            WorkManager.getInstance(requireActivity())
+                                .enqueue(oneTimeWorkRequest)
+                        }}
                 }
 
-                ZegoRoomStateChangedReason.LOGINING -> TODO()
-                ZegoRoomStateChangedReason.LOGIN_FAILED -> TODO()
-                ZegoRoomStateChangedReason.RECONNECTING -> TODO()
-                ZegoRoomStateChangedReason.RECONNECTED -> TODO()
-                ZegoRoomStateChangedReason.RECONNECT_FAILED -> TODO()
-                ZegoRoomStateChangedReason.KICK_OUT -> TODO()
-                ZegoRoomStateChangedReason.LOGOUT_FAILED -> TODO()
+                else -> {
+                }
             }
         }
     }
+
 }
