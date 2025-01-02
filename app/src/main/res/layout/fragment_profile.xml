@@ -78,20 +78,19 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_profile_options"
         style="@style/CardViewStyle.Spacing"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cl_profile">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:layout_gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/gl_margin_1"
@@ -109,6 +108,7 @@
                 app:layout_constraintGuide_end="54dp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:padding="@dimen/_6sdp"
                 android:id="@+id/cl_wallet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,6 +152,7 @@
                 app:layout_constraintTop_toTopOf="@+id/gl_margin_1" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:padding="@dimen/_6sdp"
                 android:id="@+id/cl_transactions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -198,6 +199,7 @@
                 app:layout_constraintTop_toTopOf="@+id/gl_margin_2" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:padding="@dimen/_6sdp"
                 android:id="@+id/cl_account_privacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -232,25 +234,24 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_logout"
         style="@style/CardViewStyle.Spacing"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_profile_options">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:padding="@dimen/_6sdp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="6dp"
             android:orientation="horizontal">
 
             <ImageView

@@ -366,7 +366,7 @@
                     android:enabled="false"
                     android:padding="@dimen/_10sdp"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="@string/submit"
+                    android:text="@string/verify_otp"
                     android:textSize="14sp"
                     app:cornerRadius="@dimen/_18sdp"
                     android:textColor="@color/white"

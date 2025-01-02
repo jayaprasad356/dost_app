@@ -3,6 +3,7 @@ package com.gmwapp.hima.retrofit
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AppUpdateResponse
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
+import com.gmwapp.hima.retrofit.responses.BankUpdateResponse
 import com.gmwapp.hima.retrofit.responses.CallFemaleUserResponse
 import com.gmwapp.hima.retrofit.responses.CallsListResponse
 import com.gmwapp.hima.retrofit.responses.CoinsResponse
@@ -11,6 +12,7 @@ import com.gmwapp.hima.retrofit.responses.EarningsResponse
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
+import com.gmwapp.hima.retrofit.responses.OfferResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.ReportsResponse
@@ -21,8 +23,10 @@ import com.gmwapp.hima.retrofit.responses.TransactionsResponse
 import com.gmwapp.hima.retrofit.responses.UpdateCallStatusResponse
 import com.gmwapp.hima.retrofit.responses.UpdateConnectedCallResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
+import com.gmwapp.hima.retrofit.responses.UpiUpdateResponse
 import com.gmwapp.hima.retrofit.responses.UserValidationResponse
 import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
+import com.gmwapp.hima.retrofit.responses.WithdrawResponse
 import com.gmwapp.hima.utils.Helper
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -264,6 +268,67 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         }
     }
 
+    fun updateBank(
+        userId: Int,
+        bank: String,
+        accountNum: String,
+        branch: String,
+        ifsc: String,
+        holderName: String,
+        callback: NetworkCallback<BankUpdateResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<BankUpdateResponse> = getApiInterface().updateBank(userId, bank, accountNum, branch, ifsc, holderName)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun updateUpi(
+        userId: Int,
+        upiId: String,
+        callback: NetworkCallback<UpiUpdateResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<UpiUpdateResponse> = getApiInterface().updateUpi(userId,upiId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+
+    fun addWithdrawal(
+        userId: Int,
+        amount: Int,
+        paymentMethod: String,
+        callback: NetworkCallback<WithdrawResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<WithdrawResponse> = getApiInterface().addWithdrawal(userId,amount,paymentMethod)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+
+    fun getOffer(
+        userId: Int,
+        callback: NetworkCallback<OfferResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<OfferResponse> = getApiInterface().getOffer(userId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+
+
+
     fun updateProfile(
         userId: Int,
         avatarId: Int,
@@ -463,6 +528,41 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("withdrawals_list")
     fun getEarnings(@Field("user_id") userId: Int): Call<EarningsResponse>
+
+
+    @FormUrlEncoded
+    @POST("update_bank")
+    fun updateBank(
+        @Field("user_id") userId: Int,
+        @Field("bank") bank: String,
+        @Field("account_num") accountNum: String,
+        @Field("branch") branch: String,
+        @Field("ifsc") ifsc: String,
+        @Field("holder_name") holderName: String
+    ): Call<BankUpdateResponse>
+
+    @FormUrlEncoded
+    @POST("update_upi")
+    fun updateUpi(
+        @Field("user_id") userId: Int,
+        @Field("upi_id") upiId: String,
+        ): Call<UpiUpdateResponse>
+
+    @FormUrlEncoded
+    @POST("withdrawals")
+    fun addWithdrawal(
+        @Field("user_id") userId: Int,
+        @Field("amount") amount: Int,
+        @Field("type") paymentMethod: String
+    ): Call<WithdrawResponse>
+
+
+    @FormUrlEncoded
+    @POST("best_offers")
+    fun getOffer(
+        @Field("user_id") userId: Int,
+    ): Call<OfferResponse>
+
 
     @FormUrlEncoded
     @POST("update_profile")

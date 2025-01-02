@@ -108,11 +108,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
             )
         })
         profileViewModel.deleteUserErrorLiveData.observe(this, Observer {
-            Toast.makeText(
-                this@DeleteAccountActivity,
-                getString(R.string.please_try_again_later),
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(this@DeleteAccountActivity, getString(R.string.please_try_again_later), Toast.LENGTH_LONG).show()
         })
         profileViewModel.deleteUserLiveData.observe(this, Observer {
             if (it!=null && it.success) {

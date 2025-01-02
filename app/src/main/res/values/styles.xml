@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimaryDark</item>
@@ -9,16 +10,17 @@
             @style/activityTransition
         </item>
     </style>
-    <!-- Theme for dark mode -->
-    <style name="AppTheme.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimaryDark</item>
-        <item name="android:navigationBarColor">@color/dark_blue</item>
-        <item name="android:windowAnimationStyle">
-            @style/activityTransition
-        </item>
-    </style>
+
+<!--    &lt;!&ndash; Theme for dark mode &ndash;&gt;-->
+<!--    <style name="AppTheme.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">-->
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+<!--        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>-->
+<!--        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimaryDark</item>-->
+<!--        <item name="android:navigationBarColor">@color/dark_blue</item>-->
+<!--        <item name="android:windowAnimationStyle">-->
+<!--            @style/activityTransition-->
+<!--        </item>-->
+<!--    </style>-->
 
     <style name="activityTransition" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">
@@ -90,11 +92,4 @@
     </style>
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
-
-    <!-- Custom hint style -->
-        <style name="CustomHintStyle">
-            <item name="android:textColorHint">@color/light_blue</item>
-            <item name="android:textSize">14sp</item> <!-- Customize hint text size -->
-            <item name="android:fontFamily">@font/poppins_regular</item> <!-- Customize hint font -->
-        </style>
 </resources>
