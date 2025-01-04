@@ -131,10 +131,16 @@ class WalletActivity : BaseActivity() {
                         } else {
                            // println("Long URL: ${it.longurl}") // Print to the terminal
                             //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this@WalletActivity, LauncherActivity::class.java)
-                            intent.setData(Uri.parse(response.body()?.longurl))
-                            startActivity(intent)
-                            finish()// Directly starting the intent without launcher
+                            if(intent.getBooleanExtra(DConstants.NEED_TO_FINISH, false)){
+                                setResult(RESULT_OK)
+                                finish()
+                            }else {
+                                val intent =
+                                    Intent(this@WalletActivity, LauncherActivity::class.java)
+                                intent.setData(Uri.parse(response.body()?.longurl))
+                                startActivity(intent)
+                                finish()// Directly starting the intent without launcher
+                            }
                           //  Toast.makeText(this@WalletActivity, response.body()?.message ?: "Error", Toast.LENGTH_SHORT).show()
                         }
                     }
