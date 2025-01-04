@@ -47,7 +47,6 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity(), OnButtonClickListener {
-    private var WALLET_ACTIVITY_REQUEST_CODE = 1;
     private var mediaPlayer: MediaPlayer? = null
     private var isReceiverDetailsAvailable: Boolean = false
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
@@ -75,27 +74,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         initUI()
         askPermissions()
         onBackPressedDispatcher.addCallback(this ) {
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == WALLET_ACTIVITY_REQUEST_CODE) {
-            BaseApplication.getInstance()?.getPrefs()
-                ?.getUserData()?.id?.let { callType?.let { it1 ->
-                    profileViewModel.getRemainingTime(it,
-                        it1
-                    )
-                } }
-
-            profileViewModel.remainingTimeLiveData.observe(this) { response ->
-                if(response!=null && response.success){
-                    this.balanceTime = response.data?.remaining_time
-                    ZegoUIKitPrebuiltCallService.sendInRoomCommand(
-                        DConstants.REMAINING_TIME+"="+this.balanceTime, arrayListOf(null)
-                    ) {}
-                }
-            }
         }
     }
 
@@ -222,11 +200,22 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         }
     }
 
-    override fun onButtonClick() {
-        ZegoUIKitPrebuiltCallService.minimizeCall()
-        val intent = Intent(this, WalletActivity::class.java)
-        intent.putExtra(DConstants.NEED_TO_FINISH, true)
-        startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)
+    override public fun onButtonClick() {
+        BaseApplication.getInstance()?.getPrefs()
+            ?.getUserData()?.id?.let { callType?.let { it1 ->
+                profileViewModel.getRemainingTime(it,
+                    it1
+                )
+            } }
+
+        profileViewModel.remainingTimeLiveData.observe(this) { response ->
+            if(response!=null && response.success){
+                this.balanceTime = response.data?.remaining_time
+                ZegoUIKitPrebuiltCallService.sendInRoomCommand(
+                    DConstants.REMAINING_TIME+"="+this.balanceTime, arrayListOf(null)
+                ) {}
+            }
+        }
     }
 
     private fun initUI() {

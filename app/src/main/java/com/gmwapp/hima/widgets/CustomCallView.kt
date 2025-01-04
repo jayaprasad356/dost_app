@@ -1,5 +1,6 @@
 package com.gmwapp.hima.widgets
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
@@ -7,6 +8,8 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.BaseActivity
@@ -14,11 +17,13 @@ import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
+import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
 class CustomCallView : ZegoBaseAudioVideoForegroundView {
     private var tvRemainingTime: TextView? = null
     private var activity: RandomUserActivity? = null
+    private var WALLET_ACTIVITY_REQUEST_CODE = 1;
 
     constructor(context: Context, userID: String?) : super(context, userID)
 
@@ -38,7 +43,13 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
             var clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
             clCoins?.setOnClickListener({
                 try {
-                    activity?.onButtonClick()
+                    val aux: Fragment = FragmentForResult(activity)
+                    val fm: FragmentManager? = (context as CallInviteActivity).supportFragmentManager
+                    fm?.beginTransaction()?.add(aux, "FRAGMENT_TAG")?.commit()
+                    fm?.executePendingTransactions()
+                    val intent = Intent(activity, WalletActivity::class.java)
+                    intent.putExtra(DConstants.NEED_TO_FINISH, true)
+                    aux.startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)
                 } catch (e: Exception) {
                 }
             })
@@ -63,5 +74,15 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
     override fun onMicrophoneStateChanged(isMicrophoneOn: Boolean) {
         // will be called when microphone changed
+    }
+}
+
+class FragmentForResult(private val mActivity: RandomUserActivity?) : Fragment() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+            mActivity?.onButtonClick()
+        }
+        activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
     }
 }
