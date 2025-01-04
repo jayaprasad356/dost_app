@@ -1,12 +1,10 @@
-<!DOCTYPE resources [
-    <!ENTITY appname "HI ma">
-    ]>
+<!DOCTYPE resources [<!ENTITY appname "HI ma">]>
 <resources>
     <string name="app_name">&appname;</string>
     <string name="login_to_get_started">Login to get started</string>
     <string name="you_will_receive_an_otp_on_this_number">You will receive an OTP on this number.</string>
     <string name="send_otp">Send OTP</string>
-    <string name="terms_and_conditions_text"><![CDATA[I accept terms & conditions of %s. I also agree to receiving updates on WhatsApp/SMS.]]></string>
+    <string name="terms_and_conditions_text"><![CDATA[I accept terms & conditions of HI ma. I also agree to receiving updates on WhatsApp/SMS.]]></string>
     <string name="please_enter_otp_sent_to">Please enter OTP sent to </string>
     <string name="enter_otp">Enter OTP</string>
     <string name="verify_otp">Verify OTP</string>
@@ -52,6 +50,11 @@
     <string name="update">Update</string>
     <string name="politics">Politics</string>
     <string name="art">Art</string>
+    <string name="_0_100">%1$d/%2$d</string>
+    <string name="_0100">0/100</string>
+    <string name="not_replying">Not Replying</string>
+    <string name="rude_behaviour">Rude Behaviour</string>
+    <string name="bad_connectivity">Bad Connectivity</string>
     <string name="sports">Sports</string>
     <string name="movies">Movies</string>
     <string name="music">Music</string>
@@ -92,7 +95,7 @@
     <string name="srilanka">Sri Lanka (+94)</string>
     <string name="malaysia">Malaysia (+60)</string>
     <string name="search_for_country">Search for Country</string>
-    <string name="retry_in">Retry in: 00:%s</string>
+    <string name="retry_in">Retry in (00:%s)</string>
     <string name="delete_warning_1">Information related to account will be kept for 30 days and will be completely purged after no activity for continuous 30 days</string>
     <string name="delete_warning_2">"After the account is deleted, you will no longer be able to log in or use the account, and the account cannot be recovered. "</string>
     <string name="view_more">View more</string>
@@ -144,7 +147,8 @@
     <string name="transaction_id">Transaction ID:%s</string>
     <string name="skip">Skip</string>
     <string name="getting_started">Getting Started</string>
-    <string name="getting_started_hint">Watch the training video to become a successful Super &appname; and start earning!</string>
+    <string name="getting_started_hint">Watch the training video to become a successful Super &appname;
+        and start earning!</string>
     <string name="complete">Complete</string>
     <string name="withdraw">Withdraw</string>
     <string name="audio">Audio</string>
@@ -173,4 +177,36 @@
     <string name="review_hint">How was your call with %s</string>
     <string name="default_notification_channel_id">com.gmwapp.hima</string>
     <string name="notifications">Notifications</string>
+    <string name="mobile_number">Mobile number</string>
+    <string name="we_don_t_share_your_number_with_anyone">We don’t share your number with anyone</string>
+    <string name="otp_send_this_number">OTP Send this number</string>
+    <string name="change_no">Change No.</string>
+    <string name="how_was_your_call_with_shyam">How was your call with shyam?</string>
+    <string name="_0_00">₹0.00</string>
+    <string name="enter_amount_to_withdraw">Enter amount to withdraw</string>
+    <string name="_5_tds_deduction">5% TDS Deduction</string>
+    <string name="_0_93">₹0.93</string>
+    <string name="add_payment_method">Add payment method</string>
+    <string name="upi_id">UPI ID</string>
+    <string name="for_instant_money_credit">For instant money credit</string>
+    <string name="verify">Verify</string>
+    <string name="enter_your_upi_id">Enter your UPI ID</string>
+    <string name="go_back_home">Go back home</string>
+    <string name="payment_initiated">Payment Initiated!</string>
+    <string name="payment_of_33_was_initiated_to_nupi_account_123_okicici">Payment of ₹33 was initiated to \nUPI account - 123@okicici</string>
+    <string name="within_24_hours_amount_will_be_credited_to_your_account">Within 24 hours amount will be credited to your account</string>
+    <string name="no_data_found">No Data Found</string>
+    <string name="please_login_again_to_continue">Please Login again to Continue</string>
+    <string name="audio_mins_txt">10 / min</string>
+    <string name="bank_transfer">Bank Transfer</string>
+    <string name="add_bank_details">Add bank details</string>
+    <string name="branch_name">Branch Name</string>
+    <string name="bank_name">Bank Name</string>
+    <string name="ifsc_code">IFSC Code</string>
+    <string name="account_number">Account Number</string>
+    <string name="account_holder_name">Account Holder Name</string>
+    <string name="your_current_balance">Your Current Balance</string>
+    <string name="preferred_payment_method">Preferred payment method</string>
+    <string name="select">select</string>
+
 </resources>

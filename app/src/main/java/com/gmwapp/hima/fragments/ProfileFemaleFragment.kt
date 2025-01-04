@@ -24,6 +24,7 @@ import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.databinding.FragmentProfileBinding
 import com.gmwapp.hima.databinding.FragmentProfileFemaleBinding
 import com.gmwapp.hima.dialogs.BottomSheetLogout
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,7 +57,7 @@ class ProfileFemaleFragment : BaseFragment() {
         val subject = getString(R.string.delete_account_mail_subject, userData?.mobile, userData?.language)
 
         val body = ""
-        binding.tvSupportMail.setOnClickListener {
+        binding.tvSupportMail.setOnSingleClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
 
             val data = Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")
@@ -77,19 +78,19 @@ class ProfileFemaleFragment : BaseFragment() {
         updateValues()
         val prefs = BaseApplication.getInstance()?.getPrefs()
 
-        binding.clEarnings.setOnClickListener(View.OnClickListener {
+        binding.clEarnings.setOnSingleClickListener( {
             val intent = Intent(context, EarningsActivity::class.java)
             startActivity(intent)
         })
-        binding.ivEditProfile.setOnClickListener(View.OnClickListener {
+        binding.ivEditProfile.setOnSingleClickListener( {
             val intent = Intent(context, EditProfileActivity::class.java)
             startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE)
         })
-        binding.clAccountPrivacy.setOnClickListener(View.OnClickListener {
+        binding.clAccountPrivacy.setOnSingleClickListener( {
             val intent = Intent(context, AccountPrivacyActivity::class.java)
             startActivity(intent)
         })
-        binding.cvLogout.setOnClickListener(View.OnClickListener {
+        binding.cvLogout.setOnSingleClickListener( {
             val bottomSheet: BottomSheetLogout =
                 BottomSheetLogout()
             fragmentManager?.let { it1 ->
@@ -101,7 +102,7 @@ class ProfileFemaleFragment : BaseFragment() {
         })
         accountViewModel.getSettings()
         accountViewModel.settingsLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 if (it.data != null) {
                     if (it.data.size > 0) {
                         prefs?.setSettingsData(it.data.get(0))
@@ -112,7 +113,7 @@ class ProfileFemaleFragment : BaseFragment() {
                         val subject = getString(R.string.delete_account_mail_subject, userData?.mobile,  userData?.language)
 
                         val body = ""
-                        binding.tvSupportMail.setOnClickListener {
+                        binding.tvSupportMail.setOnSingleClickListener {
                             val intent = Intent(Intent.ACTION_VIEW)
 
                             val data = Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")

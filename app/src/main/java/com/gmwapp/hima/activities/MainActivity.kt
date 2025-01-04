@@ -2,13 +2,16 @@ package com.gmwapp.hima.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
@@ -19,68 +22,82 @@ import com.gmwapp.hima.fragments.HomeFragment
 import com.gmwapp.hima.fragments.ProfileFemaleFragment
 import com.gmwapp.hima.fragments.ProfileFragment
 import com.gmwapp.hima.fragments.RecentFragment
+import com.gmwapp.hima.viewmodels.OfferViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.google.androidbrowserhelper.trusted.LauncherActivity
 import dagger.hilt.android.AndroidEntryPoint
-import im.zego.zegoexpress.ZegoExpressEngine
-import im.zego.zegoexpress.callback.IZegoEventHandler
-import im.zego.zegoexpress.constants.ZegoPlayerState
-import im.zego.zegoexpress.constants.ZegoPublisherState
-import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
-import im.zego.zegoexpress.constants.ZegoUpdateType
-import im.zego.zegoexpress.entity.ZegoCanvas
-import im.zego.zegoexpress.entity.ZegoRoomConfig
-import im.zego.zegoexpress.entity.ZegoStream
-import im.zego.zegoexpress.entity.ZegoUser
-import org.json.JSONObject
+
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener,  BottomSheetWelcomeBonus.OnAddCoinsListener  {
     lateinit var binding: ActivityMainBinding
     var isBackPressedAlready = false
     var userName:String? = null
     var userID :String? = null;
 
+
+    val offerViewModel: OfferViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initUI()
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
+        }
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userID = userData?.id.toString()
+
+
+        initUI()
+
         userName = userData?.name
+
+        onBackPressedDispatcher.addCallback(this ) {
+            if (isBackPressedAlready) {
+               finish()
+            } else {
+                Toast.makeText(this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT).show()
+                isBackPressedAlready = true
+                Handler().postDelayed({
+                    isBackPressedAlready = false
+                }, 3000)
+            }
+        }
     }
     private fun initUI() {
 
-        if (BaseApplication.getInstance()?.getPrefs()
-                ?.getUserData()?.gender == DConstants.MALE
-        ) {
 
-            val bottomSheet: BottomSheetWelcomeBonus = BottomSheetWelcomeBonus()
-            bottomSheet.show(
-                supportFragmentManager, "BottomSheetWelcomeBonus"
-            )
+        userID?.let { offerViewModel.getOffer(it.toInt()) }
+
+        offerViewModel.offerResponseLiveData.observe(this) { response ->
+            if (response.success) {
+                val coin = response.data[0].coins
+                val price = response.data[0].price
+                val save = response.data[0].save
+
+                if (BaseApplication.getInstance()?.getPrefs()?.getUserData()?.gender == DConstants.MALE) {
+                    val bottomSheet = BottomSheetWelcomeBonus(coin, price, save)
+                    bottomSheet.show(supportFragmentManager, "BottomSheetWelcomeBonus")
+                }
+            }
         }
+
+
+
+
+
 
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
         binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
-    }
-
-    override fun onBackPressed() {
-        if (isBackPressedAlready) {
-            super.onBackPressed()
-        } else {
-            Toast.makeText(
-                this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT
-            ).show()
-            isBackPressedAlready = true
-            Handler().postDelayed({
-                isBackPressedAlready = false
-            }, 3000)
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -128,6 +145,51 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
             // set once again checked value, so view will be updated
             item.setChecked(item.itemData!!.isChecked)
+        }
+    }
+
+
+
+
+
+    override fun onAddCoins(coins: Int, id: Int) {
+
+        var amount = "$coins"
+        var pointsId = "$id"
+
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+
+        val userId = userData?.id
+        val name = userData?.name ?: ""
+        val email = "test@gmail.com"
+        val mobile = userData?.mobile ?: ""
+
+        if (userId != null && pointsId.isNotEmpty() && amount.isNotEmpty()) {
+            val userIdWithPoints = "$userId-$pointsId"
+
+            val apiService = RetrofitClient.instance
+            val call = apiService.addCoins(name, amount, email, mobile, userIdWithPoints)
+
+            call.enqueue(object : retrofit2.Callback<ApiResponse> {
+                override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        Toast.makeText(this@MainActivity, response.body()?.message, Toast.LENGTH_SHORT).show()
+                    } else {
+                        // println("Long URL: ${it.longurl}") // Print to the terminal
+                        //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@MainActivity, LauncherActivity::class.java)
+                        intent.setData(Uri.parse(response.body()?.longurl))
+                        startActivity(intent)
+                        //  Toast.makeText(this@WalletActivity, response.body()?.message ?: "Error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<ApiResponse>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(this, "Invalid input data", Toast.LENGTH_SHORT).show()
         }
     }
 }

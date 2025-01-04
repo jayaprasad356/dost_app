@@ -1,33 +1,35 @@
 package com.gmwapp.hima.activities
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
-import com.gmwapp.hima.databinding.ActivityMainBinding
 import com.gmwapp.hima.databinding.ActivitySplashScreenBinding
-import com.gmwapp.hima.dialogs.BottomSheetWelcomeBonus
-import com.gmwapp.hima.fragments.HomeFragment
-import com.gmwapp.hima.fragments.ProfileFragment
-import com.gmwapp.hima.fragments.RecentFragment
+import com.gmwapp.hima.retrofit.responses.UserData
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SplashScreenActivity : BaseActivity() {
     lateinit var binding: ActivitySplashScreenBinding
-    private val profileViewModel: ProfileViewModel by viewModels()
+    val profileViewModel: ProfileViewModel by viewModels()
+    val viewModel: LoginViewModel by viewModels()
+    var currentVersion = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,53 +39,159 @@ class SplashScreenActivity : BaseActivity() {
     }
 
     private fun initUI() {
+        // Check for network connectivity
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        viewModel.appUpdate()
+
         var intent: Intent? = null
         val prefs = BaseApplication.getInstance()?.getPrefs()
         var userData = prefs?.getUserData()
+
+
+
+        try {
+            val pInfo = packageManager.getPackageInfo(packageName, 0)
+            currentVersion = pInfo.versionCode.toString()
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+
+
+
+
+
+
         profileViewModel.getUserLiveData.observe(this, Observer {
-            prefs?.setUserData(it.data);
-            userData = it.data;
-            if(userData?.status == 2){
-                intent = Intent(this, MainActivity::class.java)
-                intent?.putExtra(
-                    DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
-                )
-                intent?.putExtra(DConstants.LANGUAGE, userData?.language)
-                intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            } else if(userData?.status == 1){
-                intent = Intent(this, AlmostDoneActivity::class.java)
-                intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            } else{
-                intent = Intent(this, VoiceIdentificationActivity::class.java)
-                intent?.putExtra(DConstants.LANGUAGE, userData?.language)
-                intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            prefs?.setUserData(it.data)
+            userData = it.data
+
+            intent = when {
+                userData?.status == 2 -> {
+                    Intent(this, MainActivity::class.java).apply {
+                        putExtra(
+                            DConstants.AVATAR_ID,
+                            getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
+                        )
+                        putExtra(DConstants.LANGUAGE, userData?.language)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                }
+
+                userData?.status == 1 -> {
+                    Intent(this, AlmostDoneActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                }
+
+                else -> {
+                    Intent(this, VoiceIdentificationActivity::class.java).apply {
+                        putExtra(DConstants.LANGUAGE, userData?.language)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                }
             }
             startActivity(intent)
             finish()
-        });
-        if (userData == null) {
-            intent = Intent(
-                this@SplashScreenActivity, LoginActivity::class.java
-            )
-        } else {
-            if(userData?.gender == DConstants.MALE) {
-                intent = Intent(
-                    this@SplashScreenActivity, MainActivity::class.java
-                )
-            }else{
-                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
-                    profileViewModel.getUsers(
-                        it
-                    )
-                }
+        })
+
+
+
+        viewModel.appUpdateResponseLiveData.observe(this, Observer {
+            if (it != null && it.success) {
+
+                val latestVersion = it.data[0].app_version.toString()
+
+                val link = it.data[0].link
+                val description = it.data[0].description
+                GotoActivity(userData, latestVersion, link, description)
             }
-        }
-        if(intent!=null) {
-            Handler().postDelayed({
+        })
+
+
+    }
+
+    fun GotoActivity(
+        userData: UserData?,
+        latestVersion: String,
+        link: String,
+        description: String
+    ) {
+
+        if (currentVersion >= latestVersion) {
+//            Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
+            if (userData == null) {
+//                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show()
+
+//                intent = Intent(this@SplashScreenActivity, NewLoginActivity::class.java)
+                val intent = Intent(this@SplashScreenActivity, NewLoginActivity::class.java)
                 startActivity(intent)
                 finish()
-            }, 3000)
+
+            } else {
+                if (userData?.gender == DConstants.MALE) {
+//                    Toast.makeText(this, "3", Toast.LENGTH_SHORT).show()
+                  //  intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
+                    val intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+//                    Toast.makeText(this, "4", Toast.LENGTH_SHORT).show()
+                    BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
+                        profileViewModel.getUsers(it)
+                    }
+
+                }
+
+                intent?.let {
+                    Handler().postDelayed({
+                        startActivity(it)
+                        finish()
+                    }, 3000)
+                }
+            }
+        } else {
+            showUpdateDialog(link, description)
         }
+
+    }
+
+    // Function to check network availability
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+        return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    }
+
+    private fun showUpdateDialog(link: String, description: String) {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_dialog_update, null)
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.setCancelable(false);
+
+        val btnUpdate = view.findViewById<View>(R.id.btnUpdate)
+        val dialogMessage = view.findViewById<TextView>(R.id.dialog_message)
+        dialogMessage.text = description
+        btnUpdate.setOnClickListener(View.OnClickListener {
+            val url = link;
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        })
+
+
+        // Customize your bottom dialog here
+        // For example, you can set text, buttons, etc.
+
+        bottomSheetDialog.show()
     }
 
 }
+

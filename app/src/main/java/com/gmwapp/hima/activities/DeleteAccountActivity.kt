@@ -23,6 +23,7 @@ import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.ActivityDeleteAccountBinding
 import com.gmwapp.hima.dialogs.BottomSheetDeleteAccount
 import com.gmwapp.hima.retrofit.responses.Reason
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
@@ -68,7 +69,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
     private fun initUI() {
         binding.cvDeleteAccount.setBackgroundResource(R.drawable.warning_background)
         binding.cvDescription.setBackgroundResource(R.drawable.d_button_bg_user_name)
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
         }
         val prefs = BaseApplication.getInstance()?.getPrefs()
@@ -79,7 +80,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         val body = getString(R.string.mail_body, userData?.mobile,android.os.Build.MODEL,userData?.language,
             BuildConfig.VERSION_CODE
         )
-        binding.tvSupportMail.setOnClickListener {
+        binding.tvSupportMail.setOnSingleClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
 
             val data = Uri.parse(("mailto:$supportMail?subject=$subject").toString() + "&body=$body")
@@ -91,7 +92,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
             binding.tvSupportMail.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.tvSupportMail.text =
             supportMail
-        binding.clViewMore.setOnClickListener({
+        binding.clViewMore.setOnSingleClickListener({
             if (isMoreWarnings == true) {
                 changeWarningHints(View.GONE)
                 isMoreWarnings = false
@@ -100,28 +101,24 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                 isMoreWarnings = true
             }
         })
-        binding.btnDeleteAccount.setOnClickListener({
+        binding.btnDeleteAccount.setOnSingleClickListener({
             val bottomSheet = BottomSheetDeleteAccount()
             bottomSheet.show(
                 supportFragmentManager, "BottomSheetDeleteAccount"
             )
         })
         profileViewModel.deleteUserErrorLiveData.observe(this, Observer {
-            Toast.makeText(
-                this@DeleteAccountActivity,
-                getString(R.string.please_try_again_later),
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(this@DeleteAccountActivity, getString(R.string.please_try_again_later), Toast.LENGTH_LONG).show()
         })
         profileViewModel.deleteUserLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 prefs?.clearUserData()
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(this, NewLoginActivity::class.java)
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             } else {
                 Toast.makeText(
-                    this@DeleteAccountActivity, it.message, Toast.LENGTH_LONG
+                    this@DeleteAccountActivity, it?.message, Toast.LENGTH_LONG
                 ).show()
             }
         })
@@ -153,7 +150,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (TextUtils.isEmpty(s)) {
                    // binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
-                    binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
+                   // binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
                     binding.btnDeleteAccount.isEnabled = false
                 } else {
                     binding.tvRemainingText.text = getString(
@@ -161,7 +158,7 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                         s.length
                     )
                 //    binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
-                    binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
+                  //  binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
                     binding.btnDeleteAccount.isEnabled = true
                 }
             }
@@ -202,11 +199,11 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
                     }
                     if (selectedReasons.size > 0) {
                         binding.btnDeleteAccount.isEnabled = true
-                        binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
+                       // binding.btnDeleteAccount.setTextColor(getColor(R.color.white))
                       //  binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_red)
                     } else {
                         binding.btnDeleteAccount.isEnabled = false
-                        binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
+                       // binding.btnDeleteAccount.setTextColor(getColor(R.color.black))
                      //   binding.btnDeleteAccount.setBackgroundResource(R.drawable.d_button_bg_disabled)
                     }
                 }

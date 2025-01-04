@@ -29,4 +29,5 @@ object DConstants {
     const val IS_RECEIVER_DETAILS_AVAILABLE = "is_receiver_details_available"
     const val BALANCE_TIME = "balance_time"
     const val RECEIVER_NAME = "receiver_name"
+    const val CALL_USER_ID = "call_user_id"
 }

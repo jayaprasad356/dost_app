@@ -7,10 +7,14 @@ import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.TransactionAdapter
 import com.gmwapp.hima.databinding.ActivityTransactionsBinding
 import com.gmwapp.hima.utils.setOnSingleClickListener
@@ -30,7 +34,7 @@ class TransactionsActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
         }
 
@@ -52,25 +56,33 @@ class TransactionsActivity : BaseActivity() {
             }
         transactionsViewModel.transactionsResponseLiveData.observe(this, Observer {
 
-            if(it.success){
-                //  Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-            }
-            else{
-                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            if (it.success) {
+                // Toast or other success logic can be added here
+            } else {
+             //   Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
             }
 
-            if (it.data != null) {
-                binding.rvTransactions.setLayoutManager(
-                    LinearLayoutManager(
-                        this,
-                        LinearLayoutManager.VERTICAL,
-                        false
-                    ))
+            if (it.data != null && it.data.isNotEmpty()) {
+                // Hide "No Record Found" message
+                binding.tvNoRecordFound.visibility = View.GONE
 
-                var transactionAdapter = TransactionAdapter(this, it.data)
-                binding.rvTransactions.setAdapter(transactionAdapter)
+                // Populate RecyclerView
+                binding.rvTransactions.layoutManager = LinearLayoutManager(
+                    this,
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+                val transactionAdapter = TransactionAdapter(this, it.data)
+                binding.rvTransactions.adapter = transactionAdapter
+            } else {
+                // Show "No Record Found" message
+                binding.tvNoRecordFound.visibility = View.VISIBLE
+
+                // Optionally clear the RecyclerView
+                binding.rvTransactions.adapter = null
             }
         })
+
 
     }
 

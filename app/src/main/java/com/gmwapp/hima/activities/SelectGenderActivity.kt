@@ -3,13 +3,17 @@ package com.gmwapp.hima.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.AvatarsListAdapter
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivitySelectGenderBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,6 +27,12 @@ class SelectGenderActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectGenderBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         initUI()
     }
 
@@ -31,10 +41,10 @@ class SelectGenderActivity : BaseActivity() {
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
-        binding.ivBack.setOnClickListener(View.OnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
-        })
-        binding.btnContinue.setOnClickListener {
+        }
+        binding.btnContinue.setOnSingleClickListener {
             var intent:Intent? = null
             if (selectedGender == DConstants.MALE) {
                 intent = Intent(this, SelectLanguageActivity::class.java)
@@ -52,7 +62,7 @@ class SelectGenderActivity : BaseActivity() {
             startActivity(intent)
 
         }
-        binding.btnMale.setOnClickListener {
+        binding.btnMale.setOnSingleClickListener {
             selectedGender = DConstants.MALE
             profileViewModel.getAvatarsList(selectedGender)
             binding.btnMale.setBackgroundResource(R.drawable.d_button_bg_gender_selected)
@@ -62,7 +72,7 @@ class SelectGenderActivity : BaseActivity() {
             binding.btnMale.isEnabled = false
             binding.btnFemale.isEnabled = true
         }
-        binding.btnFemale.setOnClickListener {
+        binding.btnFemale.setOnSingleClickListener {
             selectedGender = DConstants.FEMALE
             profileViewModel.getAvatarsList(selectedGender)
             binding.btnMale.setBackgroundColor(getColor(android.R.color.transparent))
@@ -74,7 +84,7 @@ class SelectGenderActivity : BaseActivity() {
         }
         profileViewModel.getAvatarsList("male")
         profileViewModel.avatarsListLiveData.observe(this, Observer {
-            if (it.data != null) {
+            if (it?.data != null) {
                 val avatarsListAdapter = AvatarsListAdapter(
                     this, it.data
                 )

@@ -13,6 +13,9 @@ import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.EarningsAdapter
 import com.gmwapp.hima.databinding.ActivityEarningsBinding
+import com.gmwapp.hima.databinding.BottomSheetSelectPaymentBinding
+import com.gmwapp.hima.dialogs.BottomSheetSelectPayment
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.gmwapp.hima.viewmodels.EarningsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,9 +34,23 @@ class EarningsActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.setOnSingleClickListener {
             finish()
         }
+
+
+        binding.btnWithdraw.setOnSingleClickListener {
+
+
+//            val intent = Intent(this, WithdrawActivity::class.java)
+//            intent.putExtra("balance", binding.tvEarnings.text.toString()) // Replace key_name and value_to_pass with your actual key and value.
+//            startActivity(intent)
+
+            val bottomSheet: BottomSheetSelectPayment = BottomSheetSelectPayment()
+            bottomSheet.show(supportFragmentManager, "BottomSheetSelectPayment")
+
+        }
+
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val settingsData = prefs?.getSettingsData()
@@ -54,10 +71,10 @@ class EarningsActivity : BaseActivity() {
                     binding.ivBalance.visibility = View.GONE
                     binding.tlBalanceHint.visibility = View.GONE
                 }
-                binding.tvCurrentBalance.text = balance.toString()
+                binding.tvCurrentBalance.text = "₹" +balance.toString()
             }
         accountViewModel.settingsLiveData.observe(this, Observer {
-            if (it.success) {
+            if (it!=null && it.success) {
                 if (it.data != null) {
                     if (it.data.size > 0) {
                         val settingsData1 = it.data[0]
@@ -81,7 +98,7 @@ class EarningsActivity : BaseActivity() {
                             userData?.language,
                             BuildConfig.VERSION_CODE
                         )
-                        binding.tvSupportMail.setOnClickListener {
+                        binding.tvSupportMail.setOnSingleClickListener {
                             val intent = Intent(Intent.ACTION_VIEW)
 
                             val data =

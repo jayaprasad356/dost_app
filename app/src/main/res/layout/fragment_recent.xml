@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.047" />
+
+
+
     <TextView
+        android:layout_marginTop="@dimen/_20sdp"
         android:id="@+id/tv_recent_calls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,6 +28,8 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_calls"
         android:layout_width="match_parent"
@@ -35,42 +49,21 @@
         app:layout_constraintGuide_percent="0.46" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tl_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_sessions_yet"
-        android:textColor="#feffff"
+        android:text="@string/no_data_found"
+        android:textColor="@color/black"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/gl_top_margin" />
-    <TextView
-        android:id="@+id/tl_title_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/your_past_sessions_will_be_displayed_here"
-        android:textColor="#d5d6da"
-        android:layout_marginTop="8dp"
-        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tl_title" />
-    <com.gmwapp.hima.widgets.DButton
-        android:id="@+id/btn_connect"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="24dp"
-        android:textAllCaps="false"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tl_title_details"
-        android:background="@drawable/d_button_bg_white"
-        android:padding="8dp"
-        android:text="@string/connect_with_a_hima"
-        android:textColor="@color/black"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

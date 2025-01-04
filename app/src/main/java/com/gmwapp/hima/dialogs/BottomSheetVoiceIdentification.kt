@@ -18,6 +18,7 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.BottomSheetVoiceIdentificationBinding
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
@@ -110,7 +111,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
             }
             true
         })
-        binding.ivPlay.setOnClickListener({
+        binding.ivPlay.setOnSingleClickListener({
             if (isPlaying) {
                 binding.ivPlay.setImageDrawable(context?.getDrawable(R.drawable.play))
                 mediaPlayer?.pause()
@@ -122,7 +123,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
             }
             isPlaying = !isPlaying
         })
-        binding.clRecordAgain.setOnClickListener({
+        binding.clRecordAgain.setOnSingleClickListener({
             mediaPlayer?.release()
             mediaPlayer = MediaPlayer()
             isPlaying = false;
@@ -134,7 +135,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
             binding.tlSpeechTextHint.visibility = View.VISIBLE
             binding.clMicrophone.visibility = View.VISIBLE
         })
-        binding.btnSubmit.setOnClickListener({
+        binding.btnSubmit.setOnSingleClickListener({
             onItemSelectionListener?.onItemSelected(audiofile.toString())
         })
 

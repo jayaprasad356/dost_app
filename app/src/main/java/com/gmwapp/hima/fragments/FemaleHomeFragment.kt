@@ -14,6 +14,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.activities.EarningsActivity
 import com.gmwapp.hima.activities.GrantPermissionsActivity
@@ -21,7 +27,9 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.gmwapp.hima.workers.CallUpdateWorker
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
@@ -29,6 +37,8 @@ import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 import xyz.kumaraswamy.autostart.Autostart
@@ -52,8 +62,16 @@ class FemaleHomeFragment : BaseFragment() {
         if (isGranted) {
             initializeCall()
         } else {
-            askNotificationPermission(); }
+            try {
+                askNotificationPermission();
+            } catch (e: Exception) {
+                val intent = Intent(context, GrantPermissionsActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
+    private var startTime: String = ""
+    private var endTime: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -93,19 +111,31 @@ class FemaleHomeFragment : BaseFragment() {
 
     private fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                initializeCall()
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                val intent = Intent(context, GrantPermissionsActivity::class.java)
-                startActivity(intent)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(
+                        requireActivity(),
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    initializeCall()
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                    val intent = Intent(context, GrantPermissionsActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    try {
+                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } catch (e: Exception) {
+                        val intent = Intent(context, GrantPermissionsActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
             } else {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                initializeCall()
             }
+        } catch (e: Exception) {
+            val intent = Intent(context, GrantPermissionsActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -179,7 +209,7 @@ class FemaleHomeFragment : BaseFragment() {
     }
 
     private fun initUI() {
-        binding.clCoins.setOnClickListener({
+        binding.clCoins.setOnSingleClickListener({
             val intent = Intent(context, EarningsActivity::class.java)
             startActivity(intent)
         })
@@ -189,11 +219,29 @@ class FemaleHomeFragment : BaseFragment() {
             binding.sAudio.isChecked = userData.audio_status == 1
             binding.sVideo.isChecked = userData.video_status == 1
         }
-        femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
+
+        binding.tvCoins.text = "₹" + userData?.balance.toString()
+
+
+        femaleUsersViewModel.getReports(userData?.id!!)
+
+
+        femaleUsersViewModel.reportResponseLiveData.observe(viewLifecycleOwner, Observer {
             if (it.success) {
+
+                binding.tvApproxEarnings.text = it.data[0].today_earnings.toString()
+                binding.tvTotalCalls.text = it.data[0].today_calls.toString()
+
+            } else {
+              //  Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
+            if (it!=null && it.success) {
                 prefs?.setUserData(it.data)
             } else {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, it?.message, Toast.LENGTH_SHORT).show()
                 binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
                 binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
             }
@@ -220,6 +268,10 @@ class FemaleHomeFragment : BaseFragment() {
                 )
             }
         })
+
+
+
+
     }
 
     private fun addRoomStateChangedListener() {
@@ -227,8 +279,9 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
-
-                    var startTime = dateFormat.format(Date()) // Set call start time in IST
+                    lastActiveTime = System.currentTimeMillis();
+                    roomID = room
+                    startTime = dateFormat.format(Date()) // Set call start time in IST
                     femaleUsersViewModel.femaleCallAttend(
                         receivedId,
                         callId,
@@ -254,6 +307,27 @@ class FemaleHomeFragment : BaseFragment() {
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
+                    lifecycleScope.launch {
+                        lastActiveTime = null
+                        delay(500)
+                        if (roomID != null) {
+                            roomID = null
+                            endTime = dateFormat.format(Date()) // Set call end time in IST
+
+                            val constraints =
+                                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build()
+                            val data: Data = Data.Builder()
+                                .putInt(DConstants.USER_ID, receivedId)
+                                .putInt(DConstants.CALL_ID, callId)
+                                .putString(DConstants.STARTED_TIME, startTime)
+                                .putString(DConstants.ENDED_TIME, endTime).build()
+                            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                                CallUpdateWorker::class.java
+                            ).setInputData(data).setConstraints(constraints).build()
+                            WorkManager.getInstance(requireActivity())
+                                .enqueue(oneTimeWorkRequest)
+                        }}
                 }
 
                 else -> {

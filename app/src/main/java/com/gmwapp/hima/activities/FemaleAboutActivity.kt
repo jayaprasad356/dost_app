@@ -22,6 +22,7 @@ import com.gmwapp.hima.databinding.ActivityFemaleAboutBinding
 import com.gmwapp.hima.databinding.ActivitySelectLanguageBinding
 import com.gmwapp.hima.retrofit.responses.Interests
 import com.gmwapp.hima.retrofit.responses.Language
+import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.SpacesItemDecoration
 import com.google.android.flexbox.AlignItems
@@ -48,7 +49,7 @@ class FemaleAboutActivity : BaseActivity() {
 
     private fun initUI() {
       //  binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border)
-        binding.cvSummary.setBackgroundResource(R.drawable.card_view_border)
+  //      binding.cvSummary.setBackgroundResource(R.drawable.card_view_border)
 
 //        binding.etEnterYourAge.setOnTouchListener { v, _ ->
 //            binding.cvEnterYourAge.setBackgroundResource(R.drawable.card_view_border_age_selected)
@@ -94,18 +95,23 @@ class FemaleAboutActivity : BaseActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                updateButton()
+
                 if (!TextUtils.isEmpty(s)) {
                     binding.tvRemainingText.text = getString(
                         R.string.description_remaining_text, s.length
                     )
                 }
+
+                updateButton()
+
+
             }
 
             override fun afterTextChanged(s: Editable) {
+                updateButton()
             }
         })
-        binding.btnContinue.setOnClickListener {
+        binding.btnContinue.setOnSingleClickListener {
             val intent = Intent(this, SelectLanguageActivity::class.java)
             intent.putExtra(DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID,0))
             intent.putExtra(
@@ -135,34 +141,34 @@ class FemaleAboutActivity : BaseActivity() {
         binding.rvInterests.setLayoutManager(staggeredGridLayoutManager)
         interestsListAdapter = FemaleInterestsListAdapter(this, arrayListOf(
             Interests(
-                getString(R.string.politics), R.drawable.politics, false,false
+                getString(R.string.politics), R.drawable.politics, false
             ),
             Interests(
-                getString(R.string.art), R.drawable.art, false,false
+                getString(R.string.art), R.drawable.art, false
             ),
             Interests(
-                getString(R.string.sports), R.drawable.sports, false,false
+                getString(R.string.sports), R.drawable.sports, false
             ),
             Interests(
-                getString(R.string.movies), R.drawable.movie, false,false
+                getString(R.string.movies), R.drawable.movie, false
             ),
             Interests(
-                getString(R.string.music), R.drawable.music, false,false
+                getString(R.string.music), R.drawable.music, false
             ),
             Interests(
-                getString(R.string.foodie), R.drawable.foodie, false,false
+                getString(R.string.foodie), R.drawable.foodie, false
             ),
             Interests(
-                getString(R.string.travel), R.drawable.travel, false,false
+                getString(R.string.travel), R.drawable.travel, false
             ),
             Interests(
-                getString(R.string.photography), R.drawable.photography, false,false
+                getString(R.string.photography), R.drawable.photography, false
             ),
             Interests(
-                getString(R.string.love), R.drawable.love, false,false
+                getString(R.string.love), R.drawable.love, false
             ),
             Interests(
-                getString(R.string.cooking), R.drawable.cooking, false,false
+                getString(R.string.cooking), R.drawable.cooking, false
             ),
         ), false, object : OnItemSelectionListener<Interests> {
             override fun onItemSelected(interest: Interests) {
@@ -180,7 +186,7 @@ class FemaleAboutActivity : BaseActivity() {
     }
 
     private fun updateButton() {
-        if (isValidAge && selectedInterests.size > 0 && binding.etSummary.text.isNotEmpty()) {
+        if (isValidAge && selectedInterests.size > 0 && binding.etSummary.text.length >= 15) {
             binding.btnContinue.isEnabled = true
          //   binding.btnContinue.setBackgroundResource(R.drawable.d_button_bg_white)
         } else {

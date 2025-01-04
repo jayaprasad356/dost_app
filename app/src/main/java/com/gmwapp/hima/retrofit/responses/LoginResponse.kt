@@ -6,8 +6,11 @@ data class LoginResponse(
     val success: Boolean,
     val registered: Boolean,
     val message: String,
+    val token: String?,
     val data: UserData?,
 )
+
+
 
 data class UserData (
     val id: Int,
@@ -29,5 +32,12 @@ data class UserData (
     val audio_status:Int?,
     val video_status:Int?,
     val balance:Float?,
+    val coins:Int?,
+    val bank:String?,
+    val account_num:String?,
+    val branch:String?,
+    val ifsc:String?,
+    val holder_name:String?,
+    val upi_id:String?,
 
 )
