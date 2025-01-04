@@ -223,6 +223,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     override fun onButtonClick() {
+        ZegoUIKitPrebuiltCallService.minimizeCall()
         val intent = Intent(this, WalletActivity::class.java)
         intent.putExtra(DConstants.NEED_TO_FINISH, true)
         startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)

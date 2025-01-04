@@ -45,8 +45,8 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         }
     }
 
-    fun setContext(activity:RandomUserActivity){
-        this.activity = activity;
+    fun setContext(activity:BaseActivity){
+        this.activity = activity as RandomUserActivity;
     }
 
     fun updateTime(seconds: Int) {
