@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.BaseActivity
+import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
@@ -17,7 +18,7 @@ import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
 class CustomCallView : ZegoBaseAudioVideoForegroundView {
     private var tvRemainingTime: TextView? = null
-    private var activity: BaseActivity? = null
+    private var activity: RandomUserActivity? = null
 
     constructor(context: Context, userID: String?) : super(context, userID)
 
@@ -44,7 +45,7 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         }
     }
 
-    fun setContext(activity:BaseActivity){
+    fun setContext(activity:RandomUserActivity){
         this.activity = activity;
     }
 

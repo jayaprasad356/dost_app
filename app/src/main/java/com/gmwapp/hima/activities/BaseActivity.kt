@@ -56,10 +56,9 @@ import kotlin.math.abs
 
 
 @AndroidEntryPoint
-open class BaseActivity : AppCompatActivity(), OnButtonClickListener {
+open class BaseActivity : AppCompatActivity() {
     protected var callType: String? = null;
     protected var balanceTime: String? = null
-    private var WALLET_ACTIVITY_REQUEST_CODE = 1;
     protected var roomID: String? = null
     protected var lastActiveTime: Long? = null
     private var foregroundView: CustomCallView? = null
@@ -89,27 +88,6 @@ open class BaseActivity : AppCompatActivity(), OnButtonClickListener {
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == WALLET_ACTIVITY_REQUEST_CODE) {
-            BaseApplication.getInstance()?.getPrefs()
-                ?.getUserData()?.id?.let { callType?.let { it1 ->
-                    profileViewModel.getRemainingTime(it,
-                        it1
-                    )
-                } }
-
-            profileViewModel.remainingTimeLiveData.observe(this) { response ->
-                if(response!=null && response.success){
-                    this.balanceTime = response.data?.remaining_time
-                    ZegoUIKitPrebuiltCallService.sendInRoomCommand(
-                        DConstants.REMAINING_TIME+"="+this.balanceTime, arrayListOf(null)
-                    ) {}
-                }
-            }
-        }
     }
 
     fun showErrorMessage(message: String) {
@@ -317,12 +295,6 @@ open class BaseActivity : AppCompatActivity(), OnButtonClickListener {
         })
         val centerLayoutManager = CenterLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.setLayoutManager(centerLayoutManager)
-    }
-
-    override fun onButtonClick() {
-        val intent = Intent(this, WalletActivity::class.java)
-        intent.putExtra(DConstants.NEED_TO_FINISH, true)
-        startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)
     }
 }
 

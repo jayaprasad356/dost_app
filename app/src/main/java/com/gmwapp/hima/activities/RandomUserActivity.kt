@@ -20,9 +20,11 @@ import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
@@ -44,7 +46,8 @@ import java.util.TimeZone
 
 
 @AndroidEntryPoint
-class RandomUserActivity : BaseActivity() {
+class RandomUserActivity : BaseActivity(), OnButtonClickListener {
+    private var WALLET_ACTIVITY_REQUEST_CODE = 1;
     private var mediaPlayer: MediaPlayer? = null
     private var isReceiverDetailsAvailable: Boolean = false
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
@@ -52,6 +55,7 @@ class RandomUserActivity : BaseActivity() {
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     lateinit var activity: Activity
     private var usersCount: Int = 0
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     private var userId: String = ""
     private var callUserId: String = ""
@@ -72,7 +76,27 @@ class RandomUserActivity : BaseActivity() {
         askPermissions()
         onBackPressedDispatcher.addCallback(this ) {
         }
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == WALLET_ACTIVITY_REQUEST_CODE) {
+            BaseApplication.getInstance()?.getPrefs()
+                ?.getUserData()?.id?.let { callType?.let { it1 ->
+                    profileViewModel.getRemainingTime(it,
+                        it1
+                    )
+                } }
+
+            profileViewModel.remainingTimeLiveData.observe(this) { response ->
+                if(response!=null && response.success){
+                    this.balanceTime = response.data?.remaining_time
+                    ZegoUIKitPrebuiltCallService.sendInRoomCommand(
+                        DConstants.REMAINING_TIME+"="+this.balanceTime, arrayListOf(null)
+                    ) {}
+                }
+            }
+        }
     }
 
     private fun checkOverlayPermission() {
@@ -196,6 +220,12 @@ class RandomUserActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    override fun onButtonClick() {
+        val intent = Intent(this, WalletActivity::class.java)
+        intent.putExtra(DConstants.NEED_TO_FINISH, true)
+        startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)
     }
 
     private fun initUI() {
