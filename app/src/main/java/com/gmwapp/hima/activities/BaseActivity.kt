@@ -1,5 +1,6 @@
 package com.gmwapp.hima.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -24,6 +25,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.dagger.UnauthorizedEvent
 import com.gmwapp.hima.utils.Helper
@@ -54,7 +56,10 @@ import kotlin.math.abs
 
 
 @AndroidEntryPoint
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity : AppCompatActivity(), OnButtonClickListener {
+    protected var callType: String? = null;
+    protected var balanceTime: String? = null
+    private var WALLET_ACTIVITY_REQUEST_CODE = 1;
     protected var roomID: String? = null
     protected var lastActiveTime: Long? = null
     private var foregroundView: CustomCallView? = null
@@ -86,6 +91,27 @@ open class BaseActivity : AppCompatActivity() {
         EventBus.getDefault().unregister(this)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == WALLET_ACTIVITY_REQUEST_CODE) {
+            BaseApplication.getInstance()?.getPrefs()
+                ?.getUserData()?.id?.let { callType?.let { it1 ->
+                    profileViewModel.getRemainingTime(it,
+                        it1
+                    )
+                } }
+
+            profileViewModel.remainingTimeLiveData.observe(this) { response ->
+                if(response!=null && response.success){
+                    this.balanceTime = response.data?.remaining_time
+                    ZegoUIKitPrebuiltCallService.sendInRoomCommand(
+                        DConstants.REMAINING_TIME+"="+this.balanceTime, arrayListOf(null)
+                    ) {}
+                }
+            }
+        }
+    }
+
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
@@ -114,7 +140,8 @@ open class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun setupZegoUIKit(Userid: Any, userName: String, balanceTime: String?, callId: Int) {
+    fun setupZegoUIKit(Userid: Any, userName: String) {
+        this.balanceTime = balanceTime;
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()
@@ -160,7 +187,7 @@ open class BaseActivity : AppCompatActivity() {
                 var balanceTimeInsecs: Int = 0
                 try {
                     if (balanceTime != null) {
-                        val split = balanceTime.split(":")
+                        val split = balanceTime!!.split(":")
                         balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
                     }
                 } catch (e: Exception) {
@@ -289,6 +316,12 @@ open class BaseActivity : AppCompatActivity() {
         })
         val centerLayoutManager = CenterLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.setLayoutManager(centerLayoutManager)
+    }
+
+    override fun onButtonClick() {
+        val intent = Intent(this, WalletActivity::class.java)
+        intent.putExtra(DConstants.NEED_TO_FINISH, true)
+        startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)
     }
 }
 

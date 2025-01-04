@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.activities.BaseActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
@@ -34,8 +35,10 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         if(userData?.gender == DConstants.MALE) {
             var clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
             clCoins?.setOnClickListener({
-                val intent = Intent(context, WalletActivity::class.java)
-                context?.startActivity(intent)
+                try {
+                    (context as BaseActivity).onButtonClick()
+                } catch (e: Exception) {
+                }
             })
         }
     }

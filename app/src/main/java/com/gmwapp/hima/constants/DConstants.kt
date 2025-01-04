@@ -30,4 +30,6 @@ object DConstants {
     const val BALANCE_TIME = "balance_time"
     const val RECEIVER_NAME = "receiver_name"
     const val CALL_USER_ID = "call_user_id"
+    const val NEED_TO_FINISH = "need_to_finish"
+    const val REMAINING_TIME = "remaining_time"
 }

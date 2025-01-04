@@ -62,7 +62,7 @@ open class BaseFragment : Fragment() {
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()
-
++
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
@@ -215,6 +215,12 @@ open class BaseFragment : Fragment() {
 
         ZegoUIKitPrebuiltCallService.events.callEvents.addInRoomCommandListener { zegoUIKitUser, s ->
             lastActiveTime = System.currentTimeMillis();
+            if(s.startsWith(DConstants.REMAINING_TIME)){
+                try {
+                    balanceTime = s.split("=")[1]
+                } catch (e: Exception) {
+                }
+            }
         }
         ZegoUIKitPrebuiltCallService.init(
             BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig

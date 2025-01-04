@@ -132,7 +132,7 @@ class RandomUserActivity : BaseActivity() {
             } else {
                 val receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
                 val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
-                val callType = intent.getStringExtra(DConstants.CALL_TYPE)
+                callType = intent.getStringExtra(DConstants.CALL_TYPE)
                 val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
                 userData?.id?.let {
                     femaleUsersViewModel.callFemaleUser(
@@ -367,7 +367,8 @@ class RandomUserActivity : BaseActivity() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            setupZegoUIKit(userData.id, userData.name, balanceTime, callId)
+            this.balanceTime = balanceTime;
+            setupZegoUIKit(userData.id, userData.name)
         }
         when (type) {
             "audio" -> receiverId?.let { StartVoiceCall(it, receiverName, callId) }

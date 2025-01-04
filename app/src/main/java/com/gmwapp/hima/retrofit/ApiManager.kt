@@ -12,6 +12,7 @@ import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.EarningsResponse
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
+import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.OfferResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
@@ -446,6 +447,17 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
             callback.onNoNetwork()
         }
     }
+
+    fun getRemainingTime(
+        userId: Int, callType: String, callback: NetworkCallback<GetRemainingTimeResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<GetRemainingTimeResponse> = getApiInterface().getRemainingTime(userId, callType)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 
 interface ApiInterface {
@@ -653,6 +665,12 @@ interface ApiInterface {
     fun updateVoice(
         @Part("user_id") userId: Int, @Part voice: MultipartBody.Part
     ): Call<VoiceUpdateResponse>
+
+    @Multipart
+    @POST("get_remaining_time")
+    fun getRemainingTime(
+        @Part("user_id") userId: Int, @Part("call_type") callType:String
+    ): Call<GetRemainingTimeResponse>
 
     @POST("settings_list")
     fun getSettings(): Call<SettingsResponse>

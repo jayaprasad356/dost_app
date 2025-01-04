@@ -16,6 +16,7 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.CoinAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityWalletBinding
 import com.gmwapp.hima.retrofit.responses.CoinsResponseData
 import com.gmwapp.hima.utils.setOnSingleClickListener
@@ -123,6 +124,10 @@ class WalletActivity : BaseActivity() {
                     override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
                         if (response.isSuccessful && response.body()?.success == true) {
                             Toast.makeText(this@WalletActivity, response.body()?.message, Toast.LENGTH_SHORT).show()
+                            if(intent.getBooleanExtra(DConstants.NEED_TO_FINISH, false)){
+                                setResult(RESULT_OK)
+                                finish()
+                            }
                         } else {
                            // println("Long URL: ${it.longurl}") // Print to the terminal
                             //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()

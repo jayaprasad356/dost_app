@@ -8,6 +8,7 @@ import com.gmwapp.hima.repositories.ProfileRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
+import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
@@ -38,6 +39,8 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     val speechTextErrorLiveData = MutableLiveData<String>()
     val voiceUpdateLiveData = MutableLiveData<VoiceUpdateResponse>()
     val voiceUpdateErrorLiveData = MutableLiveData<String>()
+    val remainingTimeLiveData = MutableLiveData<GetRemainingTimeResponse>()
+    val remainingTimeErrorLiveData = MutableLiveData<String>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -278,6 +281,32 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
 
                     override fun onNoNetwork() {
                         voiceUpdateErrorLiveData.postValue(DConstants.NO_NETWORK)
+                    }
+                })
+        }
+    }
+
+    fun getRemainingTime(
+        userId: Int,
+        callType: String,
+    ) {
+        viewModelScope.launch {
+            profileRepositories.getRemainingTime(
+                userId,
+                callType,
+                object : NetworkCallback<GetRemainingTimeResponse> {
+                    override fun onResponse(
+                        call: Call<GetRemainingTimeResponse>, response: Response<GetRemainingTimeResponse>
+                    ) {
+                        remainingTimeLiveData.postValue(response.body())
+                    }
+
+                    override fun onFailure(call: Call<GetRemainingTimeResponse>, t: Throwable) {
+                        remainingTimeErrorLiveData.postValue(t.message)
+                    }
+
+                    override fun onNoNetwork() {
+                        remainingTimeErrorLiveData.postValue(DConstants.NO_NETWORK)
                     }
                 })
         }
