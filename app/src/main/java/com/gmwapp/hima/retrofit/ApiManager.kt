@@ -668,7 +668,7 @@ interface ApiInterface {
 
     @POST("get_remaining_time")
     fun getRemainingTime(
-        @Part("user_id") userId: Int, @Part("call_type") callType:String
+        @Field("user_id") userId: Int, @Field("call_type") callType:String
     ): Call<GetRemainingTimeResponse>
 
     @POST("settings_list")
