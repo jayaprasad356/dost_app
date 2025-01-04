@@ -78,7 +78,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
     override fun onResume() {
         super.onResume()
-        if(ZegoUIKitPrebuiltCallService.isMicrophoneOn()){
+        if(roomID!=null){
             moveTaskToBack(true)
         }
     }
