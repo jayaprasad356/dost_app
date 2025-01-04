@@ -45,6 +45,7 @@ import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
 import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
+import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
@@ -161,19 +162,18 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
 
-                // Set up call duration configuration with a listener
-                var balanceTimeInsecs: Int = 0
-                try {
-                    if (balanceTime != null) {
-                        val split = balanceTime!!.split(":")
-                        balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
-                    }
-                } catch (e: Exception) {
-                }
                 config.durationConfig = ZegoCallDurationConfig().apply {
                     isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
+                            var balanceTimeInsecs: Int = 0
+                            try {
+                                if (balanceTime != null) {
+                                    val split = balanceTime!!.split(":")
+                                    balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+                                }
+                            } catch (e: Exception) {
+                            }
                             Log.d(
                                 "TAG",
                                 "onDurationUpdate() called with: seconds = [$seconds] [$balanceTimeInsecs]"
@@ -201,8 +201,6 @@ open class BaseActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-
 
                 config.avatarViewProvider = object : ZegoAvatarViewProvider {
                     override fun onUserIDUpdated(

@@ -24,6 +24,7 @@ import com.gmwapp.hima.viewmodels.UpiViewModel
 import com.gmwapp.hima.viewmodels.WalletViewModel
 import com.gmwapp.hima.widgets.SpacesItemDecoration
 import com.google.androidbrowserhelper.trusted.LauncherActivity
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -124,23 +125,15 @@ class WalletActivity : BaseActivity() {
                     override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
                         if (response.isSuccessful && response.body()?.success == true) {
                             Toast.makeText(this@WalletActivity, response.body()?.message, Toast.LENGTH_SHORT).show()
-                            if(intent.getBooleanExtra(DConstants.NEED_TO_FINISH, false)){
-                                setResult(RESULT_OK)
-                                finish()
-                            }
                         } else {
                            // println("Long URL: ${it.longurl}") // Print to the terminal
                             //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
-                            if(intent.getBooleanExtra(DConstants.NEED_TO_FINISH, false)){
-                                setResult(RESULT_OK)
-                                finish()
-                            }else {
-                                val intent =
-                                    Intent(this@WalletActivity, LauncherActivity::class.java)
-                                intent.setData(Uri.parse(response.body()?.longurl))
-                                startActivity(intent)
-                                finish()// Directly starting the intent without launcher
-                            }
+
+                            val intent =
+                                Intent(this@WalletActivity, LauncherActivity::class.java)
+                            intent.setData(Uri.parse(response.body()?.longurl))
+                            startActivity(intent)
+                            finish()// Directly starting the intent without launcher
                           //  Toast.makeText(this@WalletActivity, response.body()?.message ?: "Error", Toast.LENGTH_SHORT).show()
                         }
                     }

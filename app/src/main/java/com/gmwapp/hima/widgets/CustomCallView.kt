@@ -17,6 +17,7 @@ import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
@@ -49,6 +50,7 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
                     fm?.executePendingTransactions()
                     val intent = Intent(activity, WalletActivity::class.java)
                     intent.putExtra(DConstants.NEED_TO_FINISH, true)
+                    ZegoUIKitPrebuiltCallService.minimizeCall()
                     aux.startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)
                 } catch (e: Exception) {
                 }
