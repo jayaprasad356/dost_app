@@ -1,6 +1,7 @@
 package com.gmwapp.hima.retrofit
 
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.AddPointsResponse
 import com.gmwapp.hima.retrofit.responses.AppUpdateResponse
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.BankUpdateResponse
@@ -14,6 +15,7 @@ import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.OfferResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
+import com.gmwapp.hima.retrofit.responses.RatingResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.ReportsResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
@@ -285,6 +287,23 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         }
     }
 
+
+    fun updateRating(
+        userId: Int,
+        call_user_id: Int,
+        ratings: String,
+        title: String,
+        description: String,
+        callback: NetworkCallback<RatingResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<RatingResponse> = getApiInterface().updateRatings(userId,call_user_id,ratings,title,description)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
     fun updateUpi(
         userId: Int,
         upiId: String,
@@ -292,6 +311,20 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
     ) {
         if (Helper.checkNetworkConnection()) {
             val apiCall: Call<UpiUpdateResponse> = getApiInterface().updateUpi(userId,upiId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
+    fun addPoints(
+        buyerName: String,
+        amount: String, email: String, phone: String,
+        purpose: String,
+        callback: NetworkCallback<AddPointsResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<AddPointsResponse> = getApiInterface().addPoints(buyerName, amount, email, phone, purpose)
             apiCall.enqueue(callback)
         } else {
             callback.onNoNetwork()
@@ -542,11 +575,31 @@ interface ApiInterface {
     ): Call<BankUpdateResponse>
 
     @FormUrlEncoded
+    @POST("ratings")
+    fun updateRatings(
+        @Field("user_id") userId: Int,
+        @Field("call_user_id") call_user_id: Int,
+        @Field("ratings") ratings: String,
+        @Field("title") title: String,
+        @Field("description") description: String
+    ): Call<RatingResponse>
+
+    @FormUrlEncoded
     @POST("update_upi")
     fun updateUpi(
         @Field("user_id") userId: Int,
         @Field("upi_id") upiId: String,
         ): Call<UpiUpdateResponse>
+
+    @FormUrlEncoded
+    @POST("dwpay/add_coins_requests.php")
+     fun addPoints(
+        @Field("buyer_name") buyer_name: String,
+        @Field("amount") amount: String,
+        @Field("email") email: String,
+        @Field("phone") phone: String,
+        @Field("purpose") purpose: String,
+    ): Call<AddPointsResponse>
 
     @FormUrlEncoded
     @POST("withdrawals")

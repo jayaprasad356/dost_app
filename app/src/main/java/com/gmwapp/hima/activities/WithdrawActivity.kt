@@ -67,6 +67,9 @@ class WithdrawActivity : BaseActivity() {
 
     private fun initUI() {
 
+        binding.ivBack.setOnClickListener{
+            onBackPressed()
+        }
 
 
         val textWatcher = object : TextWatcher {

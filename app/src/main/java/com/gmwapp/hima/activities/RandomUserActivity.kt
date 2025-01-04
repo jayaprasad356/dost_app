@@ -332,8 +332,10 @@ class RandomUserActivity : BaseActivity() {
                             mediaPlayer?.pause()
                             mediaPlayer?.stop()
                             finish()
+                            val receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
                             val intent = Intent(this@RandomUserActivity, ReviewActivity::class.java)
                             intent.putExtra(DConstants.RECEIVER_NAME, callUserName)
+                            intent.putExtra(DConstants.RECEIVER_ID, receiverId)
                             startActivity(intent)
                         }
                     }
@@ -379,6 +381,7 @@ class RandomUserActivity : BaseActivity() {
         binding.voiceCallButton.setInvitees(listOf(user))
         binding.voiceCallButton.setTimeout(7)
         callUserName = targetName
+        callUserId = targetUserId
         lifecycleScope.launch {
             if (instance?.isCalled() == false || instance?.isCalled() == null) {
                 delay(4000)
@@ -391,6 +394,7 @@ class RandomUserActivity : BaseActivity() {
 
     private fun StartVideoCall(targetUserId: String, targetName: String, callId: Int) {
         callUserName = targetName
+        callUserId = targetUserId
         binding.voiceCallButton.setIsVideoCall(true)
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
