@@ -17,6 +17,7 @@ import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
 class CustomCallView : ZegoBaseAudioVideoForegroundView {
     private var tvRemainingTime: TextView? = null
+    private var activity: BaseActivity? = null
 
     constructor(context: Context, userID: String?) : super(context, userID)
 
@@ -36,11 +37,15 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
             var clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
             clCoins?.setOnClickListener({
                 try {
-                    (context as BaseActivity).onButtonClick()
+                    activity?.onButtonClick()
                 } catch (e: Exception) {
                 }
             })
         }
+    }
+
+    fun setContext(activity:BaseActivity){
+        this.activity = activity;
     }
 
     fun updateTime(seconds: Int) {

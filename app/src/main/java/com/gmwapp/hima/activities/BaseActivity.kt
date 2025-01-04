@@ -268,6 +268,7 @@ open class BaseActivity : AppCompatActivity(), OnButtonClickListener {
                     ZegoForegroundViewProvider { parent, uiKitUser ->
                         if (uiKitUser.userID != userID) {
                             foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                            foregroundView?.setContext(this@BaseActivity);
                             foregroundView
                         } else {
 
