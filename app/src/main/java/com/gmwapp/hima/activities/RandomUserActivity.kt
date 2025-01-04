@@ -52,7 +52,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: ActivityRandomUserBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
-    lateinit var activity: Activity
     private var usersCount: Int = 0
     private val profileViewModel: ProfileViewModel by viewModels()
 
@@ -80,7 +79,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     override fun onResume() {
         super.onResume()
         if(ZegoUIKitPrebuiltCallService.isMicrophoneOn()){
-            activity.moveTaskToBack(true)
+            moveTaskToBack(true)
         }
     }
     private fun checkOverlayPermission() {
@@ -388,8 +387,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     private fun setupCall(
         receiverId: String?, receiverName: String, type: String, balanceTime: String?, callId: Int
     ) {
-        activity = this
-
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
