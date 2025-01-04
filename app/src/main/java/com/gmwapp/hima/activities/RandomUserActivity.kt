@@ -8,8 +8,11 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Constraints
@@ -20,6 +23,7 @@ import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
@@ -68,6 +72,12 @@ class RandomUserActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRandomUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fragment_container)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
+        }
         initUI()
         askPermissions()
         onBackPressedDispatcher.addCallback(this ) {
@@ -263,6 +273,8 @@ class RandomUserActivity : BaseActivity() {
                     callees: MutableList<ZegoCallUser>?
                 ) {
                 }
+
+
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
                     stopCall()

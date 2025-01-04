@@ -109,6 +109,7 @@ class SplashScreenActivity : BaseActivity() {
 
                 val link = it.data[0].link
                 val description = it.data[0].description
+
                 GotoActivity(userData, latestVersion, link, description)
             }
         })

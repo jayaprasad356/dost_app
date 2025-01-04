@@ -2,6 +2,7 @@ package com.gmwapp.hima.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
@@ -39,9 +40,14 @@ class YoutubeActivity : BaseActivity() {
                     if (it.data.size > 0) {
                         val settingsData = it.data.get(0)
                         prefs?.setSettingsData(settingsData)
+
+                        val demo_video = it.data.get(0).demo_video
+
+                   //     Toast.makeText(this, "$demo_video", Toast.LENGTH_SHORT).show()
+
                         binding.youtubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                             override fun onReady(youTubePlayer: YouTubePlayer) {
-                                youTubePlayer.loadVideo("settingsData.demo_video", 0f)
+                                youTubePlayer.loadVideo("$demo_video", 0f)
                             }
                         })
                     }
