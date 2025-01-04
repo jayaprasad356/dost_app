@@ -30,7 +30,6 @@ import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
-import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
@@ -41,7 +40,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
-import xyz.kumaraswamy.autostart.Autostart
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
@@ -49,7 +47,6 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
-    private var checkingOverlayPermission: Boolean = false
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
@@ -81,13 +78,6 @@ class FemaleHomeFragment : BaseFragment() {
         initUI()
         askPermissions()
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!checkingOverlayPermission) {
-            checkAutoStartPermission()
-        }
     }
 
     fun askPermissions() {
@@ -139,30 +129,6 @@ class FemaleHomeFragment : BaseFragment() {
         }
     }
 
-
-    private fun checkAutoStartPermission() {
-        if (AutoStartPermissionHelper.getInstance()
-                .isAutoStartPermissionAvailable(requireActivity())
-        ) {
-            when (Autostart.getAutoStartState(requireActivity())) {
-                Autostart.State.ENABLED -> {
-                    askNotificationPermission()
-                }
-
-                Autostart.State.DISABLED -> {
-                    AutoStartPermissionHelper.getInstance()
-                        .getAutoStartPermission(requireActivity())
-                }
-
-                Autostart.State.UNEXPECTED_RESULT, Autostart.State.NO_INFO -> {
-                    askNotificationPermission()
-                }
-            }
-        } else {
-            askNotificationPermission()
-        }
-    }
-
     private fun checkOverlayPermission() {
         PermissionX.init(requireActivity()).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
             .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
@@ -171,10 +137,8 @@ class FemaleHomeFragment : BaseFragment() {
                 scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
             }).request(RequestCallback { allGranted, grantedList, deniedList ->
                 if (allGranted) {
-                    checkingOverlayPermission = false
-                    checkAutoStartPermission()
+                    askNotificationPermission()
                 } else {
-                    checkingOverlayPermission = true
                     checkOverlayPermission()
                 }
             })
