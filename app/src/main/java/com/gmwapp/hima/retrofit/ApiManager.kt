@@ -666,6 +666,7 @@ interface ApiInterface {
         @Part("user_id") userId: Int, @Part voice: MultipartBody.Part
     ): Call<VoiceUpdateResponse>
 
+    @FormUrlEncoded
     @POST("get_remaining_time")
     fun getRemainingTime(
         @Field("user_id") userId: Int, @Field("call_type") callType:String
