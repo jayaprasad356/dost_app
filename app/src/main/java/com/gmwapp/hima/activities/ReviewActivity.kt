@@ -43,6 +43,7 @@ import com.gmwapp.hima.databinding.ActivityReviewBinding
 import com.gmwapp.hima.retrofit.responses.Interests
 import com.gmwapp.hima.retrofit.responses.InterestsReview
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.gmwapp.hima.viewmodels.RatingViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
@@ -59,6 +60,8 @@ class ReviewActivity : BaseActivity() {
     private var interestsListAdapter: InterestsReviewListAdapter? = null
     private val selectedInterests: ArrayList<String> = ArrayList()
     private lateinit var binding: ActivityReviewBinding
+
+    val viewModel: RatingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +101,41 @@ class ReviewActivity : BaseActivity() {
         })
 
         // Submit button functionality
-        binding.btnSubmit.setOnClickListener { finish() }
+        binding.btnSubmit.setOnClickListener {
+
+//            val call_userid = intent.getIntExtra(DConstants.RECEIVER_ID,0).toInt()
+
+
+
+            val userid = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
+            val call_userid = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
+            Log.d("ReviewActivity", "User ID: $userid, Call User ID: $call_userid")
+            val rating = binding.rating.rating.toInt()
+            val description = binding.etUserName.text.toString()
+            val title = selectedInterests.joinToString(",")
+
+            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
+                if (call_userid != null) {
+                    viewModel.updatedrating(it,call_userid,rating.toString(),title,description)
+                }
+            }
+
+            Log.d("ReviewActivity", "User ID: $userid, Call User ID: $call_userid, Rating: $rating, Comment: $description, Interests: $title")
+
+
+        }
+
+
+
+        viewModel.ratingResponseLiveData.observe(this, Observer {
+            if (it.success) {
+                Toast.makeText(this, "Rating submitted successfully", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            else{
+                Toast.makeText(this, "Rating submission failed", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
 

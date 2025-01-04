@@ -9,6 +9,7 @@ import com.gmwapp.hima.repositories.EarningsRepositories
 import com.gmwapp.hima.repositories.TransactionsRepositories
 import com.gmwapp.hima.repositories.UpiRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.AddPointsResponse
 import com.gmwapp.hima.retrofit.responses.BankUpdateResponse
 import com.gmwapp.hima.retrofit.responses.EarningsResponse
 import com.gmwapp.hima.retrofit.responses.TransactionsResponse
@@ -27,6 +28,9 @@ class UpiViewModel @Inject constructor(private val upiRepositories: UpiRepositor
 
     val upiResponseLiveData = MutableLiveData<UpiUpdateResponse>()
     val upiErrorLiveData = MutableLiveData<String>()
+    val addpointResponseLiveData = MutableLiveData<AddPointsResponse>()
+    val addpointErrorLiveData = MutableLiveData<String>()
+
 
     fun updatedUpi(
         userId: Int,
@@ -52,5 +56,52 @@ class UpiViewModel @Inject constructor(private val upiRepositories: UpiRepositor
             })
         }
     }
+
+
+    fun addPoints(
+        buyerName: String, amount: String,
+        email: String, phone: String, purpose: String
+    ) {
+        viewModelScope.launch {
+            upiRepositories.addPoints(buyerName, amount, email, phone, purpose, object : NetworkCallback<AddPointsResponse> {
+                override fun onResponse(
+                    call: Call<AddPointsResponse>,
+                    response: Response<AddPointsResponse>
+                ) {
+                    addpointResponseLiveData.postValue(response.body())
+                }
+
+                override fun onFailure(call: Call<AddPointsResponse>, t: Throwable) {
+                    addpointErrorLiveData.postValue(DConstants.LOGIN_ERROR)
+                }
+
+                override fun onNoNetwork() {
+                    addpointErrorLiveData.postValue(DConstants.NO_NETWORK)
+                }
+            })
+        }
+    }
+
+
+//    fun addPoint(
+//        buyerName: String, amount: String,
+//        email: String, phone: String, purpose: String
+//    ) {
+//        viewModelScope.launch {
+//            isLoading.postValue(true)
+//            chatRepositories.addPoints(buyerName, amount, email, phone, purpose).let {
+//                if (it.body() != null) {
+//                    addPointsLiveData.postValue(it.body() as AddPointsResponse)
+//                    isLoading.postValue(false)
+//                } else {
+//                    isLoading.postValue(false)
+//                }
+//            }
+//
+//        }
+//    }
+
+
+
 }
 

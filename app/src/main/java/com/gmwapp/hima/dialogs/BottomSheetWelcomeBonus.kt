@@ -1,23 +1,19 @@
 package com.gmwapp.hima.dialogs
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
 import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.databinding.BottomSheetWelcomeBonusBinding
 import com.gmwapp.hima.utils.setOnSingleClickListener
-import com.gmwapp.hima.viewmodels.OfferViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-
 
 class BottomSheetWelcomeBonus(
     private val coins: Int,
@@ -25,8 +21,22 @@ class BottomSheetWelcomeBonus(
     private val save: Int
 ) : BottomSheetDialogFragment() {
 
+    interface OnAddCoinsListener {
+        fun onAddCoins(coins: Int, id: Int)
+    }
+
     private var _binding: BottomSheetWelcomeBonusBinding? = null
     private val binding get() = _binding!!
+    private var addCoinsListener: OnAddCoinsListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnAddCoinsListener) {
+            addCoinsListener = context
+        } else {
+            throw RuntimeException("$context must implement OnAddCoinsListener")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,12 +51,16 @@ class BottomSheetWelcomeBonus(
 
         // Set text views with the provided data
         binding.tvBonusText.text = "$coins Coins"
-        binding.tvBonusOriginal.text =  "$price"
-        binding.tvBonusDiscount.text =  "$save"
+        binding.tvBonusOriginal.text = "$price"
+        binding.tvBonusDiscount.text = "$save"
 
         // Button click listeners
         binding.tvViewMorePlans.setOnSingleClickListener {
             startActivity(Intent(context, WalletActivity::class.java))
+        }
+
+        binding.btnAddCoins.setOnSingleClickListener {
+            addCoinsListener?.onAddCoins(coins, id)
         }
 
         return binding.root
