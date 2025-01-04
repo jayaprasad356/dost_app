@@ -154,6 +154,12 @@ class RandomUserActivity : BaseActivity() {
                             )
                             addRoomStateChangedListener(callId)
                         }
+                    }else{
+                        Toast.makeText(
+                            this@RandomUserActivity, it?.message, Toast.LENGTH_LONG
+                        ).show()
+                        stopCall()
+                        finish()
                     }
                 })
 
