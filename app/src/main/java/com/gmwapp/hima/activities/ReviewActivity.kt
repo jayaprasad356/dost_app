@@ -75,7 +75,7 @@ class ReviewActivity : BaseActivity() {
         binding.ivClose.setOnClickListener { finish() }
 
         // Set default rating
-        binding.rating.rating = 5f
+        binding.rating.rating = 0f
 
         // Set title text with dynamic receiver name
         binding.tvTitle.text = getString(

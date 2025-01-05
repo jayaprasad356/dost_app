@@ -129,8 +129,50 @@ class BankUpdateActivity : BaseActivity() {
         val bankName = binding.etBankName.text.toString().trim()
         val branchName = binding.etBranchName.text.toString().trim()
 
-        // Check if all fields are valid
-        val isFieldsValid = accountHolderName.isNotEmpty() &&
+        // Regex to detect special characters
+        val specialCharRegex = "[^a-zA-Z0-9 ]".toRegex()
+
+        var isFieldsValid = true
+
+        // Validate each field and show error if invalid
+        if (specialCharRegex.containsMatchIn(accountHolderName)) {
+            binding.etHolderName.error = "Special characters are not allowed"
+            isFieldsValid = false
+        } else {
+            binding.etHolderName.error = null
+        }
+
+        if (specialCharRegex.containsMatchIn(accountNumber)) {
+            binding.etAccountNumber.error = "Special characters are not allowed"
+            isFieldsValid = false
+        } else {
+            binding.etAccountNumber.error = null
+        }
+
+        if (specialCharRegex.containsMatchIn(ifscCode)) {
+            binding.etIfsccode.error = "Special characters are not allowed"
+            isFieldsValid = false
+        } else {
+            binding.etIfsccode.error = null
+        }
+
+        if (specialCharRegex.containsMatchIn(bankName)) {
+            binding.etBankName.error = "Special characters are not allowed"
+            isFieldsValid = false
+        } else {
+            binding.etBankName.error = null
+        }
+
+        if (specialCharRegex.containsMatchIn(branchName)) {
+            binding.etBranchName.error = "Special characters are not allowed"
+            isFieldsValid = false
+        } else {
+            binding.etBranchName.error = null
+        }
+
+        // Check if all fields are non-empty
+        isFieldsValid = isFieldsValid &&
+                accountHolderName.isNotEmpty() &&
                 accountNumber.isNotEmpty() &&
                 ifscCode.isNotEmpty() &&
                 bankName.isNotEmpty() &&
@@ -139,6 +181,7 @@ class BankUpdateActivity : BaseActivity() {
         // Enable or disable the update button
         binding.btnUpdate.isEnabled = isFieldsValid
     }
+
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

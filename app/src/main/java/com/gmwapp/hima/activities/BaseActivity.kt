@@ -1,5 +1,6 @@
 package com.gmwapp.hima.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -16,21 +17,34 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.dagger.GetRemainingTimeEvent
 import com.gmwapp.hima.dagger.UnauthorizedEvent
+import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
+import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallEmptyView
 import com.gmwapp.hima.widgets.CustomCallView
+import com.gmwapp.hima.workers.CallUpdateWorker
+import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
 import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
@@ -43,32 +57,48 @@ import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
 import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
+import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import retrofit2.Call
+import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.Arrays
+import java.util.Date
+import java.util.TimeZone
 import kotlin.math.abs
 
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
+    protected var callType: String? = null
+    protected var balanceTime: String? = null
     protected var roomID: String? = null
     protected var lastActiveTime: Long? = null
     private var foregroundView: CustomCallView? = null
     private val profileViewModel: ProfileViewModel by viewModels()
+    private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 val app = BaseApplication.getInstance()
-                if(Helper.checkNetworkConnection() && app?.isEndCallUpdatePending() == true){
+                if (Helper.checkNetworkConnection() && app?.isEndCallUpdatePending() == true) {
                     ZegoUIKitPrebuiltCallService.endCall()
                     app.setEndCallUpdatePending(null)
                 }
@@ -81,6 +111,103 @@ open class BaseActivity : AppCompatActivity() {
         EventBus.getDefault().register(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        getRemainingTime()
+        if (BaseApplication.getInstance()
+                ?.getRoomId() != null
+        ) {
+            resumeZegoCloud()
+        }
+    }
+
+    protected open fun resumeZegoCloud(){
+        addRoomStateChangedListener()
+    }
+
+    protected open fun addRoomStateChangedListener() {
+        ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
+            when (reason) {
+                ZegoRoomStateChangedReason.LOGINED -> {
+                }
+
+                ZegoRoomStateChangedReason.LOGOUT -> {
+                    lifecycleScope.launch {
+                        lastActiveTime = null
+                        delay(500)
+                        if (BaseApplication.getInstance()?.getRoomId() != null) {
+                            roomID = null
+                            val applicationInstance = BaseApplication.getInstance()
+                            applicationInstance?.setRoomId(null)
+                            applicationInstance?.setCallId(null)
+                            var endTime = dateFormat.format(Date()) // Set call end time in IST
+
+                            val constraints =
+                                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build()
+                            val data: Data = Data.Builder().putInt(
+                                DConstants.USER_ID,
+                                applicationInstance?.getPrefs()?.getUserData()?.id
+                                    ?: 0
+                            ).putInt(DConstants.CALL_ID, applicationInstance?.getCallId()?:0)
+                                .putString(DConstants.STARTED_TIME, applicationInstance?.getStartTime())
+                                .putBoolean(DConstants.IS_INDIVIDUAL,
+                                    applicationInstance?.isReceiverDetailsAvailable() == true
+                                )
+                                .putString(DConstants.ENDED_TIME, endTime).build()
+                            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                                CallUpdateWorker::class.java
+                            ).setInputData(data).setConstraints(constraints).build()
+                            WorkManager.getInstance(this@BaseActivity)
+                                .enqueue(oneTimeWorkRequest)
+                            val intent = Intent(this@BaseActivity, ReviewActivity::class.java)
+                            intent.putExtra(DConstants.RECEIVER_NAME, applicationInstance?.getCallUserName())
+                            intent.putExtra(DConstants.RECEIVER_ID, applicationInstance?.getCallUserId())
+                            startActivity(intent)
+                        }
+                    }
+                }
+
+
+                else -> {
+                }
+            }
+        }
+    }
+
+    protected fun getRemainingTime() {
+        val instance = BaseApplication.getInstance()
+        if (instance?.getRoomId() != null) {
+            instance?.getPrefs()?.getUserData()?.id?.let {
+                instance.getCallType()?.let { it1 ->
+                    profileViewModel.getRemainingTime(
+                            it, it1,object : NetworkCallback<GetRemainingTimeResponse> {
+                                override fun onResponse(
+                                    call: Call<GetRemainingTimeResponse>, response: Response<GetRemainingTimeResponse>
+                                ) {
+                                    val body = response?.body()
+                                    if (body?.success == true) {
+                                        balanceTime = body.data?.remaining_time
+                                        EventBus.getDefault().post(UpdateRemainingTimeEvent(balanceTime));
+
+                                        ZegoUIKitPrebuiltCallService.sendInRoomCommand(
+                                            DConstants.REMAINING_TIME + "=" + balanceTime, arrayListOf(null)
+                                        ) {}
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<GetRemainingTimeResponse>, t: Throwable) {
+                                }
+
+                                override fun onNoNetwork() {
+                                }
+                            }
+                        )
+                    }
+                }
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
@@ -89,15 +216,18 @@ open class BaseActivity : AppCompatActivity() {
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
-                this@BaseActivity,
-                getString(R.string.please_try_again_later),
-                Toast.LENGTH_LONG
+                this@BaseActivity, getString(R.string.please_try_again_later), Toast.LENGTH_LONG
             ).show()
         } else {
             Toast.makeText(
                 this@BaseActivity, message, Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onGetRemainingTimeEvent(event: GetRemainingTimeEvent?) {
+        getRemainingTime()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -114,7 +244,7 @@ open class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun setupZegoUIKit(Userid: Any, userName: String, balanceTime: String?, callId: Int) {
+    fun setupZegoUIKit(Userid: Any, userName: String) {
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()
@@ -156,48 +286,29 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
 
-                // Set up call duration configuration with a listener
-                var balanceTimeInsecs: Int = 0
-                try {
-                    if (balanceTime != null) {
-                        val split = balanceTime.split(":")
-                        balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
-                    }
-                } catch (e: Exception) {
-                }
                 config.durationConfig = ZegoCallDurationConfig().apply {
                     isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d(
                                 "TAG",
-                                "onDurationUpdate() called with: seconds = [$seconds] [$balanceTimeInsecs]"
+                                "onDurationUpdate() called with: seconds = [$seconds]"
                             )
-                            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
-                            foregroundView?.updateTime(remainingTime)
-                            if (roomID!=null && remainingTime <= 0) {
-                                ZegoUIKitPrebuiltCallService.endCall()
-                                config.durationConfig = null;
-                                if(!Helper.checkNetworkConnection()){
-                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
-                                }
-                            }
+                            foregroundView?.updateTime(seconds.toInt())
 
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand(
-                                "active", arrayListOf(null)
+                                "active&is_direct_call="+BaseApplication.getInstance()?.isReceiverDetailsAvailable(), arrayListOf(null)
                             ) {}
-                            if (roomID!=null && lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
+                            if (roomID != null && lastActiveTime != null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
                                 ZegoUIKitPrebuiltCallService.endCall()
-                                config.durationConfig = null;
-                                if(!Helper.checkNetworkConnection()){
-                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
+                                config.durationConfig = null
+                                if (!Helper.checkNetworkConnection()) {
+                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true)
                                 }
                             }
                         }
                     }
                 }
-
-
 
                 config.avatarViewProvider = object : ZegoAvatarViewProvider {
                     override fun onUserIDUpdated(
@@ -226,8 +337,7 @@ open class BaseActivity : AppCompatActivity() {
                             val requestOptions = RequestOptions().circleCrop()
                             Glide.with(parent.context).load(
                                 UsersImage(
-                                    profileViewModel,
-                                    uiKitUser.userID.toInt()
+                                    profileViewModel, uiKitUser.userID.toInt()
                                 ).execute().get()
                             ).apply(requestOptions).into(imageView)
 
@@ -241,6 +351,8 @@ open class BaseActivity : AppCompatActivity() {
                     ZegoForegroundViewProvider { parent, uiKitUser ->
                         if (uiKitUser.userID != userID) {
                             foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                            foregroundView?.setContext(this@BaseActivity)
+                            foregroundView?.setBalanceTime(balanceTime)
                             foregroundView
                         } else {
 

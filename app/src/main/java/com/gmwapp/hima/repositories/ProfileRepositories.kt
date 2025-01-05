@@ -5,6 +5,7 @@ import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.CallsListResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
+import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
@@ -93,5 +94,11 @@ class ProfileRepositories @Inject constructor(private val apiManager: ApiManager
         userId: Int, voice: MultipartBody.Part, callback: NetworkCallback<VoiceUpdateResponse>
     ) {
         apiManager.updateVoice(userId, voice, callback)
+    }
+
+    fun getRemainingTime(
+        userId: Int, callType: String, callback: NetworkCallback<GetRemainingTimeResponse>
+    ) {
+        apiManager.getRemainingTime(userId, callType, callback)
     }
 }

@@ -38,11 +38,11 @@ android {
         create("development") {
             dimension = "hima"
           applicationIdSuffix = ".dev"
-            buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com/api/\"")
+            buildConfigField( "String", "BASE_URL",  "\"https://demo.himaapp.in/api/auth/\"")
         }
         create("production") {
             dimension = "hima"
-            buildConfigField( "String", "BASE_URL",  "\"https://himaadmin.graymatterworks.com/api/auth/\"")
+            buildConfigField( "String", "BASE_URL",  "\"https://himaapp.in/api/auth/\"")
         }
     }
     compileOptions {
@@ -130,8 +130,6 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.work.runtime)
     implementation ("androidx.work:work-runtime-ktx:2.10.0")
-    implementation (libs.autostarter)
-    implementation ("com.github.XomaDev:MIUI-autostart:v1.3")
     implementation ("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
 

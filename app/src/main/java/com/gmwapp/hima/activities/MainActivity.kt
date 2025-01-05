@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -12,6 +13,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
@@ -23,21 +30,30 @@ import com.gmwapp.hima.fragments.ProfileFemaleFragment
 import com.gmwapp.hima.fragments.ProfileFragment
 import com.gmwapp.hima.fragments.RecentFragment
 import com.gmwapp.hima.viewmodels.OfferViewModel
+import com.gmwapp.hima.workers.CallUpdateWorker
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.androidbrowserhelper.trusted.LauncherActivity
+import com.zegocloud.uikit.ZegoUIKit
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
 
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener,  BottomSheetWelcomeBonus.OnAddCoinsListener  {
+class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
+    BottomSheetWelcomeBonus.OnAddCoinsListener {
     lateinit var binding: ActivityMainBinding
     var isBackPressedAlready = false
-    var userName:String? = null
-    var userID :String? = null;
-
+    var userName: String? = null
+    var userID: String? = null
 
     val offerViewModel: OfferViewModel by viewModels()
 
@@ -57,14 +73,19 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
 
         initUI()
+        addObservers()
 
         userName = userData?.name
 
-        onBackPressedDispatcher.addCallback(this ) {
+        onBackPressedDispatcher.addCallback(this) {
             if (isBackPressedAlready) {
-               finish()
+                finish()
             } else {
-                Toast.makeText(this@MainActivity, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    getString(R.string.press_back_again_to_exit),
+                    Toast.LENGTH_SHORT
+                ).show()
                 isBackPressedAlready = true
                 Handler().postDelayed({
                     isBackPressedAlready = false
@@ -72,29 +93,34 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             }
         }
     }
+    override fun resumeZegoCloud(){
+        addRoomStateChangedListener()
+        moveTaskToBack(true)
+    }
+
     private fun initUI() {
-
-
         userID?.let { offerViewModel.getOffer(it.toInt()) }
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
+        binding.bottomNavigationView.selectedItemId = R.id.home
+        removeShiftMode()
+    }
 
+
+    private fun addObservers() {
         offerViewModel.offerResponseLiveData.observe(this) { response ->
             if (response.success) {
                 val coin = response.data[0].coins
                 val price = response.data[0].price
                 val save = response.data[0].save
 
-                if (BaseApplication.getInstance()?.getPrefs()?.getUserData()?.gender == DConstants.MALE) {
+                if (BaseApplication.getInstance()?.getPrefs()
+                        ?.getUserData()?.gender == DConstants.MALE
+                ) {
                     val bottomSheet = BottomSheetWelcomeBonus(coin, price, save)
                     bottomSheet.show(supportFragmentManager, "BottomSheetWelcomeBonus")
                 }
             }
         }
-
-
-
-
-
-
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
         binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
@@ -104,8 +130,9 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         when (item.itemId) {
             R.id.home -> {
 
-                val homeFragment = if(BaseApplication.getInstance()?.getPrefs()?.getUserData()?.gender == DConstants.FEMALE)
-                    FemaleHomeFragment() else HomeFragment()
+                val homeFragment = if (BaseApplication.getInstance()?.getPrefs()
+                        ?.getUserData()?.gender == DConstants.FEMALE
+                ) FemaleHomeFragment() else HomeFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.flFragment, homeFragment)
                     .commit()
                 return true
@@ -149,9 +176,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     }
 
 
-
-
-
     override fun onAddCoins(coins: Int, id: Int) {
 
         var amount = "$coins"
@@ -171,9 +195,16 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             val call = apiService.addCoins(name, amount, email, mobile, userIdWithPoints)
 
             call.enqueue(object : retrofit2.Callback<ApiResponse> {
-                override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
+                override fun onResponse(
+                    call: retrofit2.Call<ApiResponse>,
+                    response: retrofit2.Response<ApiResponse>
+                ) {
                     if (response.isSuccessful && response.body()?.success == true) {
-                        Toast.makeText(this@MainActivity, response.body()?.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            response.body()?.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         // println("Long URL: ${it.longurl}") // Print to the terminal
                         //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
@@ -185,7 +216,8 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
                 }
 
                 override fun onFailure(call: retrofit2.Call<ApiResponse>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT)
+                        .show()
                 }
             })
         } else {

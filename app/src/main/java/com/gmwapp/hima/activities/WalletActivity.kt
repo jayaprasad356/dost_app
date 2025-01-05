@@ -16,6 +16,7 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.CoinAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
+import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityWalletBinding
 import com.gmwapp.hima.retrofit.responses.CoinsResponseData
 import com.gmwapp.hima.utils.setOnSingleClickListener
@@ -23,6 +24,7 @@ import com.gmwapp.hima.viewmodels.UpiViewModel
 import com.gmwapp.hima.viewmodels.WalletViewModel
 import com.gmwapp.hima.widgets.SpacesItemDecoration
 import com.google.androidbrowserhelper.trusted.LauncherActivity
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -126,7 +128,9 @@ class WalletActivity : BaseActivity() {
                         } else {
                            // println("Long URL: ${it.longurl}") // Print to the terminal
                             //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this@WalletActivity, LauncherActivity::class.java)
+
+                            val intent =
+                                Intent(this@WalletActivity, LauncherActivity::class.java)
                             intent.setData(Uri.parse(response.body()?.longurl))
                             startActivity(intent)
                             finish()// Directly starting the intent without launcher

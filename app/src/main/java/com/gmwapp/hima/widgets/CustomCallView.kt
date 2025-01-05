@@ -1,21 +1,39 @@
 package com.gmwapp.hima.widgets
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
+import com.gmwapp.hima.activities.BaseActivity
+import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.dagger.GetRemainingTimeEvent
+import com.gmwapp.hima.dagger.UnauthorizedEvent
+import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
+import com.gmwapp.hima.utils.Helper
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
+import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class CustomCallView : ZegoBaseAudioVideoForegroundView {
     private var tvRemainingTime: TextView? = null
+    private var balanceTime: String? = null
+    private var activity: RandomUserActivity? = null
+    private var WALLET_ACTIVITY_REQUEST_CODE = 1;
 
     constructor(context: Context, userID: String?) : super(context, userID)
 
@@ -23,29 +41,103 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         context: Context, attrs: AttributeSet?, userID: String?
     ) : super(context, attrs, userID)
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        EventBus.getDefault().post(GetRemainingTimeEvent());
+    }
+
     override fun onForegroundViewCreated(uiKitUser: ZegoUIKitUser) {
-        // init your custom view
+        // Make the window full-screen
+        val activity = context as? Activity
+        activity?.window?.apply {
+            decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
+            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        }
+
+        // Initialize your custom view
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
 
-        val inflate = inflate(context, if(userData?.gender == DConstants.MALE) R.layout.widget_custom_call else R.layout.widget_custom_call_female, this)
+        val inflate = inflate(
+            context,
+            if (userData?.gender == DConstants.MALE)
+                R.layout.widget_custom_call
+            else
+                R.layout.widget_custom_call_female,
+            this
+        )
+
         val view = inflate
         tvRemainingTime = view.findViewById<View>(R.id.tv_remaining_time) as TextView?
         if(userData?.gender == DConstants.MALE) {
             var clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
             clCoins?.setOnClickListener({
-                val intent = Intent(context, WalletActivity::class.java)
-                context?.startActivity(intent)
+                try {
+                    val aux: Fragment = FragmentForResult(activity)
+                    val fm: FragmentManager? = (context as CallInviteActivity).supportFragmentManager
+                    fm?.beginTransaction()?.add(aux, "FRAGMENT_TAG")?.commit()
+                    fm?.executePendingTransactions()
+                    val intent = Intent(activity, WalletActivity::class.java)
+                    intent.putExtra(DConstants.NEED_TO_FINISH, true)
+                    ZegoUIKitPrebuiltCallService.minimizeCall()
+                    aux.startActivityForResult(intent, WALLET_ACTIVITY_REQUEST_CODE)
+                } catch (e: Exception) {
+                }
             })
+
+        if (userData?.gender == DConstants.MALE) {
+            val clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
+            clCoins?.setOnClickListener {
+                val intent = Intent(context, WalletActivity::class.java)
+                context.startActivity(intent)
+            }
         }
+        EventBus.getDefault().register(this)
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onGetRemainingTimeEvent(event: UpdateRemainingTimeEvent?) {
+        this.balanceTime = event?.remainingTime
+    }
+
+    fun setBalanceTime(balanceTime: String?){
+        this.balanceTime = balanceTime;
+    }
+
+    fun setContext(activity:BaseActivity){
+        this.activity = activity as RandomUserActivity;
+    }
+
+
     fun updateTime(seconds: Int) {
+        var balanceTimeInsecs: Int = 0
+        try {
+            if (balanceTime != null) {
+                val split = balanceTime!!.split(":")
+                balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+            }
+        } catch (e: Exception) {
+        }
+        var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
         tvRemainingTime?.visibility = View.VISIBLE
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60;
-        val secs = seconds % 60;
+        val hours = remainingTime / 3600
+        val minutes = (remainingTime % 3600) / 60;
+        val secs = remainingTime % 60;
         tvRemainingTime?.text = String.format("%02d:%02d:%02d", hours, minutes, secs)
+        if (BaseApplication.getInstance()?.getRoomId() != null && remainingTime <= 0) {
+            ZegoUIKitPrebuiltCallService.endCall()
+            if (!Helper.checkNetworkConnection()) {
+                BaseApplication.getInstance()?.setEndCallUpdatePending(true)
+            }
+            EventBus.getDefault().post(UpdateRemainingTimeEvent(balanceTime));
+
+        }
     }
 
     override fun onCameraStateChanged(isCameraOn: Boolean) {
@@ -54,5 +146,15 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
     override fun onMicrophoneStateChanged(isMicrophoneOn: Boolean) {
         // will be called when microphone changed
+    }
+}
+
+class FragmentForResult(private val mActivity: RandomUserActivity?) : Fragment() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+            mActivity?.onButtonClick()
+        }
+        activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
     }
 }
