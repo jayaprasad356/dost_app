@@ -224,7 +224,7 @@ open class BaseFragment : Fragment() {
             lastActiveTime = System.currentTimeMillis();
             if(s.contains("is_direct_call")){
                 try {
-                    BaseApplication.getInstance()?.setReceiverDetailsAvailable(s.split("is_direct_call=")[0]=="true")
+                    BaseApplication.getInstance()?.setReceiverDetailsAvailable(s.split("is_direct_call=")[1]=="true")
                 } catch (e: Exception) {
                 }
             }
