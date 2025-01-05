@@ -22,6 +22,7 @@ object DConstants {
     const val CALL_TYPE = "call_type"
     const val IMAGE = "image"
     const val USER_ID = "user_id"
+    const val IS_INDIVIDUAL = "is_individual"
     const val STARTED_TIME = "started_time"
     const val ENDED_TIME = "ended_time"
     const val CALL_ID = "call_id"
@@ -30,4 +31,6 @@ object DConstants {
     const val BALANCE_TIME = "balance_time"
     const val RECEIVER_NAME = "receiver_name"
     const val CALL_USER_ID = "call_user_id"
+    const val NEED_TO_FINISH = "need_to_finish"
+    const val REMAINING_TIME = "remaining_time"
 }

@@ -272,7 +272,7 @@ class FemaleHomeFragment : BaseFragment() {
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
-                        lastActiveTime = null
+                        lastActiveTime = 0
                         delay(500)
                         if (roomID != null) {
                             roomID = null
@@ -285,13 +285,20 @@ class FemaleHomeFragment : BaseFragment() {
                                 .putInt(DConstants.USER_ID, receivedId)
                                 .putInt(DConstants.CALL_ID, callId)
                                 .putString(DConstants.STARTED_TIME, startTime)
+                                .putBoolean(DConstants.IS_INDIVIDUAL, BaseApplication.getInstance()?.isReceiverDetailsAvailable()==true)
                                 .putString(DConstants.ENDED_TIME, endTime).build()
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
                                 CallUpdateWorker::class.java
                             ).setInputData(data).setConstraints(constraints).build()
                             WorkManager.getInstance(requireActivity())
                                 .enqueue(oneTimeWorkRequest)
-                        }}
+                            val prefs = BaseApplication.getInstance()?.getPrefs()
+                            val userData = prefs?.getUserData()
+                            if (userData != null) {
+                                setupZegoUIKit(userData.id, userData.name)
+                            }
+                        }
+                    }
                 }
 
                 else -> {

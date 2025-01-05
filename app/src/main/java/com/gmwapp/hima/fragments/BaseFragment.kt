@@ -14,6 +14,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.dagger.SetupZegoKitEvent
+import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
 import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
@@ -34,12 +36,16 @@ import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationC
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.Arrays
 
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
-    protected var lastActiveTime: Long? = null;
+
+    protected var lastActiveTime: Long = 0;
     var receivedId: Int = 0
     var callId: Int = 0
     var balanceTime: String? = null
@@ -58,11 +64,29 @@ open class BaseFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onSetupZegoKitEvent(event: SetupZegoKitEvent?) {
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        if (userData != null) {
+            setupZegoUIKit(userData.id, userData.name)
+        }
+    }
+
+
     fun setupZegoUIKit(Userid: Any, userName: String) {
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()
-
         val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
 
         callInvitationConfig.callingConfig = ZegoCallInvitationInCallingConfig()
@@ -111,31 +135,14 @@ open class BaseFragment : Fragment() {
                     isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
-                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
-                            var balanceTimeInsecs: Int = 0
-                            try {
-                                if (balanceTime != null) {
-                                    val split = balanceTime!!.split(":")
-                                    balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
-
-                                }
-                            } catch (e: Exception) {
-                            }
-                            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
-                            if (remainingTime > 0) {
-                                foregroundView?.updateTime(remainingTime)
-                            }
-                            if (roomID!=null && balanceTime != null && remainingTime <= 0) {
-                                ZegoUIKitPrebuiltCallService.endCall()
-                                config.durationConfig = null;
-                                if(!Helper.checkNetworkConnection()){
-                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
-                                }
-                                setupZegoUIKit(userID, userName);
+                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds] [$lastActiveTime]")
+                            if (balanceTime !=null) {
+                                foregroundView?.setBalanceTime(balanceTime)
+                                foregroundView?.updateTime(seconds.toInt())
                             }
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand("active", arrayListOf(null)
                             ) {}
-                            if(roomID!=null && lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000){
+                            if(roomID!=null && lastActiveTime!=0L && System.currentTimeMillis() - lastActiveTime > 15 * 1000){
                                 ZegoUIKitPrebuiltCallService.endCall()
                                 config.durationConfig = null;
                                 if(!Helper.checkNetworkConnection()){
@@ -215,6 +222,18 @@ open class BaseFragment : Fragment() {
 
         ZegoUIKitPrebuiltCallService.events.callEvents.addInRoomCommandListener { zegoUIKitUser, s ->
             lastActiveTime = System.currentTimeMillis();
+            if(s.contains("is_direct_call")){
+                try {
+                    BaseApplication.getInstance()?.setReceiverDetailsAvailable(s.split("is_direct_call=")[1]=="true")
+                } catch (e: Exception) {
+                }
+            }
+            if(s.startsWith(DConstants.REMAINING_TIME)){
+                try {
+                    balanceTime = s.split("=")[1]
+                } catch (e: Exception) {
+                }
+            }
         }
         ZegoUIKitPrebuiltCallService.init(
             BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig
