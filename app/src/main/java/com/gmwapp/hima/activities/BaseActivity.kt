@@ -117,11 +117,15 @@ open class BaseActivity : AppCompatActivity() {
         if (BaseApplication.getInstance()
                 ?.getRoomId() != null
         ) {
-            addRoomStateChangedListener()
+            resumeZegoCloud()
         }
     }
 
-    private fun addRoomStateChangedListener() {
+    protected open fun resumeZegoCloud(){
+        addRoomStateChangedListener()
+    }
+
+    protected open fun addRoomStateChangedListener() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
@@ -131,7 +135,7 @@ open class BaseActivity : AppCompatActivity() {
                     lifecycleScope.launch {
                         lastActiveTime = null
                         delay(500)
-                        if (roomID != null) {
+                        if (BaseApplication.getInstance()?.getRoomId() != null) {
                             roomID = null
                             val applicationInstance = BaseApplication.getInstance()
                             applicationInstance?.setRoomId(null)

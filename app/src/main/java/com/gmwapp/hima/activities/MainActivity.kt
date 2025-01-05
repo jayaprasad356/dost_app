@@ -93,14 +93,9 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.e("siva", "onResume : " + ZegoUIKitPrebuiltCallService.isMicrophoneOn())
-        if (BaseApplication.getInstance()
-                ?.getRoomId() != null
-        ) {
-            moveTaskToBack(true)
-        }
+    override fun resumeZegoCloud(){
+        addRoomStateChangedListener()
+        moveTaskToBack(true)
     }
 
     private fun initUI() {
