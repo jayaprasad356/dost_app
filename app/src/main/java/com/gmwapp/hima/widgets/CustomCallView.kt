@@ -16,13 +16,21 @@ import com.gmwapp.hima.activities.BaseActivity
 import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.dagger.GetRemainingTimeEvent
+import com.gmwapp.hima.dagger.UnauthorizedEvent
+import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
+import com.gmwapp.hima.utils.Helper
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class CustomCallView : ZegoBaseAudioVideoForegroundView {
     private var tvRemainingTime: TextView? = null
+    private var balanceTime: String? = null
     private var activity: RandomUserActivity? = null
     private var WALLET_ACTIVITY_REQUEST_CODE = 1;
 
@@ -34,7 +42,7 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        activity?.callRemainingTime()
+        EventBus.getDefault().post(GetRemainingTimeEvent());
     }
 
     override fun onForegroundViewCreated(uiKitUser: ZegoUIKitUser) {
@@ -61,6 +69,16 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
                 }
             })
         }
+        EventBus.getDefault().register(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onGetRemainingTimeEvent(event: UpdateRemainingTimeEvent?) {
+        this.balanceTime = event?.remainingTime
+    }
+
+    fun setBalanceTime(balanceTime: String?){
+        this.balanceTime = balanceTime;
     }
 
     fun setContext(activity:BaseActivity){
@@ -68,11 +86,28 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
     }
 
     fun updateTime(seconds: Int) {
+        var balanceTimeInsecs: Int = 0
+        try {
+            if (balanceTime != null) {
+                val split = balanceTime!!.split(":")
+                balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+            }
+        } catch (e: Exception) {
+        }
+        var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
         tvRemainingTime?.visibility = View.VISIBLE
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60;
-        val secs = seconds % 60;
+        val hours = remainingTime / 3600
+        val minutes = (remainingTime % 3600) / 60;
+        val secs = remainingTime % 60;
         tvRemainingTime?.text = String.format("%02d:%02d:%02d", hours, minutes, secs)
+        if (BaseApplication.getInstance()?.getRoomId() != null && remainingTime <= 0) {
+            ZegoUIKitPrebuiltCallService.endCall()
+            if (!Helper.checkNetworkConnection()) {
+                BaseApplication.getInstance()?.setEndCallUpdatePending(true)
+            }
+            EventBus.getDefault().post(UpdateRemainingTimeEvent(balanceTime));
+
+        }
     }
 
     override fun onCameraStateChanged(isCameraOn: Boolean) {

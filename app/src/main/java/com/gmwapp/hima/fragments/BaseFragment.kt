@@ -14,6 +14,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.dagger.SetupZegoKitEvent
+import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
 import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
@@ -34,6 +36,9 @@ import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationC
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.Arrays
 
 
@@ -57,6 +62,25 @@ open class BaseFragment : Fragment() {
             ).show()
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onSetupZegoKitEvent(event: SetupZegoKitEvent?) {
+        val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+        if (userData != null) {
+            setupZegoUIKit(userData.id, userData.name)
+        }
+    }
+
 
     fun setupZegoUIKit(Userid: Any, userName: String) {
         val appID: Long = 364167780
@@ -111,26 +135,9 @@ open class BaseFragment : Fragment() {
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
-                            var balanceTimeInsecs: Int = 0
-                            try {
-                                if (balanceTime != null) {
-                                    val split = balanceTime!!.split(":")
-                                    balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
-
-                                }
-                            } catch (e: Exception) {
-                            }
-                            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
-                            if (remainingTime > 0) {
-                                foregroundView?.updateTime(remainingTime)
-                            }
-                            if (roomID!=null && balanceTime != null && remainingTime <= 0) {
-                                ZegoUIKitPrebuiltCallService.endCall()
-                                config.durationConfig = null;
-                                if(!Helper.checkNetworkConnection()){
-                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
-                                }
-                                setupZegoUIKit(userID, userName);
+                            if (balanceTime !=null) {
+                                foregroundView?.setBalanceTime(balanceTime)
+                                foregroundView?.updateTime(seconds.toInt())
                             }
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand("active", arrayListOf(null)
                             ) {}

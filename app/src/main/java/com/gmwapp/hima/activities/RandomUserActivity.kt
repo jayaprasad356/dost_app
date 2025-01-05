@@ -100,10 +100,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
     }
 
-    fun callRemainingTime() {
-        getRemainingTime()
-    }
-
     fun askPermissions() {
         val permissionNeeded =
             arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
@@ -128,6 +124,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
             mediaPlayer?.start()
         }
 
+        val instance = BaseApplication.getInstance()
         if (isReceiverDetailsAvailable) {
             if (cancelled) {
                 mediaPlayer?.pause()
@@ -137,7 +134,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 val receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
                 val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
                 callType = intent.getStringExtra(DConstants.CALL_TYPE)
-                val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+                instance?.setCallType(callType)
+                val userData = instance?.getPrefs()?.getUserData()
                 userData?.id?.let {
                     femaleUsersViewModel.callFemaleUser(
                         it, receiverId, callType.toString()
@@ -171,7 +169,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         } else {
             if (usersCount < 4) {
                 usersCount++
-                val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+                val userData = instance?.getPrefs()?.getUserData()
                 val callType = intent.getStringExtra(DConstants.CALL_TYPE)
                 userData?.let {
                     callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
@@ -314,6 +312,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                     mediaPlayer?.pause()
                     mediaPlayer?.stop()
                     roomID = room
+                    BaseApplication.getInstance()?.setRoomId(roomID)
                     userId = BaseApplication.getInstance()?.getPrefs()
                         ?.getUserData()?.id.toString() // Set user_id
                     callUserId = targetUserId.toString() // Set call_user_id
@@ -327,6 +326,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                         delay(500)
                         if (roomID != null) {
                             roomID = null
+                            BaseApplication.getInstance()?.setRoomId(null)
                             endTime = dateFormat.format(Date()) // Set call end time in IST
 
                             val constraints =

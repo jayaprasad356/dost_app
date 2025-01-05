@@ -20,6 +20,8 @@ import javax.inject.Inject
 class BaseApplication : Application(), Configuration.Provider {
     private var mPreferences: DPreferences? = null
     private var called: Boolean? = null
+    private var callType: String? = null
+    private var roomId: String? = null
     private var endCallUpdatePending: Boolean? = null
     val ONESIGNAL_APP_ID = "2c7d72ae-8f09-48ea-a3c8-68d9c913c592"
 
@@ -64,6 +66,22 @@ class BaseApplication : Application(), Configuration.Provider {
 
     fun isCalled(): Boolean? {
         return this.called
+    }
+
+    fun setRoomId(roomId: String?) {
+        this.roomId = roomId
+    }
+
+    fun getRoomId(): String? {
+        return this.roomId
+    }
+
+    fun setCallType(callType: String?) {
+        this.callType = callType
+    }
+
+    fun getCallType(): String? {
+        return this.callType
     }
 
     fun setEndCallUpdatePending(endCallUpdatePending: Boolean?) {

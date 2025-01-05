@@ -27,7 +27,9 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.constants.DConstants
+import com.gmwapp.hima.dagger.GetRemainingTimeEvent
 import com.gmwapp.hima.dagger.UnauthorizedEvent
+import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.utils.Helper
@@ -94,17 +96,15 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(roomID!=null){
-            ZegoUIKitPrebuiltCallService.minimizeCall()
-        }
         getRemainingTime()
     }
 
     protected fun getRemainingTime() {
-        if (roomID != null) {
-            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
-                    callType?.let { it1 ->
-                        profileViewModel.getRemainingTime(
+        val instance = BaseApplication.getInstance()
+        if (instance?.getRoomId() != null) {
+            instance?.getPrefs()?.getUserData()?.id?.let {
+                instance.getCallType()?.let { it1 ->
+                    profileViewModel.getRemainingTime(
                             it, it1,object : NetworkCallback<GetRemainingTimeResponse> {
                                 override fun onResponse(
                                     call: Call<GetRemainingTimeResponse>, response: Response<GetRemainingTimeResponse>
@@ -112,6 +112,8 @@ open class BaseActivity : AppCompatActivity() {
                                     val body = response?.body()
                                     if (body?.success == true) {
                                         balanceTime = body.data?.remaining_time
+                                        EventBus.getDefault().post(UpdateRemainingTimeEvent(balanceTime));
+
                                         ZegoUIKitPrebuiltCallService.sendInRoomCommand(
                                             DConstants.REMAINING_TIME + "=" + balanceTime, arrayListOf(null)
                                         ) {}
@@ -145,6 +147,11 @@ open class BaseActivity : AppCompatActivity() {
                 this@BaseActivity, message, Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onGetRemainingTimeEvent(event: GetRemainingTimeEvent?) {
+        getRemainingTime()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -207,27 +214,11 @@ open class BaseActivity : AppCompatActivity() {
                     isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
-                            var balanceTimeInsecs: Int = 0
-                            try {
-                                if (balanceTime != null) {
-                                    val split = balanceTime!!.split(":")
-                                    balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
-                                }
-                            } catch (e: Exception) {
-                            }
                             Log.d(
                                 "TAG",
-                                "onDurationUpdate() called with: seconds = [$seconds] [$balanceTimeInsecs]"
+                                "onDurationUpdate() called with: seconds = [$seconds]"
                             )
-                            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
-                            foregroundView?.updateTime(remainingTime)
-                            if (roomID != null && remainingTime <= 0) {
-                                ZegoUIKitPrebuiltCallService.endCall()
-                                config.durationConfig = null
-                                if (!Helper.checkNetworkConnection()) {
-                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true)
-                                }
-                            }
+                            foregroundView?.updateTime(seconds.toInt())
 
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand(
                                 "active", arrayListOf(null)
@@ -285,6 +276,7 @@ open class BaseActivity : AppCompatActivity() {
                         if (uiKitUser.userID != userID) {
                             foregroundView = CustomCallView(parent.context, uiKitUser.userID)
                             foregroundView?.setContext(this@BaseActivity)
+                            foregroundView?.setBalanceTime(balanceTime)
                             foregroundView
                         } else {
 
