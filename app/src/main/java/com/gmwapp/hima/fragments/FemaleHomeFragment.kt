@@ -272,7 +272,7 @@ class FemaleHomeFragment : BaseFragment() {
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
-                        lastActiveTime = null
+                        lastActiveTime = 0
                         delay(500)
                         if (roomID != null) {
                             roomID = null
@@ -291,7 +291,13 @@ class FemaleHomeFragment : BaseFragment() {
                             ).setInputData(data).setConstraints(constraints).build()
                             WorkManager.getInstance(requireActivity())
                                 .enqueue(oneTimeWorkRequest)
-                        }}
+                            val prefs = BaseApplication.getInstance()?.getPrefs()
+                            val userData = prefs?.getUserData()
+                            if (userData != null) {
+                                setupZegoUIKit(userData.id, userData.name)
+                            }
+                        }
+                    }
                 }
 
                 else -> {

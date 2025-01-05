@@ -44,7 +44,8 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
-    protected var lastActiveTime: Long? = null;
+
+    protected var lastActiveTime: Long = 0;
     var receivedId: Int = 0
     var callId: Int = 0
     var balanceTime: String? = null
@@ -134,14 +135,14 @@ open class BaseFragment : Fragment() {
                     isVisible = false
                     durationUpdateListener = object : DurationUpdateListener {
                         override fun onDurationUpdate(seconds: Long) {
-                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds]")
+                            Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds] [$lastActiveTime]")
                             if (balanceTime !=null) {
                                 foregroundView?.setBalanceTime(balanceTime)
                                 foregroundView?.updateTime(seconds.toInt())
                             }
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand("active", arrayListOf(null)
                             ) {}
-                            if(roomID!=null && lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000){
+                            if(roomID!=null && lastActiveTime!=0L && System.currentTimeMillis() - lastActiveTime > 15 * 1000){
                                 ZegoUIKitPrebuiltCallService.endCall()
                                 config.durationConfig = null;
                                 if(!Helper.checkNetworkConnection()){
@@ -221,6 +222,7 @@ open class BaseFragment : Fragment() {
 
         ZegoUIKitPrebuiltCallService.events.callEvents.addInRoomCommandListener { zegoUIKitUser, s ->
             lastActiveTime = System.currentTimeMillis();
+
             if(s.startsWith(DConstants.REMAINING_TIME)){
                 try {
                     balanceTime = s.split("=")[1]
