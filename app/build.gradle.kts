@@ -38,11 +38,11 @@ android {
         create("development") {
             dimension = "hima"
           applicationIdSuffix = ".dev"
-            buildConfigField( "String", "BASE_URL",  "\"https://hima.graymatterworks.com/api/\"")
+            buildConfigField( "String", "BASE_URL",  "\"https://demo.himaapp.in/api/auth/\"")
         }
         create("production") {
             dimension = "hima"
-            buildConfigField( "String", "BASE_URL",  "\"https://himaadmin.graymatterworks.com/api/auth/\"")
+            buildConfigField( "String", "BASE_URL",  "\"https://himaapp.in/api/auth/\"")
         }
     }
     compileOptions {
