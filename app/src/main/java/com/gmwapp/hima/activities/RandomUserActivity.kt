@@ -182,6 +182,14 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (BaseApplication.getInstance()
+                ?.getRoomId() != null
+        ) {
+            moveTaskToBack(true)
+        }
+    }
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
