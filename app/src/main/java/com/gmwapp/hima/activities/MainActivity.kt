@@ -57,6 +57,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
 
         initUI()
+        addObservers()
 
         userName = userData?.name
 
@@ -73,16 +74,19 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         }
     }
     private fun initUI() {
-
-
         userID?.let { offerViewModel.getOffer(it.toInt()) }
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
+        binding.bottomNavigationView.selectedItemId = R.id.home
+        removeShiftMode()
+    }
 
+
+    private fun addObservers() {
         offerViewModel.offerResponseLiveData.observe(this) { response ->
             if (response.success) {
                 val coin = response.data[0].coins
                 val price = response.data[0].price
                 val save = response.data[0].save
-
                 if (BaseApplication.getInstance()?.getPrefs()?.getUserData()?.gender == DConstants.MALE) {
                     val bottomSheet = BottomSheetWelcomeBonus(coin, price, save)
                     bottomSheet.show(supportFragmentManager, "BottomSheetWelcomeBonus")
@@ -90,14 +94,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             }
         }
 
-
-
-
-
-
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
-        binding.bottomNavigationView.selectedItemId = R.id.home
-        removeShiftMode()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

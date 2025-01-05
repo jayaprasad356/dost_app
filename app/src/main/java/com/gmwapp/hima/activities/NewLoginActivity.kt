@@ -1,5 +1,6 @@
 package com.gmwapp.hima.activities
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -24,11 +25,13 @@ import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.constants.DConstants
@@ -38,6 +41,8 @@ import com.gmwapp.hima.retrofit.responses.Country
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @AndroidEntryPoint
@@ -59,6 +64,8 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         super.onCreate(savedInstanceState)
         binding = ActivityNewLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
+
         setupOnboarding()
         initUI()
         binding.loginSection.visibility  = View.VISIBLE
@@ -87,10 +94,22 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
                 }
             }
         })
+
+        // Automatically move the ViewPager every 2 seconds
+        lifecycleScope.launch {
+            while (true) {
+                delay(2000) // Wait for 2 seconds
+                val currentItem = binding.viewPagerOnboarding.currentItem
+                val nextItem = (currentItem + 1) % adapter.itemCount
+                binding.viewPagerOnboarding.setCurrentItem(nextItem, true) // Smooth transition
+            }
+        }
     }
+
 
     private fun initUI() {
         binding.btnSendOtp.setOnClickListener {
+            closeKeyboard()
             binding.btnSendOtp.isEnabled = false
 
             // Retrieve mobile number
@@ -321,6 +340,7 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
         }
         )
         binding.btnVerifyOtp.setOnClickListener {
+            closeKeyboard()
             val enteredOTP = binding.pvOtp.text.toString().toInt()
             val default = "011011".toInt() // Convert default to Int
             if (enteredOTP == otp) {
@@ -360,6 +380,15 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
 
     private fun login(mobile: String) {
         loginViewModel.login(mobile)
+    }
+
+
+    private fun closeKeyboard() {
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val currentFocusedView = currentFocus
+        if (currentFocusedView != null) {
+            inputMethodManager.hideSoftInputFromWindow(currentFocusedView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
     }
 
 }

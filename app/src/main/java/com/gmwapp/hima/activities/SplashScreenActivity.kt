@@ -11,6 +11,7 @@ import android.os.Handler
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
@@ -35,6 +36,7 @@ class SplashScreenActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
         initUI()
     }
 
