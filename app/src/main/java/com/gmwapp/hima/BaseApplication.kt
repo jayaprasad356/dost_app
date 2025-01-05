@@ -18,6 +18,10 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class BaseApplication : Application(), Configuration.Provider {
+    private var startTime: String? = null
+    private var callUserId: String? = null
+    private var callUserName: String? = null
+    private var callId: Int? = null
     private var mPreferences: DPreferences? = null
     private var called: Boolean? = null
     private var callType: String? = null
@@ -74,6 +78,38 @@ class BaseApplication : Application(), Configuration.Provider {
 
     fun getRoomId(): String? {
         return this.roomId
+    }
+
+    fun setCallUserId(callUserId: String?) {
+        this.callUserId = callUserId
+    }
+
+    fun getCallUserId(): String? {
+        return this.callUserId
+    }
+
+    fun setCallUserName(callUserName: String?) {
+        this.callUserName = callUserName
+    }
+
+    fun getCallUserName(): String? {
+        return this.callUserName
+    }
+
+    fun setStartTime(startTime: String?) {
+        this.startTime = startTime
+    }
+
+    fun getStartTime(): String? {
+        return this.startTime
+    }
+
+    fun setCallId(callId: Int?) {
+        this.callId = callId
+    }
+
+    fun getCallId(): Int? {
+        return this.callId
     }
 
     fun setCallType(callType: String?) {

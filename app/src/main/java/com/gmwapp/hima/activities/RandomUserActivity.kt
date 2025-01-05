@@ -253,6 +253,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     private fun addRoomStateChangedListener(callId: Int) {
+        BaseApplication.getInstance()?.setCallId(callId)
         ZegoUIKitPrebuiltCallService.events.invitationEvents.outgoingCallButtonListener =
             object : OutgoingCallButtonListener {
                 override fun onOutgoingCallCancelButtonPressed() {
@@ -317,7 +318,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                         ?.getUserData()?.id.toString() // Set user_id
                     callUserId = targetUserId.toString() // Set call_user_id
                     startTime = dateFormat.format(Date()) // Set call start time in IST
-
+                    BaseApplication.getInstance()?.setStartTime(startTime)
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
@@ -327,6 +328,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                         if (roomID != null) {
                             roomID = null
                             BaseApplication.getInstance()?.setRoomId(null)
+                            BaseApplication.getInstance()?.setCallId(null)
                             endTime = dateFormat.format(Date()) // Set call end time in IST
 
                             val constraints =
@@ -396,6 +398,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         binding.voiceCallButton.setTimeout(7)
         callUserName = targetName
         callUserId = targetUserId
+        instance?.setCallUserId(callUserId)
+        instance?.setCallUserName(callUserName)
         lifecycleScope.launch {
             if (instance?.isCalled() == false || instance?.isCalled() == null) {
                 delay(4000)

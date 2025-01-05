@@ -17,10 +17,16 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
@@ -37,6 +43,8 @@ import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallEmptyView
 import com.gmwapp.hima.widgets.CustomCallView
+import com.gmwapp.hima.workers.CallUpdateWorker
+import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
 import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
@@ -53,12 +61,18 @@ import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.Arrays
+import java.util.Date
+import java.util.TimeZone
 import kotlin.math.abs
 
 
@@ -70,6 +84,9 @@ open class BaseActivity : AppCompatActivity() {
     protected var lastActiveTime: Long? = null
     private var foregroundView: CustomCallView? = null
     private val profileViewModel: ProfileViewModel by viewModels()
+    private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +114,58 @@ open class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         getRemainingTime()
+        if (BaseApplication.getInstance()
+                ?.getRoomId() != null
+        ) {
+            addRoomStateChangedListener()
+        }
+    }
+
+    private fun addRoomStateChangedListener() {
+        ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
+            when (reason) {
+                ZegoRoomStateChangedReason.LOGINED -> {
+                }
+
+                ZegoRoomStateChangedReason.LOGOUT -> {
+                    lifecycleScope.launch {
+                        lastActiveTime = null
+                        delay(500)
+                        if (roomID != null) {
+                            roomID = null
+                            val applicationInstance = BaseApplication.getInstance()
+                            applicationInstance?.setRoomId(null)
+                            applicationInstance?.setCallId(null)
+                            var endTime = dateFormat.format(Date()) // Set call end time in IST
+
+                            val constraints =
+                                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build()
+                            val data: Data = Data.Builder().putInt(
+                                DConstants.USER_ID,
+                                applicationInstance?.getPrefs()?.getUserData()?.id
+                                    ?: 0
+                            ).putInt(DConstants.CALL_ID, applicationInstance?.getCallId()?:0)
+                                .putString(DConstants.STARTED_TIME, applicationInstance?.getStartTime())
+                                .putString(DConstants.ENDED_TIME, endTime).build()
+                            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
+                                CallUpdateWorker::class.java
+                            ).setInputData(data).setConstraints(constraints).build()
+                            WorkManager.getInstance(this@BaseActivity)
+                                .enqueue(oneTimeWorkRequest)
+                            val intent = Intent(this@BaseActivity, ReviewActivity::class.java)
+                            intent.putExtra(DConstants.RECEIVER_NAME, applicationInstance?.getCallUserName())
+                            intent.putExtra(DConstants.RECEIVER_ID, applicationInstance?.getCallUserId())
+                            startActivity(intent)
+                        }
+                    }
+                }
+
+
+                else -> {
+                }
+            }
+        }
     }
 
     protected fun getRemainingTime() {
