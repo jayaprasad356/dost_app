@@ -30,14 +30,14 @@ class CallUpdateWorker @AssistedInject constructor(
             try {
                 var updateConnectedCall: Response<UpdateConnectedCallResponse>? = null
                 if (workerParams.inputData.getBoolean(DConstants.IS_INDIVIDUAL, false)) {
-                    updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
+                    updateConnectedCall = femaleUsersRepositories.individualUpdateConnectedCall(
                         workerParams.inputData.getInt(DConstants.USER_ID, 0),
                         workerParams.inputData.getInt(DConstants.CALL_ID, 0),
                         workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
                         workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
                     )
                 } else {
-                    updateConnectedCall = femaleUsersRepositories.individualUpdateConnectedCall(
+                    updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
                         workerParams.inputData.getInt(DConstants.USER_ID, 0),
                         workerParams.inputData.getInt(DConstants.CALL_ID, 0),
                         workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
