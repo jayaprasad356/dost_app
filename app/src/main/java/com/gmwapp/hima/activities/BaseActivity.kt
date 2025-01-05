@@ -86,6 +86,34 @@ open class BaseActivity : AppCompatActivity() {
         EventBus.getDefault().register(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        getRemainingTime();
+    }
+
+    protected fun getRemainingTime(){
+        if(roomID!=null) {
+            BaseApplication.getInstance()?.getPrefs()
+                ?.getUserData()?.id?.let {
+                    callType?.let { it1 ->
+                        profileViewModel.getRemainingTime(
+                            it,
+                            it1
+                        )
+                    }
+                }
+
+            profileViewModel.remainingTimeLiveData.observe(this) { response ->
+                if (response != null && response.success) {
+                    this.balanceTime = response.data?.remaining_time
+                    ZegoUIKitPrebuiltCallService.sendInRoomCommand(
+                        DConstants.REMAINING_TIME + "=" + this.balanceTime, arrayListOf(null)
+                    ) {}
+                }
+            }
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)

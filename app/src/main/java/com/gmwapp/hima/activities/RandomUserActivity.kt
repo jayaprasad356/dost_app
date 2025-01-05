@@ -206,21 +206,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     override public fun onButtonClick() {
-        BaseApplication.getInstance()?.getPrefs()
-            ?.getUserData()?.id?.let { callType?.let { it1 ->
-                profileViewModel.getRemainingTime(it,
-                    it1
-                )
-            } }
-
-        profileViewModel.remainingTimeLiveData.observe(this) { response ->
-            if(response!=null && response.success){
-                this.balanceTime = response.data?.remaining_time
-                ZegoUIKitPrebuiltCallService.sendInRoomCommand(
-                    DConstants.REMAINING_TIME+"="+this.balanceTime, arrayListOf(null)
-                ) {}
-            }
-        }
+        getRemainingTime()
     }
 
     private fun initUI() {
