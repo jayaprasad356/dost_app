@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class BaseApplication : Application(), Configuration.Provider {
+    private var isReceiverDetailsAvailable: Boolean = false
     private var startTime: String? = null
     private var callUserId: String? = null
     private var callUserName: String? = null
@@ -79,6 +80,14 @@ class BaseApplication : Application(), Configuration.Provider {
 
     fun getRoomId(): String? {
         return this.roomId
+    }
+
+    fun setReceiverDetailsAvailable(isReceiverDetailsAvailable: Boolean) {
+        this.isReceiverDetailsAvailable = isReceiverDetailsAvailable
+    }
+
+    fun isReceiverDetailsAvailable(): Boolean {
+        return this.isReceiverDetailsAvailable
     }
 
     fun setCallUserId(callUserId: String?) {

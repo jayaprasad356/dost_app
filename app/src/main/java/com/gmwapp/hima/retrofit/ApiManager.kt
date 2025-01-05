@@ -260,6 +260,15 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
             return getApiInterface().updateConnectedCall(userId, callId, startedTime, endedTime)
     }
 
+    suspend fun individualUpdateConnectedCall(
+        userId: Int,
+        callId: Int,
+        startedTime: String,
+        endedTime: String,
+    ) : Response<UpdateConnectedCallResponse>{
+            return getApiInterface().individualUpdateConnectedCall(userId, callId, startedTime, endedTime)
+    }
+
     fun getEarnings(
         userId: Int, callback: NetworkCallback<EarningsResponse>
     ) {
@@ -564,6 +573,15 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("update_connected_call")
     suspend fun updateConnectedCall(
+        @Field("user_id") userId: Int,
+        @Field("call_id") callId: Int,
+        @Field("started_time") startedTime: String,
+        @Field("ended_time") endedTime: String,
+    ): Response<UpdateConnectedCallResponse>
+
+    @FormUrlEncoded
+    @POST("individual_update_connected_call")
+    suspend fun individualUpdateConnectedCall(
         @Field("user_id") userId: Int,
         @Field("call_id") callId: Int,
         @Field("started_time") startedTime: String,

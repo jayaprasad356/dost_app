@@ -222,7 +222,12 @@ open class BaseFragment : Fragment() {
 
         ZegoUIKitPrebuiltCallService.events.callEvents.addInRoomCommandListener { zegoUIKitUser, s ->
             lastActiveTime = System.currentTimeMillis();
-
+            if(s.contains("is_direct_call")){
+                try {
+                    BaseApplication.getInstance()?.setReceiverDetailsAvailable(s.split("is_direct_call=")[0]=="true")
+                } catch (e: Exception) {
+                }
+            }
             if(s.startsWith(DConstants.REMAINING_TIME)){
                 try {
                     balanceTime = s.split("=")[1]

@@ -28,14 +28,24 @@ class CallUpdateWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
-                    workerParams.inputData.getInt(DConstants.USER_ID, 0),
-                    workerParams.inputData.getInt(DConstants.CALL_ID, 0),
-                    workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
-                    workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
-                )
+                var updateConnectedCall: Response<UpdateConnectedCallResponse>? = null
+                if (workerParams.inputData.getBoolean(DConstants.IS_INDIVIDUAL, false)) {
+                    updateConnectedCall = femaleUsersRepositories.updateConnectedCall(
+                        workerParams.inputData.getInt(DConstants.USER_ID, 0),
+                        workerParams.inputData.getInt(DConstants.CALL_ID, 0),
+                        workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
+                        workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
+                    )
+                } else {
+                    updateConnectedCall = femaleUsersRepositories.individualUpdateConnectedCall(
+                        workerParams.inputData.getInt(DConstants.USER_ID, 0),
+                        workerParams.inputData.getInt(DConstants.CALL_ID, 0),
+                        workerParams.inputData.getString(DConstants.STARTED_TIME).toString(),
+                        workerParams.inputData.getString(DConstants.ENDED_TIME).toString(),
+                    )
+                }
 
-                if (updateConnectedCall.isSuccessful) {
+                if (updateConnectedCall.isSuccessful == true) {
                     if (updateConnectedCall.body()?.success == true) {
                         Result.success()
                     } else {

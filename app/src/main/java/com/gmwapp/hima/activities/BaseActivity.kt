@@ -151,6 +151,9 @@ open class BaseActivity : AppCompatActivity() {
                                     ?: 0
                             ).putInt(DConstants.CALL_ID, applicationInstance?.getCallId()?:0)
                                 .putString(DConstants.STARTED_TIME, applicationInstance?.getStartTime())
+                                .putBoolean(DConstants.IS_INDIVIDUAL,
+                                    applicationInstance?.isReceiverDetailsAvailable() == true
+                                )
                                 .putString(DConstants.ENDED_TIME, endTime).build()
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
                                 CallUpdateWorker::class.java
@@ -294,7 +297,7 @@ open class BaseActivity : AppCompatActivity() {
                             foregroundView?.updateTime(seconds.toInt())
 
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand(
-                                "active", arrayListOf(null)
+                                "active&is_direct_call="+BaseApplication.getInstance()?.isReceiverDetailsAvailable(), arrayListOf(null)
                             ) {}
                             if (roomID != null && lastActiveTime != null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
                                 ZegoUIKitPrebuiltCallService.endCall()

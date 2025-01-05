@@ -127,6 +127,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
         val instance = BaseApplication.getInstance()
         if (isReceiverDetailsAvailable) {
+            instance?.setReceiverDetailsAvailable(true);
             if (cancelled) {
                 mediaPlayer?.pause()
                 mediaPlayer?.stop()
@@ -168,6 +169,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
             }
         } else {
+            instance?.setReceiverDetailsAvailable(false);
+
             if (usersCount < 4) {
                 usersCount++
                 val userData = instance?.getPrefs()?.getUserData()
@@ -349,7 +352,9 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                                         ?: 0
                                 ).putInt(DConstants.CALL_ID, callId)
                                 .putString(DConstants.STARTED_TIME, startTime)
+                                .putBoolean(DConstants.IS_INDIVIDUAL, isReceiverDetailsAvailable)
                                 .putString(DConstants.ENDED_TIME, endTime).build()
+
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
                                 CallUpdateWorker::class.java
                             ).setInputData(data).setConstraints(constraints).build()

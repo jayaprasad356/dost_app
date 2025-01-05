@@ -285,6 +285,7 @@ class FemaleHomeFragment : BaseFragment() {
                                 .putInt(DConstants.USER_ID, receivedId)
                                 .putInt(DConstants.CALL_ID, callId)
                                 .putString(DConstants.STARTED_TIME, startTime)
+                                .putBoolean(DConstants.IS_INDIVIDUAL, BaseApplication.getInstance()?.isReceiverDetailsAvailable()==true)
                                 .putString(DConstants.ENDED_TIME, endTime).build()
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
                                 CallUpdateWorker::class.java
