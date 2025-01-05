@@ -75,12 +75,13 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
         val view = inflate
         tvRemainingTime = view.findViewById<View>(R.id.tv_remaining_time) as TextView?
-        if(userData?.gender == DConstants.MALE) {
+        if (userData?.gender == DConstants.MALE) {
             var clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
             clCoins?.setOnClickListener({
                 try {
-                    val aux: Fragment = FragmentForResult(activity)
-                    val fm: FragmentManager? = (context as CallInviteActivity).supportFragmentManager
+                    val aux: Fragment = FragmentForResult(RandomUserActivity())
+                    val fm: FragmentManager? =
+                        (context as CallInviteActivity).supportFragmentManager
                     fm?.beginTransaction()?.add(aux, "FRAGMENT_TAG")?.commit()
                     fm?.executePendingTransactions()
                     val intent = Intent(activity, WalletActivity::class.java)
@@ -91,70 +92,64 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
                 }
             })
 
-        if (userData?.gender == DConstants.MALE) {
-            val clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
-            clCoins?.setOnClickListener {
-                val intent = Intent(context, WalletActivity::class.java)
-                context.startActivity(intent)
+            }
+            EventBus.getDefault().register(this)
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        fun onGetRemainingTimeEvent(event: UpdateRemainingTimeEvent?) {
+            this.balanceTime = event?.remainingTime
+        }
+
+        fun setBalanceTime(balanceTime: String?) {
+            this.balanceTime = balanceTime;
+        }
+
+        fun setContext(activity: BaseActivity) {
+            this.activity = activity as RandomUserActivity;
+        }
+
+
+        fun updateTime(seconds: Int) {
+            var balanceTimeInsecs: Int = 0
+            try {
+                if (balanceTime != null) {
+                    val split = balanceTime!!.split(":")
+                    balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+                }
+            } catch (e: Exception) {
+            }
+            var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
+            tvRemainingTime?.visibility = View.VISIBLE
+            val hours = remainingTime / 3600
+            val minutes = (remainingTime % 3600) / 60;
+            val secs = remainingTime % 60;
+            tvRemainingTime?.text = String.format("%02d:%02d:%02d", hours, minutes, secs)
+            if (BaseApplication.getInstance()?.getRoomId() != null && remainingTime <= 0) {
+                ZegoUIKitPrebuiltCallService.endCall()
+                if (!Helper.checkNetworkConnection()) {
+                    BaseApplication.getInstance()?.setEndCallUpdatePending(true)
+                }
+                EventBus.getDefault().post(UpdateRemainingTimeEvent(balanceTime));
+
             }
         }
-        EventBus.getDefault().register(this)
+
+        override fun onCameraStateChanged(isCameraOn: Boolean) {
+            // will be called when camera changed
+        }
+
+        override fun onMicrophoneStateChanged(isMicrophoneOn: Boolean) {
+            // will be called when microphone changed
+        }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onGetRemainingTimeEvent(event: UpdateRemainingTimeEvent?) {
-        this.balanceTime = event?.remainingTime
-    }
-
-    fun setBalanceTime(balanceTime: String?){
-        this.balanceTime = balanceTime;
-    }
-
-    fun setContext(activity:BaseActivity){
-        this.activity = activity as RandomUserActivity;
-    }
-
-
-    fun updateTime(seconds: Int) {
-        var balanceTimeInsecs: Int = 0
-        try {
-            if (balanceTime != null) {
-                val split = balanceTime!!.split(":")
-                balanceTimeInsecs += split[0].toInt() * 60 + split[1].toInt()
+    class FragmentForResult(private val mActivity: RandomUserActivity?) : Fragment() {
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+                mActivity?.onButtonClick()
             }
-        } catch (e: Exception) {
-        }
-        var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
-        tvRemainingTime?.visibility = View.VISIBLE
-        val hours = remainingTime / 3600
-        val minutes = (remainingTime % 3600) / 60;
-        val secs = remainingTime % 60;
-        tvRemainingTime?.text = String.format("%02d:%02d:%02d", hours, minutes, secs)
-        if (BaseApplication.getInstance()?.getRoomId() != null && remainingTime <= 0) {
-            ZegoUIKitPrebuiltCallService.endCall()
-            if (!Helper.checkNetworkConnection()) {
-                BaseApplication.getInstance()?.setEndCallUpdatePending(true)
-            }
-            EventBus.getDefault().post(UpdateRemainingTimeEvent(balanceTime));
-
+            activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
         }
     }
-
-    override fun onCameraStateChanged(isCameraOn: Boolean) {
-        // will be called when camera changed
-    }
-
-    override fun onMicrophoneStateChanged(isMicrophoneOn: Boolean) {
-        // will be called when microphone changed
-    }
-}
-
-class FragmentForResult(private val mActivity: RandomUserActivity?) : Fragment() {
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
-            mActivity?.onButtonClick()
-        }
-        activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
-    }
-}
