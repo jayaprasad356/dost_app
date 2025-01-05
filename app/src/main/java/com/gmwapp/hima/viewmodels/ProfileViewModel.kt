@@ -8,6 +8,7 @@ import com.gmwapp.hima.repositories.ProfileRepositories
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.AvatarsListResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
+import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
 import com.gmwapp.hima.retrofit.responses.UpdateProfileResponse
@@ -16,6 +17,7 @@ import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Response
 import javax.inject.Inject
@@ -38,6 +40,8 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     val speechTextErrorLiveData = MutableLiveData<String>()
     val voiceUpdateLiveData = MutableLiveData<VoiceUpdateResponse>()
     val voiceUpdateErrorLiveData = MutableLiveData<String>()
+    val remainingTimeLiveData = MutableLiveData<GetRemainingTimeResponse>()
+    val remainingTimeErrorLiveData = MutableLiveData<String>()
     val avatarsListLiveData = MutableLiveData<AvatarsListResponse>()
     fun getAvatarsList(gender: String) {
         viewModelScope.launch {
@@ -280,6 +284,19 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                         voiceUpdateErrorLiveData.postValue(DConstants.NO_NETWORK)
                     }
                 })
+        }
+    }
+
+    fun getRemainingTime(
+        userId: Int,
+        callType: String,
+        callback: NetworkCallback<GetRemainingTimeResponse>
+    ) {
+        viewModelScope.launch {
+            profileRepositories.getRemainingTime(
+                userId,
+                callType,
+                callback)
         }
     }
 

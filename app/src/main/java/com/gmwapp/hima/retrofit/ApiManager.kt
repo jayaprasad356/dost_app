@@ -12,6 +12,7 @@ import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.EarningsResponse
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
+import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.retrofit.responses.LoginResponse
 import com.gmwapp.hima.retrofit.responses.OfferResponse
 import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
@@ -259,6 +260,15 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
             return getApiInterface().updateConnectedCall(userId, callId, startedTime, endedTime)
     }
 
+    suspend fun individualUpdateConnectedCall(
+        userId: Int,
+        callId: Int,
+        startedTime: String,
+        endedTime: String,
+    ) : Response<UpdateConnectedCallResponse>{
+            return getApiInterface().individualUpdateConnectedCall(userId, callId, startedTime, endedTime)
+    }
+
     fun getEarnings(
         userId: Int, callback: NetworkCallback<EarningsResponse>
     ) {
@@ -446,6 +456,17 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
             callback.onNoNetwork()
         }
     }
+
+    fun getRemainingTime(
+        userId: Int, callType: String, callback: NetworkCallback<GetRemainingTimeResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<GetRemainingTimeResponse> = getApiInterface().getRemainingTime(userId, callType)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
 }
 
 interface ApiInterface {
@@ -559,6 +580,15 @@ interface ApiInterface {
     ): Response<UpdateConnectedCallResponse>
 
     @FormUrlEncoded
+    @POST("individual_update_connected_call")
+    suspend fun individualUpdateConnectedCall(
+        @Field("user_id") userId: Int,
+        @Field("call_id") callId: Int,
+        @Field("started_time") startedTime: String,
+        @Field("ended_time") endedTime: String,
+    ): Response<UpdateConnectedCallResponse>
+
+    @FormUrlEncoded
     @POST("withdrawals_list")
     fun getEarnings(@Field("user_id") userId: Int): Call<EarningsResponse>
 
@@ -653,6 +683,12 @@ interface ApiInterface {
     fun updateVoice(
         @Part("user_id") userId: Int, @Part voice: MultipartBody.Part
     ): Call<VoiceUpdateResponse>
+
+    @FormUrlEncoded
+    @POST("get_remaining_time")
+    fun getRemainingTime(
+        @Field("user_id") userId: Int, @Field("call_type") callType:String
+    ): Call<GetRemainingTimeResponse>
 
     @POST("settings_list")
     fun getSettings(): Call<SettingsResponse>
