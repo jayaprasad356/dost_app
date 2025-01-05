@@ -93,6 +93,7 @@ open class BaseActivity : AppCompatActivity() {
 
     protected fun getRemainingTime(){
         if(roomID!=null) {
+            moveTaskToBack(true)
             BaseApplication.getInstance()?.getPrefs()
                 ?.getUserData()?.id?.let {
                     callType?.let { it1 ->

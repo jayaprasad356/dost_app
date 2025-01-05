@@ -76,12 +76,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(roomID!=null){
-            moveTaskToBack(true)
-        }
-    }
     private fun checkOverlayPermission() {
         try {
             PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
