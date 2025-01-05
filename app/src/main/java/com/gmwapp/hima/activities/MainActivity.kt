@@ -73,6 +73,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
 
         initUI()
+        addObservers()
 
         userName = userData?.name
 
@@ -92,7 +93,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             }
         }
     }
-
     override fun resumeZegoCloud(){
         addRoomStateChangedListener()
         moveTaskToBack(true)
@@ -100,7 +100,13 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     private fun initUI() {
         userID?.let { offerViewModel.getOffer(it.toInt()) }
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
+        binding.bottomNavigationView.selectedItemId = R.id.home
+        removeShiftMode()
+    }
 
+
+    private fun addObservers() {
         offerViewModel.offerResponseLiveData.observe(this) { response ->
             if (response.success) {
                 val coin = response.data[0].coins

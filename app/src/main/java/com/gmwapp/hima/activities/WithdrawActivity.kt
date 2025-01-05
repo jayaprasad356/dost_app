@@ -120,12 +120,14 @@ class WithdrawActivity : BaseActivity() {
 
         binding.tvCurrentBalance.text = "₹" + userData?.balance.toString()
 
+        val upi = userData?.upi_id.toString()
 
 
         if (payment_method == "upi_transfer") {
             if (userData?.upi_id.isNullOrEmpty()) {
                 upiid = false
                 binding.cvPreferredPaymentMethod.visibility = View.GONE
+                binding.tvUpi.text = userData?.upi_id
             }
             else {
                 upiid = true
@@ -217,6 +219,7 @@ class WithdrawActivity : BaseActivity() {
                 BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
                     profileViewModel.getUsers(it)
                 }
+                binding.etUpiId.setText("")
             }
             else {
                 Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
@@ -232,6 +235,7 @@ class WithdrawActivity : BaseActivity() {
             if (userData?.upi_id.isNullOrEmpty()) {
                 upiid = false
                 binding.cvPreferredPaymentMethod.visibility = View.GONE
+                binding.tvUpi.text = it.data?.upi_id
             }
             else {
                 upiid = true
