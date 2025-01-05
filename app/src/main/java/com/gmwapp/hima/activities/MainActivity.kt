@@ -72,9 +72,14 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        if(BaseApplication.getInstance()?.getRoomId()!=null){
+            moveTaskToBack(true)
+        }
+    }
     private fun initUI() {
-
-
         userID?.let { offerViewModel.getOffer(it.toInt()) }
 
         offerViewModel.offerResponseLiveData.observe(this) { response ->
@@ -89,12 +94,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
                 }
             }
         }
-
-
-
-
-
-
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
         binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
