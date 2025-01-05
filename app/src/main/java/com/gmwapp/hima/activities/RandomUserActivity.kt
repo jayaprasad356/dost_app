@@ -72,8 +72,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         setContentView(binding.root)
         initUI()
         askPermissions()
-        onBackPressedDispatcher.addCallback(this ) {
-        }
+        onBackPressedDispatcher.addCallback(this) {}
     }
 
     private fun checkOverlayPermission() {
@@ -99,6 +98,10 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         } catch (e: Exception) {
         }
 
+    }
+
+    fun callRemainingTime() {
+        getRemainingTime()
     }
 
     fun askPermissions() {
@@ -155,7 +158,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                             )
                             addRoomStateChangedListener(callId)
                         }
-                    }else{
+                    } else {
                         Toast.makeText(
                             this@RandomUserActivity, it?.message, Toast.LENGTH_LONG
                         ).show()
@@ -166,14 +169,14 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
             }
         } else {
-            if(usersCount<4) {
+            if (usersCount < 4) {
                 usersCount++
                 val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
                 val callType = intent.getStringExtra(DConstants.CALL_TYPE)
                 userData?.let {
                     callType?.let { it1 -> femaleUsersViewModel.getRandomUser(it.id, it1) }
                 }
-            }else{
+            } else {
                 stopCall()
                 finish()
             }
@@ -199,7 +202,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         }
     }
 
-    override public fun onButtonClick() {
+    override fun onButtonClick() {
         getRemainingTime()
     }
 
@@ -221,7 +224,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         isReceiverDetailsAvailable =
             intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
-            if (it!=null && it.success) {
+            if (it != null && it.success) {
                 val data = it.data
                 data?.call_id?.let { it1 ->
 
@@ -307,7 +310,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
-                    lastActiveTime = System.currentTimeMillis();
+                    lastActiveTime = System.currentTimeMillis()
                     mediaPlayer?.pause()
                     mediaPlayer?.stop()
                     roomID = room
@@ -329,10 +332,11 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                             val constraints =
                                 Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
                                     .build()
-                            val data: Data = Data.Builder()
-                                .putInt(DConstants.USER_ID, BaseApplication.getInstance()?.getPrefs()
-                                    ?.getUserData()?.id?:0)
-                                .putInt(DConstants.CALL_ID, callId)
+                            val data: Data = Data.Builder().putInt(
+                                    DConstants.USER_ID,
+                                    BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
+                                        ?: 0
+                                ).putInt(DConstants.CALL_ID, callId)
                                 .putString(DConstants.STARTED_TIME, startTime)
                                 .putString(DConstants.ENDED_TIME, endTime).build()
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
@@ -358,7 +362,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         }
     }
 
-    private fun stopCall(){
+    private fun stopCall() {
         ZegoUIKitPrebuiltCallService.endCall()
         mediaPlayer?.pause()
         mediaPlayer?.stop()
@@ -370,7 +374,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            this.balanceTime = balanceTime;
+            this.balanceTime = balanceTime
             setupZegoUIKit(userData.id, userData.name)
         }
         when (type) {

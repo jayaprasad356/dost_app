@@ -28,6 +28,8 @@ import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.dagger.UnauthorizedEvent
+import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
+import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
@@ -52,13 +54,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import retrofit2.Call
+import retrofit2.Response
 import java.util.Arrays
 import kotlin.math.abs
 
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
-    protected var callType: String? = null;
+    protected var callType: String? = null
     protected var balanceTime: String? = null
     protected var roomID: String? = null
     protected var lastActiveTime: Long? = null
@@ -69,11 +73,13 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 val app = BaseApplication.getInstance()
-                if(Helper.checkNetworkConnection() && app?.isEndCallUpdatePending() == true){
+                if (Helper.checkNetworkConnection() && app?.isEndCallUpdatePending() == true) {
                     ZegoUIKitPrebuiltCallService.endCall()
                     app.setEndCallUpdatePending(null)
                 }
@@ -88,30 +94,39 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        getRemainingTime();
+        if(roomID!=null){
+            ZegoUIKitPrebuiltCallService.minimizeCall()
+        }
+        getRemainingTime()
     }
 
-    protected fun getRemainingTime(){
-        if(roomID!=null) {
-            moveTaskToBack(true)
-            BaseApplication.getInstance()?.getPrefs()
-                ?.getUserData()?.id?.let {
+    protected fun getRemainingTime() {
+        if (roomID != null) {
+            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
                     callType?.let { it1 ->
                         profileViewModel.getRemainingTime(
-                            it,
-                            it1
+                            it, it1,object : NetworkCallback<GetRemainingTimeResponse> {
+                                override fun onResponse(
+                                    call: Call<GetRemainingTimeResponse>, response: Response<GetRemainingTimeResponse>
+                                ) {
+                                    val body = response?.body()
+                                    if (body?.success == true) {
+                                        balanceTime = body.data?.remaining_time
+                                        ZegoUIKitPrebuiltCallService.sendInRoomCommand(
+                                            DConstants.REMAINING_TIME + "=" + balanceTime, arrayListOf(null)
+                                        ) {}
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<GetRemainingTimeResponse>, t: Throwable) {
+                                }
+
+                                override fun onNoNetwork() {
+                                }
+                            }
                         )
                     }
                 }
-
-            profileViewModel.remainingTimeLiveData.observe(this) { response ->
-                if (response != null && response.success) {
-                    this.balanceTime = response.data?.remaining_time
-                    ZegoUIKitPrebuiltCallService.sendInRoomCommand(
-                        DConstants.REMAINING_TIME + "=" + this.balanceTime, arrayListOf(null)
-                    ) {}
-                }
-            }
         }
     }
 
@@ -123,9 +138,7 @@ open class BaseActivity : AppCompatActivity() {
     fun showErrorMessage(message: String) {
         if (message == DConstants.NO_NETWORK) {
             Toast.makeText(
-                this@BaseActivity,
-                getString(R.string.please_try_again_later),
-                Toast.LENGTH_LONG
+                this@BaseActivity, getString(R.string.please_try_again_later), Toast.LENGTH_LONG
             ).show()
         } else {
             Toast.makeText(
@@ -149,7 +162,6 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun setupZegoUIKit(Userid: Any, userName: String) {
-        this.balanceTime = balanceTime;
         val appID: Long = 364167780
         val appSign = "3dd4f50fa22240d5943b75a843ef9711c7fa0424e80f8eb67c2bc0552cd1c2f3"
         val userID: String = Userid.toString()
@@ -209,22 +221,22 @@ open class BaseActivity : AppCompatActivity() {
                             )
                             var remainingTime: Int = balanceTimeInsecs - seconds.toInt()
                             foregroundView?.updateTime(remainingTime)
-                            if (roomID!=null && remainingTime <= 0) {
+                            if (roomID != null && remainingTime <= 0) {
                                 ZegoUIKitPrebuiltCallService.endCall()
-                                config.durationConfig = null;
-                                if(!Helper.checkNetworkConnection()){
-                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
+                                config.durationConfig = null
+                                if (!Helper.checkNetworkConnection()) {
+                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true)
                                 }
                             }
 
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand(
                                 "active", arrayListOf(null)
                             ) {}
-                            if (roomID!=null && lastActiveTime!=null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
+                            if (roomID != null && lastActiveTime != null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
                                 ZegoUIKitPrebuiltCallService.endCall()
-                                config.durationConfig = null;
-                                if(!Helper.checkNetworkConnection()){
-                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true);
+                                config.durationConfig = null
+                                if (!Helper.checkNetworkConnection()) {
+                                    BaseApplication.getInstance()?.setEndCallUpdatePending(true)
                                 }
                             }
                         }
@@ -258,8 +270,7 @@ open class BaseActivity : AppCompatActivity() {
                             val requestOptions = RequestOptions().circleCrop()
                             Glide.with(parent.context).load(
                                 UsersImage(
-                                    profileViewModel,
-                                    uiKitUser.userID.toInt()
+                                    profileViewModel, uiKitUser.userID.toInt()
                                 ).execute().get()
                             ).apply(requestOptions).into(imageView)
 
@@ -273,7 +284,7 @@ open class BaseActivity : AppCompatActivity() {
                     ZegoForegroundViewProvider { parent, uiKitUser ->
                         if (uiKitUser.userID != userID) {
                             foregroundView = CustomCallView(parent.context, uiKitUser.userID)
-                            foregroundView?.setContext(this@BaseActivity);
+                            foregroundView?.setContext(this@BaseActivity)
                             foregroundView
                         } else {
 

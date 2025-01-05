@@ -32,6 +32,11 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         context: Context, attrs: AttributeSet?, userID: String?
     ) : super(context, attrs, userID)
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        activity?.callRemainingTime()
+    }
+
     override fun onForegroundViewCreated(uiKitUser: ZegoUIKitUser) {
         // init your custom view
         val prefs = BaseApplication.getInstance()?.getPrefs()

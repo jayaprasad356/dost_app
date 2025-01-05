@@ -17,6 +17,7 @@ import com.gmwapp.hima.retrofit.responses.VoiceUpdateResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Response
 import javax.inject.Inject
@@ -289,26 +290,13 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
     fun getRemainingTime(
         userId: Int,
         callType: String,
+        callback: NetworkCallback<GetRemainingTimeResponse>
     ) {
         viewModelScope.launch {
             profileRepositories.getRemainingTime(
                 userId,
                 callType,
-                object : NetworkCallback<GetRemainingTimeResponse> {
-                    override fun onResponse(
-                        call: Call<GetRemainingTimeResponse>, response: Response<GetRemainingTimeResponse>
-                    ) {
-                        remainingTimeLiveData.postValue(response.body())
-                    }
-
-                    override fun onFailure(call: Call<GetRemainingTimeResponse>, t: Throwable) {
-                        remainingTimeErrorLiveData.postValue(t.message)
-                    }
-
-                    override fun onNoNetwork() {
-                        remainingTimeErrorLiveData.postValue(DConstants.NO_NETWORK)
-                    }
-                })
+                callback)
         }
     }
 
