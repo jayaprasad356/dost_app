@@ -1,6 +1,7 @@
 package com.gmwapp.hima.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -47,6 +48,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
+    private var mContext: Context? = null
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
@@ -80,6 +82,10 @@ class FemaleHomeFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.mContext = context;
+    }
     fun askPermissions() {
         val permissionNeeded =
             arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
@@ -290,8 +296,10 @@ class FemaleHomeFragment : BaseFragment() {
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
                                 CallUpdateWorker::class.java
                             ).setInputData(data).setConstraints(constraints).build()
-                            WorkManager.getInstance(requireActivity())
-                                .enqueue(oneTimeWorkRequest)
+                            mContext?.let {
+                                WorkManager.getInstance(it)
+                                    .enqueue(oneTimeWorkRequest)
+                            }
                             val prefs = BaseApplication.getInstance()?.getPrefs()
                             val userData = prefs?.getUserData()
                             if (userData != null) {
