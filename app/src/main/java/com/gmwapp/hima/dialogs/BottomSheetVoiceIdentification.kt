@@ -3,7 +3,6 @@ package com.gmwapp.hima.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.media.MediaPlayer
-import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -21,6 +20,7 @@ import com.gmwapp.hima.databinding.BottomSheetVoiceIdentificationBinding
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.naman14.androidlame.Mp3Recorder
 import java.io.File
 import java.io.IOException
 
@@ -30,7 +30,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
     private var audiofile: File? = null
     private var mediaPlayer: MediaPlayer? = null
     private var onItemSelectionListener: OnItemSelectionListener<String?>? = null
-    private var mRecorder: MediaRecorder? = null
+    private var mRecorder: Mp3Recorder? = null
     lateinit var binding: BottomSheetVoiceIdentificationBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -94,7 +94,7 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
                 binding.ivMicroPhoneCircle.setImageDrawable(resources.getDrawable(R.drawable.ic_microphone_circle))
 
                 try {
-                    mRecorder?.release()
+                    mRecorder?.stop()
 
                     mediaPlayer?.setDataSource(audiofile?.absolutePath)
                     mediaPlayer?.prepare()
@@ -180,14 +180,9 @@ class BottomSheetVoiceIdentification : BottomSheetDialogFragment() {
             return
         }
 
-        mRecorder = MediaRecorder()
+        mRecorder = Mp3Recorder(audiofile)
 
-        mRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mRecorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        mRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        mRecorder?.setOutputFile(audiofile?.absolutePath)
         try {
-            mRecorder?.prepare()
             mRecorder?.start()
         } catch (e: IOException) {
             Log.e("TAG", "prepare() failed" + e.stackTraceToString())
