@@ -139,7 +139,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
         val instance = BaseApplication.getInstance()
         if (isReceiverDetailsAvailable) {
-            instance?.setReceiverDetailsAvailable(true);
+            instance?.setReceiverDetailsAvailable(true)
             if (cancelled) {
                 mediaPlayer?.pause()
                 mediaPlayer?.stop()
@@ -181,7 +181,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
             }
         } else {
-            instance?.setReceiverDetailsAvailable(false);
+            instance?.setReceiverDetailsAvailable(false)
 
             if (usersCount < 4) {
                 usersCount++
@@ -199,12 +199,11 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
     override fun onResume() {
         super.onResume()
-        if (BaseApplication.getInstance()
-                ?.getRoomId() != null
-        ) {
+        if (BaseApplication.getInstance()?.getRoomId() != null) {
             moveTaskToBack(true)
         }
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
@@ -230,6 +229,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
     private fun initUI() {
 
+        isReceiverDetailsAvailable =
+            intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         progress()
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
         val image = intent.getStringExtra(DConstants.IMAGE)
@@ -237,18 +238,15 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
 
 
-        if (callType == "audio")
-        {
+        if (callType == "audio") {
             binding.tvTitle.text = "Audio call"
-        }
-        else
-        {
+        } else {
             binding.tvTitle.text = "Video call"
         }
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
-         val  profileImage = userData?.image
+        val profileImage = userData?.image
 
         val requestOptions = RequestOptions().circleCrop()
         Glide.with(this).load(profileImage).apply(requestOptions).into(binding.ivCallerProfile)
@@ -258,7 +256,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
             Glide.with(this).load(image).apply(requestOptions).into(binding.ivLogo)
         }
         if (text != null) {
-          // binding.tvWaitHint.text = text
+            // binding.tvWaitHint.text = text
         }
 
 //        binding.btnCancel.setOnClickListener({
@@ -266,8 +264,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 //            finish()
 //        })
 
-        isReceiverDetailsAvailable =
-            intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
             if (it != null && it.success) {
                 val data = it.data
@@ -303,19 +299,20 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
         // Set the ProgressBar max to 100
-        progressBar.max = 100
+        val max = (if (isReceiverDetailsAvailable) 30 else 7) * 1000L
+        progressBar.max = max.toInt()
 
         // Timer for 30 seconds
-        val timer = object : CountDownTimer(30000, 300) { // 30000ms = 30s, 300ms interval
+        val timer = object : CountDownTimer(max, 500) { // 30000ms = 30s, 300ms interval
             override fun onTick(millisUntilFinished: Long) {
                 // Calculate the progress
-                val progress = ((30000 - millisUntilFinished) / 300).toInt()
+                val progress = (max - millisUntilFinished).toInt()
                 progressBar.progress = progress
             }
 
             override fun onFinish() {
                 // Complete progress when the timer finishes
-                progressBar.progress = 100
+                progressBar.progress = max.toInt()
                 stopCall()
                 finish()
             }
@@ -341,7 +338,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                     callees: MutableList<ZegoCallUser>?
                 ) {
                 }
-
 
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
@@ -408,10 +404,9 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                                 Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
                                     .build()
                             val data: Data = Data.Builder().putInt(
-                                    DConstants.USER_ID,
-                                    BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
-                                        ?: 0
-                                ).putInt(DConstants.CALL_ID, callId)
+                                DConstants.USER_ID,
+                                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id ?: 0
+                            ).putInt(DConstants.CALL_ID, callId)
                                 .putString(DConstants.STARTED_TIME, startTime)
                                 .putBoolean(DConstants.IS_INDIVIDUAL, isReceiverDetailsAvailable)
                                 .putString(DConstants.ENDED_TIME, endTime).build()
@@ -470,7 +465,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         user.avatar = instance?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setCustomData(callId.toString())
         binding.voiceCallButton.setInvitees(listOf(user))
-        binding.voiceCallButton.setTimeout(7)
+        binding.voiceCallButton.setTimeout(if (isReceiverDetailsAvailable) 30 else 7)
         callUserName = targetName
         callUserId = targetUserId
         instance?.setCallUserId(callUserId)
@@ -495,7 +490,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         user.avatar = instance?.getPrefs()?.getUserData()?.image
         binding.voiceCallButton.setCustomData(callId.toString())
         binding.voiceCallButton.setInvitees(listOf(user))
-        binding.voiceCallButton.setTimeout(7)
+        binding.voiceCallButton.setTimeout(if (isReceiverDetailsAvailable) 30 else 7)
         lifecycleScope.launch {
             if (instance?.isCalled() == false || instance?.isCalled() == null) {
                 delay(4000)
