@@ -290,6 +290,7 @@ open class BaseFragment : Fragment() {
                     }
                 }
 
+                config.useSpeakerWhenJoining = true
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
