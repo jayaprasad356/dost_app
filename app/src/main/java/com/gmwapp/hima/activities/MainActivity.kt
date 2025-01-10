@@ -37,9 +37,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.androidbrowserhelper.trusted.LauncherActivity
 import com.zegocloud.uikit.ZegoUIKit
+import com.zegocloud.uikit.plugin.signaling.ZegoSignalingPlugin
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
+import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
+import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.uikit.libuikitreport.ReportUtil
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import im.zego.zim.ZIM
+import im.zego.zim.callback.ZIMEventHandler
+import im.zego.zim.entity.ZIMCallInvitationEndedInfo
+import im.zego.zim.entity.ZIMCallInvitationReceivedInfo
+import im.zego.zim.entity.ZIMCallInvitationTimeoutInfo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -54,6 +63,37 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     var isBackPressedAlready = false
     var userName: String? = null
     var userID: String? = null
+    private val zimEventHandler: ZIMEventHandler = object : ZIMEventHandler() {
+        override fun onCallInvitationTimeout(
+            zim: ZIM?,
+            info: ZIMCallInvitationTimeoutInfo?,
+            callID: String?
+        ) {
+            super.onCallInvitationTimeout(zim, info, callID)
+            try {
+                val incomingCallButtonListener =
+                    ZegoUIKitPrebuiltCallService.events.invitationEvents.incomingCallButtonListener
+                incomingCallButtonListener?.onIncomingCallDeclineButtonPressed()
+                CallInvitationServiceImpl.getInstance().rejectInvitation {
+                    val hashMap = java.util.HashMap<String, Any>()
+                    val invitationData = CallInvitationServiceImpl.getInstance().callInvitationData
+                    if (invitationData != null) {
+                        hashMap["call_id"] = invitationData.invitationID
+                    } else {
+                        hashMap["call_id"] = ""
+                    }
+                    hashMap["app_state"] = "active"
+                    hashMap["action"] = "refuse"
+                    ReportUtil.reportEvent("call/respondInvitation", hashMap)
+                }
+
+                CallInvitationServiceImpl.getInstance().hideIncomingCallDialog()
+                CallInvitationServiceImpl.getInstance().dismissCallNotification()
+                CallInvitationServiceImpl.getInstance().clearPushMessage()
+            } catch (e: Exception) {
+            }
+        }
+    }
 
     val offerViewModel: OfferViewModel by viewModels()
 
@@ -62,6 +102,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ZegoSignalingPlugin.getInstance().registerZIMEventHandler(zimEventHandler)
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -93,6 +134,7 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             }
         }
     }
+
     override fun resumeZegoCloud(){
         addRoomStateChangedListener()
         moveTaskToBack(true)
