@@ -37,6 +37,12 @@ class CoinAdapter(
             coin.isSelected = true
         }
 
+        if (coin.popular == 1){
+            holder.binding.tvPopular.visibility = View.VISIBLE
+        }else{
+            holder.binding.tvPopular.visibility = View.GONE
+        }
+
         // Update the UI based on selection
         if (coin.isSelected == true) {
             holder.binding.cvCoin.strokeWidth = 4
