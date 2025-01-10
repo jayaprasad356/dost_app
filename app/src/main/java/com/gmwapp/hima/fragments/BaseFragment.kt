@@ -127,7 +127,12 @@ open class BaseFragment : Fragment() {
                     hashMap["action"] = "refuse"
                     ReportUtil.reportEvent("call/respondInvitation", hashMap)
                 }
-                (CallInvitationServiceImpl.getInstance().topActivity as CallInviteActivity).finishCallActivityAndMoveToFront()
+
+                try {
+                    (CallInvitationServiceImpl.getInstance().topActivity as CallInviteActivity).finishCallActivityAndMoveToFront()
+                } catch (e: Exception) {
+                }
+                CallInvitationServiceImpl.getInstance().hideIncomingCallDialog()
                 CallInvitationServiceImpl.getInstance().dismissCallNotification()
                 CallInvitationServiceImpl.getInstance().clearPushMessage()
             } catch (e: Exception) {
