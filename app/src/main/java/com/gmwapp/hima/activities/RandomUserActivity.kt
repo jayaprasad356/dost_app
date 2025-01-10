@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
@@ -78,7 +80,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fragment_container)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         initUI()
@@ -227,20 +229,43 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     private fun initUI() {
+
+        progress()
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
         val image = intent.getStringExtra(DConstants.IMAGE)
         val text = intent.getStringExtra(DConstants.TEXT)
+
+
+
+        if (callType == "audio")
+        {
+            binding.tvTitle.text = "Audio call"
+        }
+        else
+        {
+            binding.tvTitle.text = "Video call"
+        }
+
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        val userData = prefs?.getUserData()
+         val  profileImage = userData?.image
+
+        val requestOptions = RequestOptions().circleCrop()
+        Glide.with(this).load(profileImage).apply(requestOptions).into(binding.ivCallerProfile)
+
         if (image != null) {
             val requestOptions = RequestOptions().circleCrop()
             Glide.with(this).load(image).apply(requestOptions).into(binding.ivLogo)
         }
         if (text != null) {
-            binding.tvWaitHint.text = text
+          // binding.tvWaitHint.text = text
         }
-        binding.btnCancel.setOnClickListener({
-            stopCall()
-            finish()
-        })
+
+//        binding.btnCancel.setOnClickListener({
+//            stopCall()
+//            finish()
+//        })
+
         isReceiverDetailsAvailable =
             intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         femaleUsersViewModel.randomUsersResponseLiveData.observe(this, Observer {
@@ -272,6 +297,30 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
             mediaPlayer?.stop()
             finish()
         })
+    }
+
+    private fun progress() {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+
+        // Set the ProgressBar max to 100
+        progressBar.max = 100
+
+        // Timer for 30 seconds
+        val timer = object : CountDownTimer(30000, 300) { // 30000ms = 30s, 300ms interval
+            override fun onTick(millisUntilFinished: Long) {
+                // Calculate the progress
+                val progress = ((30000 - millisUntilFinished) / 300).toInt()
+                progressBar.progress = progress
+            }
+
+            override fun onFinish() {
+                // Complete progress when the timer finishes
+                progressBar.progress = 100
+                stopCall()
+                finish()
+            }
+        }
+        timer.start()
     }
 
     private fun addRoomStateChangedListener(callId: Int) {
@@ -376,7 +425,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                             mediaPlayer?.stop()
                             finish()
                             val receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
-                            val intent = Intent(this@RandomUserActivity, ReviewActivity::class.java)
+                            val intent = Intent(this@RandomUserActivity, RatingActivity::class.java)
                             intent.putExtra(DConstants.RECEIVER_NAME, callUserName)
                             intent.putExtra(DConstants.RECEIVER_ID, receiverId)
                             startActivity(intent)

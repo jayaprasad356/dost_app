@@ -82,10 +82,9 @@ class VerifyOTPActivity : BaseActivity() {
                     }else{
                         if(it.data?.status == 2){
                             intent = Intent(this, MainActivity::class.java)
-                            intent.putExtra(
-                                DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0)
-                            )
+                            intent.putExtra(DConstants.AVATAR_ID, getIntent().getIntExtra(DConstants.AVATAR_ID, 0))
                             intent.putExtra(DConstants.LANGUAGE, it.data?.language)
+
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         } else if(it.data?.status == 1){
                             intent = Intent(this, AlmostDoneActivity::class.java)
