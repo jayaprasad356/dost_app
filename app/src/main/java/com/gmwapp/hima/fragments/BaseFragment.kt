@@ -127,7 +127,12 @@ open class BaseFragment : Fragment() {
                     hashMap["action"] = "refuse"
                     ReportUtil.reportEvent("call/respondInvitation", hashMap)
                 }
-                (CallInvitationServiceImpl.getInstance().topActivity as CallInviteActivity).finishCallActivityAndMoveToFront()
+
+                try {
+                    (CallInvitationServiceImpl.getInstance().topActivity as CallInviteActivity).finishCallActivityAndMoveToFront()
+                } catch (e: Exception) {
+                }
+                CallInvitationServiceImpl.getInstance().hideIncomingCallDialog()
                 CallInvitationServiceImpl.getInstance().dismissCallNotification()
                 CallInvitationServiceImpl.getInstance().clearPushMessage()
             } catch (e: Exception) {
@@ -333,6 +338,11 @@ open class BaseFragment : Fragment() {
         ZegoUIKitPrebuiltCallService.init(
             BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ZegoSignalingPlugin.getInstance().unregisterZIMEventHandler(zimEventHandler)
     }
 
     protected fun registerBroadcastReceiver() {
