@@ -133,6 +133,7 @@ dependencies {
     implementation ("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
 
+    implementation ("com.github.NorthernCaptain:TAndroidLame:1.1")
 
 
     testImplementation(libs.junit)

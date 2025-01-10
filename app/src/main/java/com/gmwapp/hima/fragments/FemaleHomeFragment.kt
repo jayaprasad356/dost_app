@@ -35,6 +35,7 @@ import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
+import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
 import kotlinx.coroutines.delay
@@ -173,6 +174,7 @@ class FemaleHomeFragment : BaseFragment() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
+            registerBroadcastReceiver();
             setupZegoUIKit(userData.id, userData.name)
             addRoomStateChangedListener()
         }
@@ -249,6 +251,7 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    CallInvitationServiceImpl.getInstance().dismissCallNotification()
                     lastActiveTime = System.currentTimeMillis();
                     roomID = room
                     startTime = dateFormat.format(Date()) // Set call start time in IST
