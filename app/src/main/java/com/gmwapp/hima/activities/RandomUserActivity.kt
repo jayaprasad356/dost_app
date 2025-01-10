@@ -37,7 +37,9 @@ import com.permissionx.guolindev.PermissionX
 import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
+import com.zegocloud.uikit.plugin.common.PluginCallbackListener
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
+import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.invite.internal.OutgoingCallButtonListener
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallType
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallUser
@@ -54,6 +56,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class RandomUserActivity : BaseActivity(), OnButtonClickListener {
+    private var timer: CountDownTimer? = null;
     private var mediaPlayer: MediaPlayer? = null
     private var isReceiverDetailsAvailable: Boolean = false
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
@@ -303,7 +306,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         progressBar.max = max.toInt()
 
         // Timer for 30 seconds
-        val timer = object : CountDownTimer(max, 500) { // 30000ms = 30s, 300ms interval
+        timer = object : CountDownTimer(max, 500) { // 30000ms = 30s, 300ms interval
             override fun onTick(millisUntilFinished: Long) {
                 // Calculate the progress
                 val progress = (max - millisUntilFinished).toInt()
@@ -317,7 +320,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 finish()
             }
         }
-        timer.start()
+        timer?.start()
     }
 
     private fun addRoomStateChangedListener(callId: Int) {
@@ -378,6 +381,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    timer?.cancel();
                     lastActiveTime = System.currentTimeMillis()
                     mediaPlayer?.pause()
                     mediaPlayer?.stop()
@@ -435,9 +439,16 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     private fun stopCall() {
-        ZegoUIKitPrebuiltCallService.endCall()
-        mediaPlayer?.pause()
-        mediaPlayer?.stop()
+        try {
+            try {
+                CallInvitationServiceImpl.getInstance().cancelInvitation { result -> }
+            } catch (e: Exception) {
+            }
+            ZegoUIKitPrebuiltCallService.endCall()
+            mediaPlayer?.pause()
+            mediaPlayer?.stop()
+        } catch (e: Exception) {
+        }
     }
 
     private fun setupCall(
