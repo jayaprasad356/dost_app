@@ -63,9 +63,13 @@ import im.zego.connection.internal.ZegoConnectionImpl
 import im.zego.uikit.libuikitreport.ReportUtil
 import im.zego.zim.ZIM
 import im.zego.zim.callback.ZIMEventHandler
+import im.zego.zim.entity.ZIMCallInvitationAcceptedInfo
+import im.zego.zim.entity.ZIMCallInvitationCancelledInfo
 import im.zego.zim.entity.ZIMCallInvitationEndedInfo
 import im.zego.zim.entity.ZIMCallInvitationReceivedInfo
 import im.zego.zim.entity.ZIMCallInvitationTimeoutInfo
+import im.zego.zim.entity.ZIMCallUserStateChangeInfo
+import im.zego.zim.enums.ZIMCallUserState
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -76,9 +80,6 @@ import java.util.Arrays
 open class BaseFragment : Fragment() {
     private lateinit var mContext:Context;
     private var zimBackup:ZIM? = null;
-    private val gson = Gson()
-    private var infoBackup: ZIMCallInvitationReceivedInfo? = null;
-    private var callIDBackup:String? = null;
     private val zimEventHandler: ZIMEventHandler = object : ZIMEventHandler() {
         override fun onCallInvitationReceived(
             zim: ZIM?,
@@ -87,8 +88,31 @@ open class BaseFragment : Fragment() {
         ) {
             super.onCallInvitationReceived(zim, info, callID)
             zimBackup = zim
-            infoBackup = info
-            callIDBackup = callID
+        }
+
+        override fun onCallInvitationCancelled(
+            zim: ZIM?,
+            info: ZIMCallInvitationCancelledInfo?,
+            callID: String?
+        ) {
+            super.onCallInvitationCancelled(zim, info, callID)
+            zimBackup = null
+        }
+
+        override fun onCallUserStateChanged(
+            zim: ZIM?,
+            info: ZIMCallUserStateChangeInfo?,
+            callID: String?
+        ) {
+            super.onCallUserStateChanged(zim, info, callID)
+            try {
+                if(info?.callUserList?.get(0)?.state == ZIMCallUserState.ACCEPTED || info?.callUserList?.get(0)?.state == ZIMCallUserState.REJECTED) {
+                    zimBackup = null
+                }
+            } catch (e: Exception) {
+            }
+
+
         }
 
         override fun onCallInvitationEnded(
@@ -98,8 +122,6 @@ open class BaseFragment : Fragment() {
         ) {
             super.onCallInvitationEnded(zim, info, callID)
             zimBackup = null
-            infoBackup = null
-            callIDBackup = null
         }
 
         override fun onCallInvitationTimeout(
@@ -108,35 +130,7 @@ open class BaseFragment : Fragment() {
             callID: String?
         ) {
             super.onCallInvitationTimeout(zim, info, callID)
-            try {
-                zimBackup = null
-                infoBackup = null
-                callIDBackup = null
-                val incomingCallButtonListener =
-                    ZegoUIKitPrebuiltCallService.events.invitationEvents.incomingCallButtonListener
-                incomingCallButtonListener?.onIncomingCallDeclineButtonPressed()
-                CallInvitationServiceImpl.getInstance().rejectInvitation {
-                    val hashMap = java.util.HashMap<String, Any>()
-                    val invitationData = CallInvitationServiceImpl.getInstance().callInvitationData
-                    if (invitationData != null) {
-                        hashMap["call_id"] = invitationData.invitationID
-                    } else {
-                        hashMap["call_id"] = ""
-                    }
-                    hashMap["app_state"] = "active"
-                    hashMap["action"] = "refuse"
-                    ReportUtil.reportEvent("call/respondInvitation", hashMap)
-                }
-
-                try {
-                    (CallInvitationServiceImpl.getInstance().topActivity as CallInviteActivity).finishCallActivityAndMoveToFront()
-                } catch (e: Exception) {
-                }
-                CallInvitationServiceImpl.getInstance().hideIncomingCallDialog()
-                CallInvitationServiceImpl.getInstance().dismissCallNotification()
-                CallInvitationServiceImpl.getInstance().clearPushMessage()
-            } catch (e: Exception) {
-            }
+            zimBackup = null
         }
     }
 
@@ -378,9 +372,9 @@ open class BaseFragment : Fragment() {
                                         .areNotificationsEnabled()
                                 if (hasNotificationPermission && notificationsEnabled) {
 
-                                    NotificationManagerCompat.from(context).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id)
+                                    NotificationManagerCompat.from(mContext).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id)
                                     CallInvitationServiceImpl.getInstance().dismissCallNotification()
-                                    NotificationManagerCompat.from(context).notify(
+                                    NotificationManagerCompat.from(mContext).notify(
                                         PrebuiltCallNotificationManager.incoming_call_notification_id,
                                         callNotification
                                     )
