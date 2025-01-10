@@ -67,11 +67,7 @@ class AlmostDoneActivity : BaseActivity() {
         var intent: Intent? = null
         val prefs = BaseApplication.getInstance()?.getPrefs()
         var userData: UserData?
-        prefs?.getUserData()?.id?.let {
-            profileViewModel.getUsers(
-                it
-            )
-        }
+        prefs?.getUserData()?.id?.let { profileViewModel.getUsers(it) }
         profileViewModel.getUserLiveData.observe(this, Observer {
             prefs?.setUserData(it.data);
             userData = it.data;

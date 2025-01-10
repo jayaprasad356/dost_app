@@ -13,3 +13,4 @@ data class EarningsResponseData(
     val status: Int,
     val datetime: String,
 )
+
