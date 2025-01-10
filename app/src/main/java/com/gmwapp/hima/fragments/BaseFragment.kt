@@ -1,5 +1,18 @@
 package com.gmwapp.hima.fragments
 
+import android.app.KeyguardManager
+import android.app.Notification
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +20,8 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -15,27 +30,42 @@ import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.dagger.SetupZegoKitEvent
-import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
 import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallEmptyView
 import com.gmwapp.hima.widgets.CustomCallView
+import com.google.gson.Gson
+import com.tencent.mmkv.MMKV
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
 import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
 import com.zegocloud.uikit.plugin.invitation.ZegoInvitationType
+import com.zegocloud.uikit.plugin.signaling.ZegoSignalingPlugin
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.config.DurationUpdateListener
 import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
 import com.zegocloud.uikit.prebuilt.call.config.ZegoHangUpConfirmDialogInfo
 import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
+import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
+import com.zegocloud.uikit.prebuilt.call.core.invite.PrebuiltCallInviteExtendedData
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
+import com.zegocloud.uikit.prebuilt.call.core.invite.ui.CallRouteActivity
+import com.zegocloud.uikit.prebuilt.call.core.notification.NotificationUtil
+import com.zegocloud.uikit.prebuilt.call.core.notification.PrebuiltCallNotificationManager
 import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
+import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.connection.internal.ZegoConnectionImpl
+import im.zego.uikit.libuikitreport.ReportUtil
+import im.zego.zim.ZIM
+import im.zego.zim.callback.ZIMEventHandler
+import im.zego.zim.entity.ZIMCallInvitationEndedInfo
+import im.zego.zim.entity.ZIMCallInvitationReceivedInfo
+import im.zego.zim.entity.ZIMCallInvitationTimeoutInfo
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -44,6 +74,71 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
+    private lateinit var mContext:Context;
+    private var zimBackup:ZIM? = null;
+    private val gson = Gson()
+    private var infoBackup: ZIMCallInvitationReceivedInfo? = null;
+    private var callIDBackup:String? = null;
+    private val zimEventHandler: ZIMEventHandler = object : ZIMEventHandler() {
+        override fun onCallInvitationReceived(
+            zim: ZIM?,
+            info: ZIMCallInvitationReceivedInfo?,
+            callID: String?
+        ) {
+            super.onCallInvitationReceived(zim, info, callID)
+            zimBackup = zim
+            infoBackup = info
+            callIDBackup = callID
+        }
+
+        override fun onCallInvitationEnded(
+            zim: ZIM?,
+            info: ZIMCallInvitationEndedInfo?,
+            callID: String?
+        ) {
+            super.onCallInvitationEnded(zim, info, callID)
+            zimBackup = null
+            infoBackup = null
+            callIDBackup = null
+        }
+
+        override fun onCallInvitationTimeout(
+            zim: ZIM?,
+            info: ZIMCallInvitationTimeoutInfo?,
+            callID: String?
+        ) {
+            super.onCallInvitationTimeout(zim, info, callID)
+            try {
+                zimBackup = null
+                infoBackup = null
+                callIDBackup = null
+                val incomingCallButtonListener =
+                    ZegoUIKitPrebuiltCallService.events.invitationEvents.incomingCallButtonListener
+                incomingCallButtonListener?.onIncomingCallDeclineButtonPressed()
+                CallInvitationServiceImpl.getInstance().rejectInvitation {
+                    val hashMap = java.util.HashMap<String, Any>()
+                    val invitationData = CallInvitationServiceImpl.getInstance().callInvitationData
+                    if (invitationData != null) {
+                        hashMap["call_id"] = invitationData.invitationID
+                    } else {
+                        hashMap["call_id"] = ""
+                    }
+                    hashMap["app_state"] = "active"
+                    hashMap["action"] = "refuse"
+                    ReportUtil.reportEvent("call/respondInvitation", hashMap)
+                }
+
+                try {
+                    (CallInvitationServiceImpl.getInstance().topActivity as CallInviteActivity).finishCallActivityAndMoveToFront()
+                } catch (e: Exception) {
+                }
+                CallInvitationServiceImpl.getInstance().hideIncomingCallDialog()
+                CallInvitationServiceImpl.getInstance().dismissCallNotification()
+                CallInvitationServiceImpl.getInstance().clearPushMessage()
+            } catch (e: Exception) {
+            }
+        }
+    }
 
     protected var lastActiveTime: Long = 0;
     var receivedId: Int = 0
@@ -69,6 +164,10 @@ open class BaseFragment : Fragment() {
         EventBus.getDefault().register(this)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.mContext = context;
+    }
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
@@ -95,7 +194,6 @@ open class BaseFragment : Fragment() {
         callInvitationConfig.endCallWhenInitiatorLeave = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
         callInvitationConfig.outgoingCallRingtone = "rhythm"
-
         ZegoUIKitPrebuiltCallService.events.callEvents.setOnlySelfInRoomListener {
             ZegoUIKitPrebuiltCallService.endCall()
         }
@@ -197,6 +295,7 @@ open class BaseFragment : Fragment() {
                     }
                 }
 
+                config.useSpeakerWhenJoining = true
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
@@ -235,9 +334,189 @@ open class BaseFragment : Fragment() {
                 }
             }
         }
+        ZegoSignalingPlugin.getInstance().registerZIMEventHandler(zimEventHandler)
         ZegoUIKitPrebuiltCallService.init(
             BaseApplication.getInstance(), appID, appSign, userID, userName, callInvitationConfig
         )
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        ZegoSignalingPlugin.getInstance().unregisterZIMEventHandler(zimEventHandler)
+    }
+
+    protected fun registerBroadcastReceiver() {
+        val theFilter = IntentFilter()
+        theFilter.addAction(Intent.ACTION_SCREEN_ON)
+        theFilter.addAction(Intent.ACTION_SCREEN_OFF)
+
+        val screenOnOffReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (zimBackup != null) {
+                    val strAction = intent.action
+
+                    if (strAction == Intent.ACTION_SCREEN_OFF || strAction == Intent.ACTION_SCREEN_ON) {
+                        val keyguardManager =
+                            ZegoConnectionImpl.context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+
+                        if (keyguardManager.inKeyguardRestrictedInputMode()
+                        ) {
+                            try {
+                                val callNotification = createCallNotification(context)
+                                var hasNotificationPermission = true
+                                if (Build.VERSION.SDK_INT >= 33) {
+                                    hasNotificationPermission =
+                                        (ContextCompat.checkSelfPermission(
+                                            context,
+                                            "android.permission.POST_NOTIFICATIONS"
+                                        )
+                                                == PackageManager.PERMISSION_GRANTED)
+                                }
+
+                                val notificationsEnabled =
+                                    NotificationManagerCompat.from(context)
+                                        .areNotificationsEnabled()
+                                if (hasNotificationPermission && notificationsEnabled) {
+
+                                    NotificationManagerCompat.from(context).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id)
+                                    CallInvitationServiceImpl.getInstance().dismissCallNotification()
+                                    NotificationManagerCompat.from(context).notify(
+                                        PrebuiltCallNotificationManager.incoming_call_notification_id,
+                                        callNotification
+                                    )
+                                }
+                            } catch (e: Exception) {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        BaseApplication.getInstance()?.registerReceiver(screenOnOffReceiver, theFilter)
+    }
+
+    fun createCallNotification(context: Context?): Notification {
+        val title: String
+        val body: String
+        val isVideoCall: Boolean
+
+        val app_state: String
+        val call_id: String
+
+        val zimPushMessage = CallInvitationServiceImpl.getInstance().zimPushMessage
+        if (zimPushMessage == null) {
+            val invitationData = CallInvitationServiceImpl.getInstance().callInvitationData
+            isVideoCall = invitationData.type == ZegoInvitationType.VIDEO_CALL.value
+            val isGroup = invitationData.invitees.size > 1
+            title = PrebuiltCallNotificationManager.getBackgroundNotificationTitle(
+                isVideoCall,
+                isGroup,
+                invitationData.inviter.userName
+            )
+            body = PrebuiltCallNotificationManager.getBackgroundNotificationMessage(
+                isVideoCall,
+                isGroup
+            )
+
+            app_state = "background"
+            call_id = invitationData.invitationID
+        } else {
+            val gson = Gson()
+            val extendedData = gson.fromJson(
+                zimPushMessage.payLoad,
+                PrebuiltCallInviteExtendedData::class.java
+            )
+            isVideoCall = extendedData.type == ZegoInvitationType.VIDEO_CALL.value
+            title = zimPushMessage.title
+            body = zimPushMessage.body
+
+            app_state = "restarted"
+            call_id = zimPushMessage.invitationID
+        }
+        val hashMap = HashMap<String, Any>()
+        hashMap["call_id"] = call_id
+        hashMap["app_state"] = app_state
+        ReportUtil.reportEvent("call/displayNotification", hashMap)
+
+        val invitationConfig = CallInvitationServiceImpl.getInstance()
+            .callInvitationConfig
+        var channelID = MMKV.defaultMMKV().getString("channelID", null)
+        if (channelID == null) {
+            channelID = if (invitationConfig?.notificationConfig != null) {
+                invitationConfig.notificationConfig.channelID
+            } else {
+                PrebuiltCallNotificationManager.incoming_call_channel_id
+            }
+        }
+
+        val clickIntent: PendingIntent = getClickIntent(mContext)
+        val acceptIntent: PendingIntent = getAcceptIntent(mContext)
+        val declineIntent: PendingIntent = getDeclineIntent(mContext)
+        val lockScreenIntent: PendingIntent = getLockScreenIntent(mContext)
+
+        return NotificationUtil.generateNotification(
+            context,
+            channelID,
+            title,
+            body,
+            isVideoCall,
+            (30000 * 2).toLong(),
+            declineIntent,
+            acceptIntent,
+            clickIntent,
+            null,
+            lockScreenIntent
+        )
+    }
+
+    private fun getDeclineIntent(context: Context): PendingIntent {
+        val intent = CallRouteActivity.getDeclineIntent(context)
+        return getPendingActivityIntent(context, intent)
+    }
+
+    private fun getClickIntent(context: Context): PendingIntent {
+        val intent = CallRouteActivity.getContentIntent(context)
+        return getPendingActivityIntent(context, intent)
+    }
+    private fun getAcceptIntent(context: Context): PendingIntent {
+        val intent = CallRouteActivity.getAcceptIntent(context)
+        return getPendingActivityIntent(context, intent)
+    }
+
+
+    private fun getLockScreenIntent(context: Context): PendingIntent {
+        val invitationData = CallInvitationServiceImpl.getInstance().callInvitationData
+        val intent = if (invitationData == null) {
+            CallInviteActivity.getPageIntent(context, CallInviteActivity.PAGE_LOCKSCREEN, null)
+        } else {
+            CallInviteActivity.getPageIntent(context, CallInviteActivity.PAGE_INCOMING, null)
+        }
+        //  use CallRouteActivity.getLockScreenIntent will not working
+        //        Intent intent = CallRouteActivity.getLockScreenIntent(context);
+        return getPendingActivityIntent(context, intent)
+    }
+    fun getPendingActivityIntent(context: Context?, intent: Intent?): PendingIntent {
+        val openIntent = if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
+            PendingIntent.getActivity(
+                context, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+        return openIntent
+    }
+    fun wakeLockScreen() {
+        val powerManager = mContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val wakeLock = powerManager.newWakeLock(
+            PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+            "MyApp::MyWakeLockTag"
+        )
+
+        wakeLock.acquire(3000)
+        val handler = Handler(Looper.getMainLooper())
+
+        handler.postDelayed(Runnable { wakeLock.release() }, 5000)
     }
 }

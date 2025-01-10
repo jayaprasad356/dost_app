@@ -346,6 +346,7 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
 
+                config.useSpeakerWhenJoining = true
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->

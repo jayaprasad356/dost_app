@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- Permissions required by the App -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -137,6 +138,15 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
+        <receiver
+            android:name=".OfflineCallReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="im.zego.zim.zpns.intent.action.MESSAGE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
