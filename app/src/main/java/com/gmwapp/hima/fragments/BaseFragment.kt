@@ -340,6 +340,11 @@ open class BaseFragment : Fragment() {
         )
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        ZegoSignalingPlugin.getInstance().unregisterZIMEventHandler(zimEventHandler)
+    }
+
     protected fun registerBroadcastReceiver() {
         val theFilter = IntentFilter()
         theFilter.addAction(Intent.ACTION_SCREEN_ON)
