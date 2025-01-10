@@ -29,7 +29,7 @@ class OfflineCallReceiver : MyZPNsReceiver() {
             if (!TextUtils.isEmpty(pushMessage!!.invitationID)) { // not zim push message.
                 Handler(Looper.getMainLooper()).postDelayed({
                     try {
-                        if(BaseApplication.getInstance()?.getRoomId()==null) {
+                        if(!CallInvitationServiceImpl.getInstance().isInCallRoom) {
                             val incomingCallButtonListener =
                                 ZegoUIKitPrebuiltCallService.events.invitationEvents.incomingCallButtonListener
                             incomingCallButtonListener?.onIncomingCallDeclineButtonPressed()
