@@ -89,7 +89,10 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         }
         initUI()
         askPermissions()
-        onBackPressedDispatcher.addCallback(this) {}
+        onBackPressedDispatcher.addCallback(this) {
+            stopCall()
+            finish()
+        }
     }
 
     private fun checkOverlayPermission() {
