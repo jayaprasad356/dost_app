@@ -30,6 +30,7 @@ import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.R
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityRandomUserBinding
+import com.gmwapp.hima.services.CallingService
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
@@ -381,6 +382,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    startService(Intent(this@RandomUserActivity, CallingService::class.java))
                     timer?.cancel();
                     lastActiveTime = System.currentTimeMillis()
                     mediaPlayer?.pause()
@@ -396,6 +398,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
+                        stopService(Intent(this@RandomUserActivity, CallingService::class.java))
                         lastActiveTime = null
                         delay(500)
                         if (roomID != null) {

@@ -28,6 +28,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.FragmentFemaleHomeBinding
 import com.gmwapp.hima.retrofit.callbacks.NetworkCallback
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
+import com.gmwapp.hima.services.CallingService
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
@@ -251,6 +252,7 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    mContext?.startService(Intent(mContext, CallingService::class.java))
                     CallInvitationServiceImpl.getInstance().dismissCallNotification()
                     lastActiveTime = System.currentTimeMillis();
                     roomID = room
@@ -281,6 +283,8 @@ class FemaleHomeFragment : BaseFragment() {
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
                     lifecycleScope.launch {
+                        mContext?.stopService(Intent(mContext, CallingService::class.java))
+
                         lastActiveTime = 0
                         delay(500)
                         if (roomID != null) {
