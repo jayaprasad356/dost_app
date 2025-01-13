@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -37,6 +38,7 @@ import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
+import com.zegocloud.uikit.prebuilt.call.core.notification.PrebuiltCallNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
 import kotlinx.coroutines.delay
@@ -253,6 +255,7 @@ class FemaleHomeFragment : BaseFragment() {
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
                     mContext?.startService(Intent(mContext, CallingService::class.java))
+                    mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
                     CallInvitationServiceImpl.getInstance().dismissCallNotification()
                     lastActiveTime = System.currentTimeMillis();
                     roomID = room
