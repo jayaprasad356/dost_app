@@ -237,7 +237,8 @@ open class BaseActivity : AppCompatActivity() {
             getString(R.string.please_login_again_to_continue),
             Toast.LENGTH_SHORT
         ).show()
-        val prefs = BaseApplication.getInstance()?.getPrefs()
+        ZegoUIKitPrebuiltCallService.unInit()
+            val prefs = BaseApplication.getInstance()?.getPrefs()
         prefs?.clearUserData()
         val intent = Intent(this, LoginActivity::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
