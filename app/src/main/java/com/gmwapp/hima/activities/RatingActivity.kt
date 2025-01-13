@@ -55,16 +55,11 @@ class RatingActivity : BaseActivity() {
 
         // Initialize reviewItemsMap here when the context is ready
         reviewItemsMap = mapOf(
-            5 to listOf(getString(R.string.not_replying), getString(R.string.bad_connectivity)),
-            4 to listOf(getString(R.string.not_replying), getString(R.string.bad_connectivity)),
-            3 to listOf(getString(R.string.rude_behaviour), getString(R.string.abusive_language)),
-            2 to listOf(getString(R.string.rude_behaviour), getString(R.string.abusive_language)),
-            1 to listOf(
-                getString(R.string.not_replying),
-                getString(R.string.abusive_language),
-                getString(R.string.rude_behaviour),
-                getString(R.string.bad_connectivity)
-            )
+            5 to listOf(getString(R.string.fun_conversation), getString(R.string.help_advice), getString(R.string.friendly_conversation), getString(R.string.pleasant_voice)),
+            4 to listOf(getString(R.string.fun_conversation), getString(R.string.help_advice), getString(R.string.friendly_conversation), getString(R.string.pleasant_voice)),
+            3 to listOf(getString(R.string.boring), getString(R.string.disinterested), getString(R.string.bad_conversation), getString(R.string.lack_of_enthusiasm)),
+            2 to listOf(getString(R.string.not_replying), getString(R.string.abusive_language), getString(R.string.rude_behaviour), getString(R.string.bad_connectivity)),
+            1 to listOf(getString(R.string.not_replying), getString(R.string.abusive_language), getString(R.string.rude_behaviour), getString(R.string.bad_connectivity))
         )
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -99,7 +94,8 @@ class RatingActivity : BaseActivity() {
                 finish()
             }
             else{
-                Toast.makeText(this, "Rating submission failed", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Rating submission failed", Toast.LENGTH_SHORT).show()
+                finish()
             }
         })
 
@@ -124,15 +120,22 @@ class RatingActivity : BaseActivity() {
 
         // Setup rv_rating
         val starAdapter = HorizontalStarAdapter(this, 5) { rating ->
-            selectedRating = rating // Update the selected rating
-            updateReviewRecyclerView(rating)
-            validatebtn() // Validate the button whenever the rating is selected
+            // Update the selected rating
+            selectedRating = rating
 
-            // Show a Toast inside the Activity with the selected rating count
-//            Toast.makeText(this, "Selected Rating: $rating", Toast.LENGTH_SHORT).show()
+            // Update the review RecyclerView based on the selected rating
+            updateReviewRecyclerView(rating)
+
+            // Validate the button whenever the rating is selected
+            validatebtn()
+
+            // Uncomment this to show a Toast inside the Activity with the selected rating count
+            // Toast.makeText(this, "Selected Rating: $rating", Toast.LENGTH_SHORT).show()
         }
+
         binding.rvRating.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvRating.adapter = starAdapter
+
 
         // Setup rv_review
         val staggeredGridLayoutManager = FlexboxLayoutManager(this).apply {

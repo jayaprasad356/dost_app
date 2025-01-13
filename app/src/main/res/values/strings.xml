@@ -53,6 +53,14 @@
     <string name="_0_100">%1$d/%2$d</string>
     <string name="_0100">0/100</string>
     <string name="not_replying">Not Replying</string>
+    <string name="fun_conversation">Fun Conversation</string>
+    <string name="help_advice">Helpful Advice</string>
+    <string name="friendly_conversation">Friendly Conversation</string>
+    <string name="pleasant_voice">Pleasant Voice</string>
+    <string name="boring">Boring</string>
+    <string name="disinterested">Disinterested</string>
+    <string name="bad_conversation">Bad Conversation</string>
+    <string name="lack_of_enthusiasm">Lack of Enthusiasm</string>
     <string name="rude_behaviour">Rude Behaviour</string>
     <string name="bad_connectivity">Bad Connectivity</string>
     <string name="sports">Sports</string>
