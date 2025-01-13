@@ -277,12 +277,15 @@ open class BaseFragment : Fragment() {
                         } else {
                             receivedId = uiKitUser.userID.toInt()
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(
-                                UsersImage(
-                                    profileViewModel,
-                                    uiKitUser.userID.toInt()
-                                ).execute().get()
-                            ).apply(requestOptions).into(imageView)
+                            try {
+                                Glide.with(parent.context).load(
+                                    UsersImage(
+                                        profileViewModel,
+                                        uiKitUser.userID.toInt()
+                                    ).execute().get()
+                                ).apply(requestOptions).into(imageView)
+                            } catch (e: Exception) {
+                            }
 
                         }
                         return imageView
