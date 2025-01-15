@@ -82,7 +82,7 @@ open class BaseActivity : AppCompatActivity() {
     protected var balanceTime: String? = null
     protected var roomID: String? = null
     protected var lastActiveTime: Long? = null
-    private var foregroundView: CustomCallView? = null
+    private var foregroundViews= arrayListOf<CustomCallView>()
     private val profileViewModel: ProfileViewModel by viewModels()
     private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
         timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
@@ -295,7 +295,9 @@ open class BaseActivity : AppCompatActivity() {
                                 "TAG",
                                 "onDurationUpdate() called with: seconds = [$seconds]"
                             )
-                            foregroundView?.updateTime(seconds.toInt())
+                            foregroundViews.forEach {
+                                it?.updateTime(seconds.toInt())
+                            }
 
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand(
                                 "active&is_direct_call="+BaseApplication.getInstance()?.isReceiverDetailsAvailable(), arrayListOf(null)
@@ -351,9 +353,11 @@ open class BaseActivity : AppCompatActivity() {
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
-                        foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                        var foregroundView = CustomCallView(parent.context, uiKitUser.userID)
                         foregroundView?.setContext(this@BaseActivity)
                         foregroundView?.setBalanceTime(balanceTime)
+                        foregroundViews.add(foregroundView)
+
                         foregroundView
                     }
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)
