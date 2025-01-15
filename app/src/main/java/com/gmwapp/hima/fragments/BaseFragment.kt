@@ -143,7 +143,7 @@ open class BaseFragment : Fragment() {
     var receivedId: Int = 0
     var callId: Int = 0
     var balanceTime: String? = null
-    private var foregroundView: CustomCallView? = null
+    private var foregroundViews= arrayListOf<CustomCallView>()
     val profileViewModel: ProfileViewModel by viewModels()
     protected var roomID: String? = null
     fun showErrorMessage(message: String) {
@@ -234,8 +234,11 @@ open class BaseFragment : Fragment() {
                         override fun onDurationUpdate(seconds: Long) {
                             Log.d("TAG", "onDurationUpdate() called with: seconds = [$seconds] [$lastActiveTime]")
                             if (balanceTime !=null) {
-                                foregroundView?.setBalanceTime(balanceTime)
-                                foregroundView?.updateTime(seconds.toInt())
+                                foregroundViews.forEach {
+                                    it.setBalanceTime(balanceTime)
+                                    it.updateTime(seconds.toInt())
+                                }
+
                             }
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand("active", arrayListOf(null)
                             ) {}
@@ -301,7 +304,8 @@ open class BaseFragment : Fragment() {
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
-                        foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                        var foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                        foregroundViews.add(foregroundView)
                         foregroundView
                     }
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)

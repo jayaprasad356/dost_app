@@ -61,15 +61,15 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         // Make the window full-screen
         // Make the window full-screen without hiding the navigation bar
         val activity = context as? Activity
-        activity?.window?.apply {
-            decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    )
-            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        }
-
+//        activity?.window?.apply {
+//            decorView.systemUiVisibility = (
+//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                    )
+//            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+//        }
+//
         val root = activity?.findViewById<View>(android.R.id.content)
 
         if (root != null) {
