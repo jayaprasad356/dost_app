@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -300,16 +301,8 @@ open class BaseFragment : Fragment() {
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
-                        if (uiKitUser.userID != userID) {
-                            foregroundView = CustomCallView(parent.context, uiKitUser.userID)
-                            foregroundView
-                        } else {
-
-                            CustomCallEmptyView(
-                                parent.context, uiKitUser.userID
-                            )
-                        }
-
+                        foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                        foregroundView
                     }
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)
                 config.topMenuBarConfig.hideByClick = false

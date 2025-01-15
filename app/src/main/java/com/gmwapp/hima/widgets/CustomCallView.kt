@@ -3,10 +3,13 @@ package com.gmwapp.hima.widgets
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.View.OnLayoutChangeListener
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +24,6 @@ import com.gmwapp.hima.activities.RandomUserActivity
 import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.dagger.GetRemainingTimeEvent
-import com.gmwapp.hima.dagger.UnauthorizedEvent
 import com.gmwapp.hima.dagger.UpdateRemainingTimeEvent
 import com.gmwapp.hima.utils.Helper
 import com.zegocloud.uikit.components.audiovideo.ZegoBaseAudioVideoForegroundView
@@ -32,7 +34,9 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+
 class CustomCallView : ZegoBaseAudioVideoForegroundView {
+    private var customCallrootView: View? = null
     private var tvRemainingTime: TextView? = null
     private var balanceTime: String? = null
     private var activity: RandomUserActivity? = null
@@ -49,6 +53,10 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         EventBus.getDefault().post(GetRemainingTimeEvent());
     }
 
+    fun getDisplayContentHeight(): Int {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
     override fun onForegroundViewCreated(uiKitUser: ZegoUIKitUser) {
         // Make the window full-screen
         // Make the window full-screen without hiding the navigation bar
@@ -62,21 +70,16 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
             addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
 
+        val root = activity?.findViewById<View>(android.R.id.content)
 
-// Adding 50dp margin to the top with transparent effect
-        val rootView = activity?.findViewById<View>(android.R.id.content)
-
-        if (rootView != null) {
-            rootView.setBackgroundColor(Color.parseColor("#ff0d4a"))
+        if (root != null) {
+            root?.setBackgroundColor(Color.parseColor("#ff0d4a"))
             ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
                 insets
             }
         }
-
-
-
 
         // Initialize your custom view
         val prefs = BaseApplication.getInstance()?.getPrefs()
@@ -90,11 +93,21 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
                 R.layout.widget_custom_call_female,
             this
         )
+        var height = getDisplayContentHeight();
+        inflate.addOnLayoutChangeListener(OnLayoutChangeListener { v, left, top, right, bottom, leftWas, topWas, rightWas, bottomWas ->
+            if(v.height < height/2){
+                root?.setBackgroundColor(context.getColor(android.R.color.transparent))
+                customCallrootView?.visibility = View.INVISIBLE
+            } else{
+                root?.setBackgroundColor(Color.parseColor("#ff0d4a"))
+                customCallrootView?.visibility = View.VISIBLE
+            }
+        })
 
-        val view = inflate
-        tvRemainingTime = view.findViewById<View>(R.id.tv_remaining_time) as TextView?
+        customCallrootView = inflate
+        tvRemainingTime = inflate.findViewById<View>(R.id.tv_remaining_time) as TextView?
         if (userData?.gender == DConstants.MALE) {
-            var clCoins = view.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
+            var clCoins = inflate.findViewById<View>(R.id.cl_coins) as ConstraintLayout?
             clCoins?.setOnClickListener({
                 try {
                     val aux: Fragment = FragmentForResult(RandomUserActivity())
