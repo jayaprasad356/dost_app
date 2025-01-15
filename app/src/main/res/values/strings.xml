@@ -216,5 +216,6 @@
     <string name="your_current_balance">Your Current Balance</string>
     <string name="preferred_payment_method">Preferred payment method</string>
     <string name="select">select</string>
+    <string name="running_service_to_call">Running service to calling</string>
 
 </resources>

@@ -113,7 +113,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
         userID?.let { offerViewModel.getOffer(it.toInt()) }
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(this)
-        binding.bottomNavigationView.selectedItemId = R.id.home
         removeShiftMode()
     }
 

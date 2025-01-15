@@ -96,6 +96,7 @@ open class BaseFragment : Fragment() {
             callID: String?
         ) {
             super.onCallInvitationCancelled(zim, info, callID)
+            mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
             zimBackup = null
         }
 
@@ -108,6 +109,7 @@ open class BaseFragment : Fragment() {
             try {
                 if(info?.callUserList?.get(0)?.state == ZIMCallUserState.ACCEPTED || info?.callUserList?.get(0)?.state == ZIMCallUserState.REJECTED) {
                     zimBackup = null
+                    mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
                 }
             } catch (e: Exception) {
             }
@@ -122,6 +124,7 @@ open class BaseFragment : Fragment() {
         ) {
             super.onCallInvitationEnded(zim, info, callID)
             zimBackup = null
+            mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
         }
 
         override fun onCallInvitationTimeout(
@@ -131,6 +134,7 @@ open class BaseFragment : Fragment() {
         ) {
             super.onCallInvitationTimeout(zim, info, callID)
             zimBackup = null
+            mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
         }
     }
 
@@ -277,12 +281,15 @@ open class BaseFragment : Fragment() {
                         } else {
                             receivedId = uiKitUser.userID.toInt()
                             val requestOptions = RequestOptions().circleCrop()
-                            Glide.with(parent.context).load(
-                                UsersImage(
-                                    profileViewModel,
-                                    uiKitUser.userID.toInt()
-                                ).execute().get()
-                            ).apply(requestOptions).into(imageView)
+                            try {
+                                Glide.with(parent.context).load(
+                                    UsersImage(
+                                        profileViewModel,
+                                        uiKitUser.userID.toInt()
+                                    ).execute().get()
+                                ).apply(requestOptions).into(imageView)
+                            } catch (e: Exception) {
+                            }
 
                         }
                         return imageView
