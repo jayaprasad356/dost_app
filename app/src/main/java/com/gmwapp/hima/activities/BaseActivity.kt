@@ -351,18 +351,10 @@ open class BaseActivity : AppCompatActivity() {
                 config.hangUpConfirmDialogInfo = ZegoHangUpConfirmDialogInfo()
                 config.audioVideoViewConfig.videoViewForegroundViewProvider =
                     ZegoForegroundViewProvider { parent, uiKitUser ->
-                        if (uiKitUser.userID != userID) {
-                            foregroundView = CustomCallView(parent.context, uiKitUser.userID)
-                            foregroundView?.setContext(this@BaseActivity)
-                            foregroundView?.setBalanceTime(balanceTime)
-                            foregroundView
-                        } else {
-
-                            CustomCallEmptyView(
-                                parent.context, uiKitUser.userID
-                            )
-                        }
-
+                        foregroundView = CustomCallView(parent.context, uiKitUser.userID)
+                        foregroundView?.setContext(this@BaseActivity)
+                        foregroundView?.setBalanceTime(balanceTime)
+                        foregroundView
                     }
                 config.topMenuBarConfig.buttons.add(ZegoMenuBarButtonName.MINIMIZING_BUTTON)
                 config.topMenuBarConfig.hideByClick = false
