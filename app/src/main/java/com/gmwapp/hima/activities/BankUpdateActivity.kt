@@ -44,6 +44,25 @@ class BankUpdateActivity : BaseActivity() {
     private fun initUI() {
 
 
+        val prefs = BaseApplication.getInstance()?.getPrefs()
+        val userData = prefs?.getUserData()
+
+        val accountHolderName = userData?.holder_name
+        val accountNumber = userData?.account_num
+        val ifscCode = userData?.ifsc
+        val bankName = userData?.bank
+        val branchName = userData?.branch
+
+        // set text
+        binding.etHolderName.setText(accountHolderName)
+        binding.etAccountNumber.setText(accountNumber)
+        binding.etIfsccode.setText(ifscCode)
+        binding.etBankName.setText(bankName)
+        binding.etBranchName.setText(branchName)
+
+
+
+
         binding.ivBack.setOnClickListener {
             onBackPressed()
         }
