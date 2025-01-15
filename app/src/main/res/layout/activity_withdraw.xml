@@ -178,6 +178,7 @@
             android:text="@string/_5_tds_deduction"/>
 
         <TextView
+            android:visibility="invisible"
             android:id="@+id/tv_discount_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
