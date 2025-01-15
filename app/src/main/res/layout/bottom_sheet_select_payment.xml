@@ -26,6 +26,7 @@
 
     <!-- UPI Payment Option -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="invisible"
         android:id="@+id/upi_option"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -51,6 +52,7 @@
 
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_upi_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,6 +64,7 @@
 
     <!-- Bank Transfer Option -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="invisible"
         android:id="@+id/bank_option"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

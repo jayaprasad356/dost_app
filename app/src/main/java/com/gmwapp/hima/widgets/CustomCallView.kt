@@ -3,12 +3,15 @@ package com.gmwapp.hima.widgets
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.gmwapp.hima.BaseApplication
@@ -48,17 +51,32 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
     override fun onForegroundViewCreated(uiKitUser: ZegoUIKitUser) {
         // Make the window full-screen
+        // Make the window full-screen without hiding the navigation bar
         val activity = context as? Activity
         activity?.window?.apply {
             decorView.systemUiVisibility = (
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     )
             addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
+
+
+// Adding 50dp margin to the top with transparent effect
+        val rootView = activity?.findViewById<View>(android.R.id.content)
+
+        if (rootView != null) {
+            rootView.setBackgroundColor(Color.parseColor("#ff0d4a"))
+            ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
+        }
+
+
+
 
         // Initialize your custom view
         val prefs = BaseApplication.getInstance()?.getPrefs()

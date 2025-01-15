@@ -115,7 +115,12 @@ class WalletActivity : BaseActivity() {
             val email = "test@gmail.com"
             val mobile = userData?.mobile ?: ""
 
-            if (userId != null && pointsId.isNotEmpty() && amount.isNotEmpty()) {
+            // get 2 percentage of amount
+            val twoPercentage = amount.toDouble() * 0.02
+            val total_amount = (amount.toDouble() + twoPercentage).toString()
+
+
+            if (userId != null && pointsId.isNotEmpty() && total_amount.isNotEmpty()) {
                 val userIdWithPoints = "$userId-$pointsId"
 
                 val apiService = RetrofitClient.instance
