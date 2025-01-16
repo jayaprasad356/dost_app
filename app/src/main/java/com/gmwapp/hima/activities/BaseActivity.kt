@@ -314,7 +314,8 @@ open class BaseActivity : AppCompatActivity() {
                             }
 
                             ZegoUIKitPrebuiltCallService.sendInRoomCommand(
-                                "active&is_direct_call="+BaseApplication.getInstance()?.isReceiverDetailsAvailable(), arrayListOf(null)
+                                "active&is_direct_call="+BaseApplication.getInstance()?.isReceiverDetailsAvailable()
+                                +DConstants.REMAINING_TIME + "="+balanceTime, arrayListOf(null)
                             ) {}
                             if (roomID != null && lastActiveTime != null && System.currentTimeMillis() - lastActiveTime!! > 15 * 1000) {
                                 ZegoUIKitPrebuiltCallService.endCall()
