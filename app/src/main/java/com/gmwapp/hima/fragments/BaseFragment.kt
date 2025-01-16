@@ -344,9 +344,9 @@ open class BaseFragment : Fragment() {
                 } catch (e: Exception) {
                 }
             }
-            if(s.startsWith(DConstants.REMAINING_TIME)){
+            if(s.contains(DConstants.REMAINING_TIME)){
                 try {
-                    balanceTime = s.split("=")[1]
+                    balanceTime = s.split(DConstants.REMAINING_TIME+"=")[1]
                 } catch (e: Exception) {
                 }
             }
