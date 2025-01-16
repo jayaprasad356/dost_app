@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -385,6 +386,9 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    if(CallInvitationServiceImpl.getInstance().callInvitationData.type == 1) {
+                        activateWakeLock()
+                    }
                     startService(Intent(this@RandomUserActivity, CallingService::class.java))
                     timer?.cancel();
                     lastActiveTime = System.currentTimeMillis()
@@ -400,6 +404,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
+                    releaseWakeLock()
                     lifecycleScope.launch {
                         stopService(Intent(this@RandomUserActivity, CallingService::class.java))
                         lastActiveTime = null

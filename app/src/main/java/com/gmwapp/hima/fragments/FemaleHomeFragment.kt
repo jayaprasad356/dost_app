@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
@@ -254,6 +255,9 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    if(CallInvitationServiceImpl.getInstance().callInvitationData.type == 1) {
+                        activateWakeLock()
+                    }
                     mContext?.startService(Intent(mContext, CallingService::class.java))
                     mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
                     CallInvitationServiceImpl.getInstance().dismissCallNotification()
@@ -285,6 +289,7 @@ class FemaleHomeFragment : BaseFragment() {
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
+                    releaseWakeLock()
                     lifecycleScope.launch {
                         mContext?.stopService(Intent(mContext, CallingService::class.java))
 
