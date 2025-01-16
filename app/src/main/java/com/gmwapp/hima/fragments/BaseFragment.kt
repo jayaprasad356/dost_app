@@ -20,6 +20,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity.POWER_SERVICE
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.size
@@ -79,6 +80,7 @@ import java.util.Arrays
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
+    private var wakeLock:PowerManager.WakeLock? =null
     private lateinit var mContext:Context;
     private var zimBackup:ZIM? = null;
     private val zimEventHandler: ZIMEventHandler = object : ZIMEventHandler() {
@@ -177,6 +179,23 @@ open class BaseFragment : Fragment() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         if (userData != null) {
             setupZegoUIKit(userData.id, userData.name)
+        }
+    }
+
+    protected fun activateWakeLock(){
+        try {
+            val powerManager = ZegoConnectionImpl.context.getSystemService(POWER_SERVICE) as PowerManager
+            wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Hima:Calling")
+            wakeLock?.acquire()
+        } catch (e: Exception) {
+        }
+    }
+
+    protected fun releaseWakeLock(){
+        try {
+            wakeLock?.release();
+            wakeLock = null;
+        } catch (e: Exception) {
         }
     }
 
