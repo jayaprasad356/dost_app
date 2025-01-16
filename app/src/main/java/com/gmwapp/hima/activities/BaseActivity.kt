@@ -1,6 +1,5 @@
 package com.gmwapp.hima.activities
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -8,6 +7,7 @@ import android.graphics.Rect
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
+import android.os.PowerManager
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -31,7 +31,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
-import com.gmwapp.hima.callbacks.OnButtonClickListener
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.dagger.GetRemainingTimeEvent
 import com.gmwapp.hima.dagger.UnauthorizedEvent
@@ -41,7 +40,6 @@ import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
 import com.gmwapp.hima.utils.Helper
 import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
-import com.gmwapp.hima.widgets.CustomCallEmptyView
 import com.gmwapp.hima.widgets.CustomCallView
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.zegocloud.uikit.ZegoUIKit
@@ -54,13 +52,14 @@ import com.zegocloud.uikit.prebuilt.call.config.DurationUpdateListener
 import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
 import com.zegocloud.uikit.prebuilt.call.config.ZegoHangUpConfirmDialogInfo
 import com.zegocloud.uikit.prebuilt.call.config.ZegoMenuBarButtonName
+import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
 import com.zegocloud.uikit.prebuilt.call.core.invite.advanced.ZegoCallInvitationInCallingConfig
 import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
-import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.connection.internal.ZegoConnectionImpl.context
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -78,6 +77,7 @@ import kotlin.math.abs
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
+    private var wakeLock:PowerManager.WakeLock? =null
     protected var callType: String? = null
     protected var balanceTime: String? = null
     protected var roomID: String? = null
@@ -129,9 +129,13 @@ open class BaseActivity : AppCompatActivity() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    if(CallInvitationServiceImpl.getInstance().callInvitationData.type == 1) {
+                        activateWakeLock()
+                    }
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
+                    releaseWakeLock()
                     lifecycleScope.launch {
                         lastActiveTime = null
                         delay(500)
@@ -206,6 +210,16 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
         }
+    }
+
+    protected fun activateWakeLock(){
+        val powerManager = context.getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Hima:Calling")
+        wakeLock?.acquire()
+    }
+
+    protected fun releaseWakeLock(){
+        wakeLock?.release();
     }
 
     override fun onStop() {
