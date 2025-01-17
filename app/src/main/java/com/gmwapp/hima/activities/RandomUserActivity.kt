@@ -240,6 +240,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         isReceiverDetailsAvailable =
             intent.getBooleanExtra(DConstants.IS_RECEIVER_DETAILS_AVAILABLE, false)
         progress()
+
         val callType = intent.getStringExtra(DConstants.CALL_TYPE)
         val image = intent.getStringExtra(DConstants.IMAGE)
         val text = intent.getStringExtra(DConstants.TEXT)
@@ -307,10 +308,11 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
         // Set the ProgressBar max to 100
-        val max = (if (isReceiverDetailsAvailable) 30 else 7) * 1000L
+        val max = (if (isReceiverDetailsAvailable) 30 else 28) * 1000L
         progressBar.max = max.toInt()
 
         // Timer for 30 seconds
+        timer = null;
         timer = object : CountDownTimer(max, 500) { // 30000ms = 30s, 300ms interval
             override fun onTick(millisUntilFinished: Long) {
                 // Calculate the progress
@@ -321,8 +323,12 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
             override fun onFinish() {
                 // Complete progress when the timer finishes
                 progressBar.progress = max.toInt()
-                stopCall()
-                finish()
+                timer?.cancel()
+                try {
+                    CallInvitationServiceImpl.getInstance().cancelInvitation { result -> }
+                } catch (e: Exception) {
+                }
+                initializeCall(true)
             }
         }
         timer?.start()
