@@ -2,6 +2,7 @@ package com.gmwapp.hima.fragments
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
@@ -75,6 +76,16 @@ class ProfileFemaleFragment : BaseFragment() {
     }
 
     private fun initUI(){
+
+        try {
+            val pInfo = activity?.packageManager?.getPackageInfo(requireActivity().packageName, 0)
+            val currentVersion = pInfo?.versionCode?.toString() ?: "Unknown"
+            val versionName = pInfo?.versionName ?: "Unknown"
+            binding.tvVersion.text = "version $versionName"
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
         updateValues()
         val prefs = BaseApplication.getInstance()?.getPrefs()
 

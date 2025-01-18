@@ -124,7 +124,7 @@ class WalletActivity : BaseActivity() {
                 val userIdWithPoints = "$userId-$pointsId"
 
                 val apiService = RetrofitClient.instance
-                val call = apiService.addCoins(name, amount, email, mobile, userIdWithPoints)
+                val call = apiService.addCoins(name, total_amount, email, mobile, userIdWithPoints)
 
                 call.enqueue(object : retrofit2.Callback<ApiResponse> {
                     override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:padding="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -281,8 +282,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="invisible"
+        android:id="@+id/constraintLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="55dp"
@@ -296,6 +298,7 @@
             android:layout_height="wrap_content"
             android:text="@string/need_help"
             android:textColor="@color/white"
+            android:fontFamily="@font/poppins_semibold"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -305,8 +308,9 @@
             android:id="@+id/tv_support_mail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
             android:layout_marginStart="2dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppins_semibold"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_help"
             app:layout_constraintStart_toEndOf="@+id/tv_help"
@@ -314,16 +318,16 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:visibility="invisible"
         android:id="@+id/tv_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_regular"
         android:text="@string/version"
-        android:textColor="#8d8e92"
-        android:textSize="11sp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_help" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

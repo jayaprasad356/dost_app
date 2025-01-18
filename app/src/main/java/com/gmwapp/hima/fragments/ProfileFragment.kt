@@ -3,6 +3,7 @@ package com.gmwapp.hima.fragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Paint
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -16,6 +17,7 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.BuildConfig
 import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.AccountPrivacyActivity
 import com.gmwapp.hima.activities.EditProfileActivity
@@ -74,6 +76,19 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun initUI() {
+
+
+
+        try {
+            val pInfo = activity?.packageManager?.getPackageInfo(requireActivity().packageName, 0)
+            val currentVersion = pInfo?.versionCode?.toString() ?: "Unknown"
+            val versionName = pInfo?.versionName ?: "Unknown"
+            binding.tvVersion.text = "version $versionName"
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+
         updateValues()
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
