@@ -5,13 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
+import android.os.Build
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.View.OnLayoutChangeListener
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -61,25 +65,36 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         // Make the window full-screen
         // Make the window full-screen without hiding the navigation bar
         val activity = context as? Activity
-//        activity?.window?.apply {
-//            decorView.systemUiVisibility = (
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                    )
-//            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-//        }
-//
+
+        activity?.window?.apply {
+            // Use WindowInsetsController for newer Android versions
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                insetsController?.apply {
+                    hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                    systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                decorView.systemUiVisibility = (
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        )
+                addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            }
+        }
+
         val root = activity?.findViewById<View>(android.R.id.content)
 
-        if (root != null) {
-            root?.setBackgroundColor(Color.parseColor("#ff0d4a"))
+        root?.let { rootView ->
+            rootView.setBackgroundColor(Color.parseColor("#ff0d4a"))
             ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
                 insets
             }
         }
+
 
         // Initialize your custom view
         val prefs = BaseApplication.getInstance()?.getPrefs()
@@ -184,3 +199,5 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
         }
     }
+
+
