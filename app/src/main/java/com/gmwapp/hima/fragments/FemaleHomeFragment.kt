@@ -4,13 +4,13 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
@@ -34,9 +34,7 @@ import com.gmwapp.hima.services.CallingService
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
-import com.permissionx.guolindev.PermissionX
-import com.permissionx.guolindev.callback.ExplainReasonCallback
-import com.permissionx.guolindev.callback.RequestCallback
+import com.zego.ve.Log
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.core.notification.PrebuiltCallNotificationManager
@@ -53,6 +51,7 @@ import java.util.TimeZone
 
 @AndroidEntryPoint
 class FemaleHomeFragment : BaseFragment() {
+    private val OVERLAY_REQUEST_CODE: Int = 2
     private var mContext: Context? = null
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
     lateinit var binding: FragmentFemaleHomeBinding
@@ -67,7 +66,7 @@ class FemaleHomeFragment : BaseFragment() {
             initializeCall()
         } else {
             try {
-                askNotificationPermission();
+                askNotificationPermission()
             } catch (e: Exception) {
                 val intent = Intent(context, GrantPermissionsActivity::class.java)
                 startActivity(intent)
@@ -89,8 +88,9 @@ class FemaleHomeFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.mContext = context;
+        this.mContext = context
     }
+
     fun askPermissions() {
         val permissionNeeded =
             arrayOf("android.permission.RECORD_AUDIO", "android.permission.CAMERA")
@@ -115,8 +115,7 @@ class FemaleHomeFragment : BaseFragment() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (ContextCompat.checkSelfPermission(
-                        requireActivity(),
-                        Manifest.permission.POST_NOTIFICATIONS
+                        requireActivity(), Manifest.permission.POST_NOTIFICATIONS
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
                     initializeCall()
@@ -141,19 +140,29 @@ class FemaleHomeFragment : BaseFragment() {
     }
 
     private fun checkOverlayPermission() {
-        PermissionX.init(requireActivity()).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-            .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
-                val message =
-                    "We need your consent for the following permissions in order to use the offline call function properly"
-                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }).request(RequestCallback { allGranted, grantedList, deniedList ->
-                if (allGranted) {
-                    askNotificationPermission()
-                } else {
-                    checkOverlayPermission()
-                }
-            })
+        if (!Settings.canDrawOverlays(mContext)) {
+            try {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + context?.packageName)
+                )
+                startActivityForResult(intent, OVERLAY_REQUEST_CODE)
+            } catch (e: Exception) {
+                askNotificationPermission()
+            }
+        } else {
+            askNotificationPermission()
+        }
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == OVERLAY_REQUEST_CODE) {
+            if (Settings.canDrawOverlays(mContext)) {
+                askNotificationPermission()
+            } else {
+                checkOverlayPermission()
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -178,7 +187,7 @@ class FemaleHomeFragment : BaseFragment() {
         val prefs = BaseApplication.getInstance()?.getPrefs()
         val userData = prefs?.getUserData()
         if (userData != null) {
-            registerBroadcastReceiver();
+            registerBroadcastReceiver()
             setupZegoUIKit(userData.id, userData.name)
             addRoomStateChangedListener()
         }
@@ -209,26 +218,26 @@ class FemaleHomeFragment : BaseFragment() {
                 binding.tvTotalCalls.text = it.data[0].today_calls.toString()
 
             } else {
-              //  Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                //  Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
             }
         })
 
         femaleUsersViewModel.updateCallStatusResponseLiveData.observe(viewLifecycleOwner, Observer {
-            if (it!=null && it.success) {
-                prefs?.setUserData(it.data)
+            if (it != null && it.success) {
+                prefs.setUserData(it.data)
             } else {
                 Toast.makeText(context, it?.message, Toast.LENGTH_SHORT).show()
-                binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
-                binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
+                binding.sAudio.isChecked = prefs.getUserData()?.audio_status == 1
+                binding.sVideo.isChecked = prefs.getUserData()?.video_status == 1
             }
         })
         femaleUsersViewModel.updateCallStatusErrorLiveData.observe(viewLifecycleOwner, Observer {
             showErrorMessage(it)
-            binding.sAudio.isChecked = prefs?.getUserData()?.audio_status == 1
-            binding.sVideo.isChecked = prefs?.getUserData()?.video_status == 1
+            binding.sAudio.isChecked = prefs.getUserData()?.audio_status == 1
+            binding.sVideo.isChecked = prefs.getUserData()?.video_status == 1
         })
         binding.sAudio.setOnCheckedChangeListener({ buttonView, isChecked ->
-            userData?.id?.let {
+            userData.id.let {
                 femaleUsersViewModel.updateCallStatus(
                     it, DConstants.AUDIO, if (isChecked) 1 else 0
                 )
@@ -238,14 +247,12 @@ class FemaleHomeFragment : BaseFragment() {
             }
         })
         binding.sVideo.setOnCheckedChangeListener({ buttonView, isChecked ->
-            userData?.id?.let {
+            userData.id.let {
                 femaleUsersViewModel.updateCallStatus(
                     it, DConstants.VIDEO, if (isChecked) 1 else 0
                 )
             }
         })
-
-
 
 
     }
@@ -255,17 +262,19 @@ class FemaleHomeFragment : BaseFragment() {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
-                    if(CallInvitationServiceImpl.getInstance().callInvitationData.type == 1) {
+                    if (CallInvitationServiceImpl.getInstance().callInvitationData.type == 1) {
                         activateWakeLock()
                     }
                     mContext?.startService(Intent(mContext, CallingService::class.java))
-                    mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
+                    mContext?.let {
+                        NotificationManagerCompat.from(it)
+                            .cancel(PrebuiltCallNotificationManager.incoming_call_notification_id)
+                    }
                     CallInvitationServiceImpl.getInstance().dismissCallNotification()
-                    lastActiveTime = System.currentTimeMillis();
+                    lastActiveTime = System.currentTimeMillis()
                     roomID = room
                     startTime = dateFormat.format(Date()) // Set call start time in IST
-                    femaleUsersViewModel.femaleCallAttend(
-                        receivedId,
+                    femaleUsersViewModel.femaleCallAttend(receivedId,
                         callId,
                         startTime,
                         object : NetworkCallback<FemaleCallAttendResponse> {
@@ -277,8 +286,7 @@ class FemaleHomeFragment : BaseFragment() {
                             }
 
                             override fun onFailure(
-                                call: Call<FemaleCallAttendResponse>,
-                                t: Throwable
+                                call: Call<FemaleCallAttendResponse>, t: Throwable
                             ) {
                             }
 
@@ -302,18 +310,18 @@ class FemaleHomeFragment : BaseFragment() {
                             val constraints =
                                 Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
                                     .build()
-                            val data: Data = Data.Builder()
-                                .putInt(DConstants.USER_ID, receivedId)
+                            val data: Data = Data.Builder().putInt(DConstants.USER_ID, receivedId)
                                 .putInt(DConstants.CALL_ID, callId)
-                                .putString(DConstants.STARTED_TIME, startTime)
-                                .putBoolean(DConstants.IS_INDIVIDUAL, BaseApplication.getInstance()?.isReceiverDetailsAvailable()==true)
-                                .putString(DConstants.ENDED_TIME, endTime).build()
+                                .putString(DConstants.STARTED_TIME, startTime).putBoolean(
+                                    DConstants.IS_INDIVIDUAL,
+                                    BaseApplication.getInstance()
+                                        ?.isReceiverDetailsAvailable() == true
+                                ).putString(DConstants.ENDED_TIME, endTime).build()
                             val oneTimeWorkRequest = OneTimeWorkRequest.Builder(
                                 CallUpdateWorker::class.java
                             ).setInputData(data).setConstraints(constraints).build()
                             mContext?.let {
-                                WorkManager.getInstance(it)
-                                    .enqueue(oneTimeWorkRequest)
+                                WorkManager.getInstance(it).enqueue(oneTimeWorkRequest)
                             }
                             val prefs = BaseApplication.getInstance()?.getPrefs()
                             val userData = prefs?.getUserData()
