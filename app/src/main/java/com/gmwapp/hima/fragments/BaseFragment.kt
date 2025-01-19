@@ -210,8 +210,8 @@ open class BaseFragment : Fragment() {
         callInvitationConfig.callingConfig.canInvitingInCalling = false
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.endCallWhenInitiatorLeave = true
-        callInvitationConfig.incomingCallRingtone = "rhythm"
-        callInvitationConfig.outgoingCallRingtone = "rhythm"
+        callInvitationConfig.incomingCallRingtone = "silent"
+        callInvitationConfig.outgoingCallRingtone = "silent"
         ZegoUIKitPrebuiltCallService.events.callEvents.setOnlySelfInRoomListener {
             ZegoUIKitPrebuiltCallService.endCall()
         }
