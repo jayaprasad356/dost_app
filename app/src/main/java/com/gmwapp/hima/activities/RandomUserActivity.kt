@@ -210,6 +210,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         if (BaseApplication.getInstance()?.getRoomId() != null) {
             moveTaskToBack(true)
         }
+        CallInvitationServiceImpl.getInstance().hideIncomingCallDialog()
     }
 
     override fun onRequestPermissionsResult(
