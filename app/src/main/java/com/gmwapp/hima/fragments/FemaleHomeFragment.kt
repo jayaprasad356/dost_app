@@ -1,6 +1,7 @@
 package com.gmwapp.hima.fragments
 
 import android.Manifest
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -34,7 +35,6 @@ import com.gmwapp.hima.services.CallingService
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
-import com.zego.ve.Log
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.core.notification.PrebuiltCallNotificationManager
@@ -140,17 +140,23 @@ class FemaleHomeFragment : BaseFragment() {
     }
 
     private fun checkOverlayPermission() {
-        if (!Settings.canDrawOverlays(mContext)) {
-            try {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + context?.packageName)
-                )
-                startActivityForResult(intent, OVERLAY_REQUEST_CODE)
-            } catch (e: Exception) {
+        try {
+            val result = mContext?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+            if (!Settings.canDrawOverlays(mContext) && !result.isLowRamDevice) {
+                try {
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + context?.packageName)
+                    )
+                    startActivityForResult(intent, OVERLAY_REQUEST_CODE)
+                } catch (e: Exception) {
+                    askNotificationPermission()
+                }
+            } else {
                 askNotificationPermission()
             }
-        } else {
+        } catch (e: Exception) {
             askNotificationPermission()
         }
     }
