@@ -42,6 +42,7 @@ import com.gmwapp.hima.utils.UsersImage
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallView
 import com.gmwapp.hima.workers.CallUpdateWorker
+import com.tencent.mmkv.MMKV
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.components.audiovideo.ZegoAvatarViewProvider
 import com.zegocloud.uikit.components.audiovideo.ZegoForegroundViewProvider
@@ -251,6 +252,8 @@ open class BaseActivity : AppCompatActivity() {
             getString(R.string.please_login_again_to_continue),
             Toast.LENGTH_SHORT
         ).show()
+        MMKV.defaultMMKV().remove("user_id");
+        MMKV.defaultMMKV().remove("user_name");
         ZegoUIKitPrebuiltCallService.unInit()
             val prefs = BaseApplication.getInstance()?.getPrefs()
         prefs?.clearUserData()
