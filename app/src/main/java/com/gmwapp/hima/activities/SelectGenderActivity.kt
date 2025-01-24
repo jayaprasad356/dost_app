@@ -15,6 +15,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivitySelectGenderBinding
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.ProfileViewModel
+import com.onesignal.OneSignal
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -48,8 +49,10 @@ class SelectGenderActivity : BaseActivity() {
             var intent:Intent? = null
             if (selectedGender == DConstants.MALE) {
                 intent = Intent(this, SelectLanguageActivity::class.java)
+              //  OneSignal.User.addTag("gender", "male")
             } else {
                 intent = Intent(this, FemaleAboutActivity::class.java)
+             //   OneSignal.User.addTag("gender", "female")
             }
             val layoutManager = binding.rvAvatars.layoutManager as CenterLayoutManager
             val avatarId =

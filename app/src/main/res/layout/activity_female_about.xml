@@ -277,7 +277,6 @@
                         android:maxLength="250"
                         android:minHeight="75dp"
                         android:textColor="@color/pink"
-                        android:textColorHint="@color/black"
                         android:textCursorDrawable="@drawable/color_cursor"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"

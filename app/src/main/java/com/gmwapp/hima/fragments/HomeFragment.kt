@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.gmwapp.hima.retrofit.responses.UserData
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.onesignal.OneSignal
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -52,6 +54,9 @@ class HomeFragment : BaseFragment() {
             val intent = Intent(context, WalletActivity::class.java)
             startActivity(intent)
         }
+
+        OneSignal.User.addTag("gender", "male")
+        Log.d("Gender","Male")
 
 
 
