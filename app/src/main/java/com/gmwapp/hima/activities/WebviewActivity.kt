@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -42,7 +43,15 @@ class WebviewActivity : BaseActivity() {
         binding.wvPrivacyPolicy.getSettings().setJavaScriptEnabled(true);
 
         val prefs = BaseApplication.getInstance()?.getPrefs()
-        prefs?.getSettingsData()?.privacy_policy?.let { binding.wvPrivacyPolicy.loadData(it,  "text/html; charset=utf-8", "UTF-8") }
+        prefs?.getSettingsData()?.privacy_policy?.let {
+            binding.wvPrivacyPolicy.loadDataWithBaseURL(
+                null,  // Base URL, null if no base is needed
+                it,  // The HTML content
+                "text/html",  // MIME type for HTML
+                "UTF-8",  // Encoding
+                null  // History URL, set to null
+            )
+        }
 
         accountViewModel.getSettings()
         accountViewModel.settingsLiveData.observe(this, Observer {
@@ -51,7 +60,16 @@ class WebviewActivity : BaseActivity() {
                     if (it.data.size > 0) {
                         prefs?.setSettingsData(it.data.get(0))
                         val prefs = BaseApplication.getInstance()?.getPrefs()
-                        prefs?.getSettingsData()?.privacy_policy?.let { binding.wvPrivacyPolicy.loadData(it,  "text/html; charset=utf-8", "UTF-8") }
+                        Log.d("PrivacyPolicy", "Your Privacy : ${it}")
+                        prefs?.getSettingsData()?.privacy_policy?.let {
+                            binding.wvPrivacyPolicy.loadDataWithBaseURL(
+                                null,  // Base URL, null if no base is needed
+                                it,  // The HTML content
+                                "text/html",  // MIME type for HTML
+                                "UTF-8",  // Encoding
+                                null  // History URL, set to null
+                            )
+                        }
                     }
                 }
             }

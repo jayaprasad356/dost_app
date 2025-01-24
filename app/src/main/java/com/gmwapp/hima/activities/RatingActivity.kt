@@ -88,33 +88,45 @@ class RatingActivity : BaseActivity() {
             intent.getStringExtra(DConstants.RECEIVER_NAME) ?: "User"
         )
 
-        viewModel.ratingResponseLiveData.observe(this, Observer {
-            if (it.success) {
+        viewModel.ratingResponseLiveData.observe(this, Observer { response ->
+            if (response != null && response.success) {
+                // Handle successful rating submission
                 Toast.makeText(this, "Rating submitted successfully", Toast.LENGTH_SHORT).show()
                 finish()
-            }
-            else{
-//                Toast.makeText(this, "Rating submission failed", Toast.LENGTH_SHORT).show()
+            } else {
+                // Handle failure
+            //    Toast.makeText(this, "Rating submission failed", Toast.LENGTH_SHORT).show()
                 finish()
             }
         })
+
 
 
         binding.btnSubmit.setOnSingleClickListener {
 
             val userid = BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id
             val call_userid = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
-            val rating = selectedRating.toString()
-            val description = binding.etUserName.text.toString()
-            val title = discription
 
+
+            val rating = if (selectedRating > 0) selectedRating else 0 // Default to 3 if no rating is selected
+            val description = binding.etUserName.text.toString().takeIf { it.isNotEmpty() } ?: "No data provided" // Default description
+            val title = discription.takeIf { it.isNotEmpty() } ?: "No data provided" // Default title if it's empty
             Log.d("ReviewActivity", "User ID: $userid, Call User ID: $call_userid, Rating: $rating, Comment: $description, Interests: $title")
 
 
-            BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
-                if (call_userid != null) {
-                    viewModel.updatedrating(it,call_userid,rating.toString(),title,description)
+
+
+            if (rating > 0) {
+                // Proceed with rating submission
+                BaseApplication.getInstance()?.getPrefs()?.getUserData()?.id?.let {
+                    if (call_userid != null) {
+                        viewModel.updatedrating(it,call_userid,rating.toString(),title,description)
+                    }
                 }
+            } else {
+                // If no rating is provided, just finish the activity
+              //  Toast.makeText(this, "No rating provided", Toast.LENGTH_SHORT).show()
+                finish()
             }
         }
 
@@ -168,6 +180,8 @@ class RatingActivity : BaseActivity() {
     }
 
     private fun validatebtn() {
+
+
         val review = binding.etUserName.text.toString()
         val rating = selectedRating // Get the selected rating
 
@@ -175,7 +189,7 @@ class RatingActivity : BaseActivity() {
         if (review.isNotEmpty() && rating > 0 && selectedReviewPosition != RecyclerView.NO_POSITION) {
             binding.btnSubmit.isEnabled = true // Enable the button if all conditions are met
         } else {
-            binding.btnSubmit.isEnabled = false // Disable the button if conditions are not met
+            binding.btnSubmit.isEnabled = true // Disable the button if conditions are not met
         }
     }
 

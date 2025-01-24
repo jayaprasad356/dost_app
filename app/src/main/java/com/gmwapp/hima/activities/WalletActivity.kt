@@ -117,14 +117,19 @@ class WalletActivity : BaseActivity() {
 
             // get 2 percentage of amount
             val twoPercentage = amount.toDouble() * 0.02
-            val total_amount = (amount.toDouble() + twoPercentage).toString()
+            val roundedAmount = Math.round(twoPercentage)
+            val total_amount = (amount.toDouble() + roundedAmount).toString()
 
 
+
+            Log.d("Amount", "amount $amount")
+            Log.d("Amount", "Totalamount $total_amount")
+            Log.d("Amount", "Roundamount $roundedAmount")
             if (userId != null && pointsId.isNotEmpty() && total_amount.isNotEmpty()) {
                 val userIdWithPoints = "$userId-$pointsId"
 
                 val apiService = RetrofitClient.instance
-                val call = apiService.addCoins(name, amount, email, mobile, userIdWithPoints)
+                val call = apiService.addCoins(name, total_amount, email, mobile, userIdWithPoints)
 
                 call.enqueue(object : retrofit2.Callback<ApiResponse> {
                     override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
