@@ -206,7 +206,6 @@ class FemaleHomeFragment : BaseFragment() {
     private fun initUI() {
 
         OneSignal.User.addTag("gender", "female")
-        Log.d("Gender","Female")
 
 
 
