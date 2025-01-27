@@ -1,5 +1,6 @@
 package com.gmwapp.hima.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,11 @@ class AccountViewModel @Inject constructor(private val accountRepositories: Acco
                     response: Response<SettingsResponse>
                 ) {
                     settingsLiveData.postValue(response.body());
+                    Log.d("Retrofit", "Request URL: ${call.request().url}")
+                    Log.d("Retrofit2", "Request URL: ${response.body()}")
+
+
+
                 }
 
                 override fun onFailure(call: Call<SettingsResponse>, t: Throwable) {
@@ -37,4 +43,5 @@ class AccountViewModel @Inject constructor(private val accountRepositories: Acco
     }
 
 }
+
 

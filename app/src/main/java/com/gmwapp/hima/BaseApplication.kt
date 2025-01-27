@@ -60,6 +60,11 @@ class BaseApplication : Application(), Configuration.Provider {
         CoroutineScope(Dispatchers.IO).launch {
             OneSignal.Notifications.requestPermission(false)
         }
+        var userId = BaseApplication.getInstance()?.getPrefs()
+            ?.getUserData()?.id.toString() // Set user_id
+
+        Log.d("UserId","userID $userId")
+        OneSignal.login(userId)
     }
 
     fun getPrefs(): DPreferences? {

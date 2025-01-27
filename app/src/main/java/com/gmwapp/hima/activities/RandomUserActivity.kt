@@ -2,13 +2,16 @@ package com.gmwapp.hima.activities
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -507,5 +510,37 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
             }
             binding.voiceCallButton.performClick()
         }
+    }
+
+    private fun showAlertDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("End Call")
+        builder.setMessage("Are you sure you want to end this call?")
+
+        builder.setPositiveButton("End Call") { dialog, which ->
+            stopCall()
+            finish()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, which ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+
+        dialog.show()
+
+        // Get the buttons
+        val negativeButton: Button = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        val positiveButton: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        // Set text color
+        negativeButton.setTextColor(resources.getColor(R.color.Red)) // Set Cancel button text color
+        positiveButton.setTextColor(resources.getColor(R.color.white))
+        positiveButton.setBackgroundColor(resources.getColor(R.color.teal_200))
+
+
+        //Optional: Change dialog background
+        //dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 }

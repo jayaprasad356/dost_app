@@ -35,6 +35,10 @@ import com.gmwapp.hima.services.CallingService
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
+import com.onesignal.OneSignal
+import com.permissionx.guolindev.PermissionX
+import com.permissionx.guolindev.callback.ExplainReasonCallback
+import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.core.notification.PrebuiltCallNotificationManager
@@ -200,6 +204,12 @@ class FemaleHomeFragment : BaseFragment() {
     }
 
     private fun initUI() {
+
+        OneSignal.User.addTag("gender", "female")
+        Log.d("Gender","Female")
+
+
+
         binding.clCoins.setOnSingleClickListener({
             val intent = Intent(context, EarningsActivity::class.java)
             startActivity(intent)

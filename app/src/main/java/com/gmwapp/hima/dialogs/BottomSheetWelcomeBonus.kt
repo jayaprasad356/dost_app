@@ -17,8 +17,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomSheetWelcomeBonus(
     private val coins: Int,
-    private val price: Int,
-    private val save: Int
+    private val orinalPrice: Int,
+    private val discountedPrice: Int
 ) : BottomSheetDialogFragment() {
 
     interface OnAddCoinsListener {
@@ -51,8 +51,8 @@ class BottomSheetWelcomeBonus(
 
         // Set text views with the provided data
         binding.tvBonusText.text = "$coins Coins"
-        binding.tvBonusOriginal.text = "$price"
-        binding.tvBonusDiscount.text = "$save"
+        binding.tvBonusOriginal.text = "₹$orinalPrice"
+        binding.tvBonusDiscount.text = "₹$discountedPrice"
 
         // Button click listeners
         binding.tvViewMorePlans.setOnSingleClickListener {
@@ -60,7 +60,7 @@ class BottomSheetWelcomeBonus(
         }
 
         binding.btnAddCoins.setOnSingleClickListener {
-            addCoinsListener?.onAddCoins(coins, id)
+            addCoinsListener?.onAddCoins(discountedPrice, id)
         }
 
         return binding.root

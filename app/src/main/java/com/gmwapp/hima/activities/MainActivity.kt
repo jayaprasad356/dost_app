@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
+import kotlin.math.round
 
 
 @AndroidEntryPoint
@@ -121,13 +122,19 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         offerViewModel.offerResponseLiveData.observe(this) { response ->
             if (response.success) {
                 val coin = response.data[0].coins
-                val price = response.data[0].price
+                val discountedPrice = response.data[0].price
                 val save = response.data[0].save
 
+                val originalPrice = calculateOriginalPrice(discountedPrice, save)
+
+
+                Log.d("OrinalPrice","OriginalPrice $originalPrice")
+                Log.d("OrinalPrice","discountPrice $discountedPrice")
+                Log.d("OrinalPrice","savePercent $save")
                 if (BaseApplication.getInstance()?.getPrefs()
                         ?.getUserData()?.gender == DConstants.MALE
                 ) {
-                    val bottomSheet = BottomSheetWelcomeBonus(coin, price, save)
+                    val bottomSheet = BottomSheetWelcomeBonus(coin, originalPrice, discountedPrice)
                     bottomSheet.show(supportFragmentManager, "BottomSheetWelcomeBonus")
                 }
             }
@@ -187,10 +194,11 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     }
 
 
-    override fun onAddCoins(coins: Int, id: Int) {
+    override fun onAddCoins(amount: Int, id: Int) {
 
-        var amount = "$coins"
+        var amount = "$amount"
         var pointsId = "$id"
+        Log.d("amount", "amount $amount")
 
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
 
@@ -235,4 +243,9 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             Toast.makeText(this, "Invalid input data", Toast.LENGTH_SHORT).show()
         }
     }
-}
+
+    fun calculateOriginalPrice(price: Int, savePercentage: Int): Int {
+        val originalPrice = price / (1 - (savePercentage / 100.0)) // Use Double for division
+        return round(originalPrice).toInt() // Round to the nearest integer
+    }
+    }

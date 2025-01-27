@@ -28,11 +28,13 @@ class BankViewModel @Inject constructor(private val bankRepositories: BankReposi
 
     fun updatedBank(
         userId: Int,
-        bank: String,
+        holderName: String,
         accountNum: String,
-        branch: String,
         ifsc: String,
-        holderName: String
+        bank: String,
+        branch: String,
+
+
     ) {
         viewModelScope.launch {
             bankRepositories.updatebank(userId, bank, accountNum, branch, ifsc, holderName, object : NetworkCallback<BankUpdateResponse> {
