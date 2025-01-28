@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.gmwapp.hima.BaseApplication
@@ -71,6 +72,7 @@ class AlmostDoneActivity : BaseActivity() {
         profileViewModel.getUserLiveData.observe(this, Observer {
             prefs?.setUserData(it.data);
             userData = it.data;
+            Log.d("statusCheck","$")
             if(userData?.status == 2){
                 intent = Intent(this, MainActivity::class.java)
                 intent?.putExtra(
