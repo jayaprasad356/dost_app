@@ -63,10 +63,9 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
         val activity = context as? Activity
 
         activity?.window?.apply {
-            decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE  // Ensure layout doesn't change
-                    )
-            // No need to add FLAG_LAYOUT_NO_LIMITS, as we want to respect the status bar
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE  // Ensures layout doesn't change
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS) // Ensures status bar respects layout
+            clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)  // Ensure status bar is visible
         }
 //        activity?.window?.apply {
 //            decorView.systemUiVisibility = (
@@ -81,6 +80,8 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
 
         if (root != null) {
             root?.setBackgroundColor(Color.parseColor("#ff0d4a"))
+            // Set fitsSystemWindows to true to ensure layout respects insets
+            root?.fitsSystemWindows = true
             ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
