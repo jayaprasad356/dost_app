@@ -17,6 +17,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.R
 import com.gmwapp.hima.activities.BaseActivity
@@ -35,18 +38,22 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-class CustomCallView : ZegoBaseAudioVideoForegroundView {
+class CustomCallView : ZegoBaseAudioVideoForegroundView, LifecycleObserver {
     private var customCallrootView: View? = null
     private var tvRemainingTime: TextView? = null
     private var balanceTime: String? = null
     private var activity: RandomUserActivity? = null
     private var WALLET_ACTIVITY_REQUEST_CODE = 1;
 
-    constructor(context: Context, userID: String?) : super(context, userID)
+    constructor(context: Context, userID: String?) : super(context, userID){
+        registerLifecycleObserver()
+    }
 
     constructor(
         context: Context, attrs: AttributeSet?, userID: String?
-    ) : super(context, attrs, userID)
+    ) : super(context, attrs, userID){
+        registerLifecycleObserver()
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -135,6 +142,35 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
             EventBus.getDefault().register(this)
         }
 
+    private fun registerLifecycleObserver() {
+        val lifecycleOwner = context as? androidx.lifecycle.LifecycleOwner
+        lifecycleOwner?.lifecycle?.addObserver(this)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        restoreUIState()
+    }
+
+    private fun restoreUIState() {
+        val activity = context as? Activity
+        val root = activity?.findViewById<View>(android.R.id.content)
+
+        root?.apply {
+            setBackgroundColor(Color.parseColor("#ff0d4a"))
+            fitsSystemWindows = true
+            ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
+        }
+
+        customCallrootView?.visibility = View.VISIBLE
+    }
+
+
+
         @Subscribe(threadMode = ThreadMode.MAIN)
         fun onGetRemainingTimeEvent(event: UpdateRemainingTimeEvent?) {
             this.balanceTime = event?.remainingTime
@@ -191,4 +227,6 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView {
             }
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
         }
+
+
     }
