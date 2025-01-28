@@ -149,12 +149,20 @@ class CustomCallView : ZegoBaseAudioVideoForegroundView, LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
+        Log.d("CustomCallView", "onResume called")
+
         restoreUIState()
     }
 
     private fun restoreUIState() {
         val activity = context as? Activity
         val root = activity?.findViewById<View>(android.R.id.content)
+
+        activity?.window?.apply {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE  // Ensures layout doesn't change
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS) // Ensures status bar respects layout
+            clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)  // Ensure status bar is visible
+        }
 
         root?.apply {
             setBackgroundColor(Color.parseColor("#ff0d4a"))
