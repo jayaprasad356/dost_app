@@ -42,6 +42,12 @@ class RecentFragment : BaseFragment() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         userData?.let { recentViewModel.getCallsList(userData.id, userData.gender) }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            // Start refreshing the data
+            userData?.let { recentViewModel.getCallsList(userData.id, userData.gender) }
+        }
+
+
 
 
         recentViewModel.callsListLiveData.observe(viewLifecycleOwner, Observer{
@@ -54,6 +60,9 @@ class RecentFragment : BaseFragment() {
         })
 
         recentViewModel.callsListLiveData.observe(viewLifecycleOwner, Observer {
+
+            binding.swipeRefreshLayout.isRefreshing = false
+
             if(it!=null && it.success && it.data!=null) {
                 binding.rvCalls.setLayoutManager(
                     LinearLayoutManager(
