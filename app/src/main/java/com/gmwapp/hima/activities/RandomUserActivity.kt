@@ -141,13 +141,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     private fun initializeCall(cancelled: Boolean) {
-        if (mediaPlayer == null) {
-            val resID = resources.getIdentifier("rhythm", "raw", packageName)
-            mediaPlayer = MediaPlayer.create(this, resID)
-            mediaPlayer?.isLooping = true
-           // mediaPlayer?.start()
-        }
-
         val instance = BaseApplication.getInstance()
         if (isReceiverDetailsAvailable) {
             instance?.setReceiverDetailsAvailable(true)
