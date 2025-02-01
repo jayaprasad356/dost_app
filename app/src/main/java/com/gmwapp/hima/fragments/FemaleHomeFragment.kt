@@ -2,6 +2,7 @@ package com.gmwapp.hima.fragments
 
 import android.Manifest
 import android.app.ActivityManager
+import android.app.NotificationManager.IMPORTANCE_NONE
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,11 +10,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.browser.customtabs.CustomTabsClient.getPackageName
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -36,9 +39,7 @@ import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.onesignal.OneSignal
-import com.permissionx.guolindev.PermissionX
-import com.permissionx.guolindev.callback.ExplainReasonCallback
-import com.permissionx.guolindev.callback.RequestCallback
+import com.tencent.mmkv.MMKV
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.core.notification.PrebuiltCallNotificationManager
@@ -58,6 +59,7 @@ class FemaleHomeFragment : BaseFragment() {
     private val OVERLAY_REQUEST_CODE: Int = 2
     private var mContext: Context? = null
     private val CALL_PERMISSIONS_REQUEST_CODE = 1
+    private val NOTIFICATIONS_ENABLED_REQUEST_CODE = 3
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
     private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
@@ -114,6 +116,40 @@ class FemaleHomeFragment : BaseFragment() {
         }
     }
 
+    private fun askNotificationsEnabled(){
+        if(mContext!=null) {
+            val invitationConfig = CallInvitationServiceImpl.getInstance()
+                .callInvitationConfig
+            var channelID = MMKV.defaultMMKV().getString("channelID", null)
+            if (channelID == null) {
+                channelID = if (invitationConfig?.notificationConfig != null) {
+                    invitationConfig.notificationConfig.channelID
+                } else {
+                    PrebuiltCallNotificationManager.incoming_call_channel_id
+                }
+            }
+            if (NotificationManagerCompat.from(mContext!!).areNotificationsEnabled()
+                && NotificationManagerCompat.from(mContext!!)
+                    .getNotificationChannel(channelID.toString())?.importance != IMPORTANCE_NONE
+                && NotificationManagerCompat.from(mContext!!)
+                    .getNotificationChannel(CallingService.callingChannelId)?.importance != IMPORTANCE_NONE
+            ) {
+                initializeCall()
+            }else{
+                try {
+                    val settingsIntent: Intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, mContext?.packageName)
+
+                    startActivityForResult(settingsIntent, NOTIFICATIONS_ENABLED_REQUEST_CODE)
+                } catch (e: Exception) {
+                    initializeCall()
+                }
+            }
+        }else{
+            initializeCall()
+        }
+    }
+
     private fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
         try {
@@ -122,7 +158,7 @@ class FemaleHomeFragment : BaseFragment() {
                         requireActivity(), Manifest.permission.POST_NOTIFICATIONS
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    initializeCall()
+                    askNotificationsEnabled();
                 } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                     val intent = Intent(context, GrantPermissionsActivity::class.java)
                     startActivity(intent)
@@ -135,7 +171,7 @@ class FemaleHomeFragment : BaseFragment() {
                     }
                 }
             } else {
-                initializeCall()
+               askNotificationsEnabled();
             }
         } catch (e: Exception) {
             val intent = Intent(context, GrantPermissionsActivity::class.java)
@@ -172,6 +208,8 @@ class FemaleHomeFragment : BaseFragment() {
             } else {
                 checkOverlayPermission()
             }
+        } else if(requestCode == NOTIFICATIONS_ENABLED_REQUEST_CODE){
+            askNotificationsEnabled()
         }
     }
 

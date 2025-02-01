@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -148,6 +149,15 @@
             android:foregroundServiceType="microphone"
             android:exported="false">
         </service>
+        <receiver
+            android:name=".receivers.CallReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="im.zego.zim.zpns.intent.action.MESSAGE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
