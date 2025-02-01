@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Handler
@@ -91,6 +93,21 @@ open class BaseFragment : Fragment() {
         ) {
             super.onCallInvitationReceived(zim, info, callID)
             zimBackup = zim
+            if(!isResumed){
+                playMedia()
+            }else{
+                try {
+                    val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+                    audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC)?.let {
+                        audioManager.setStreamVolume(
+                            AudioManager.STREAM_MUSIC,
+                            it,
+                            0
+                        )
+                    }
+                } catch (e: Exception) {
+                }
+            }
         }
 
         override fun onCallInvitationCancelled(
@@ -101,6 +118,7 @@ open class BaseFragment : Fragment() {
             super.onCallInvitationCancelled(zim, info, callID)
             mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
             zimBackup = null
+            stopMedia()
         }
 
         override fun onCallUserStateChanged(
@@ -112,6 +130,7 @@ open class BaseFragment : Fragment() {
             try {
                 if(info?.callUserList?.get(0)?.state == ZIMCallUserState.ACCEPTED || info?.callUserList?.get(0)?.state == ZIMCallUserState.REJECTED) {
                     zimBackup = null
+                    stopMedia()
                     mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
                 }
             } catch (e: Exception) {
@@ -127,6 +146,7 @@ open class BaseFragment : Fragment() {
         ) {
             super.onCallInvitationEnded(zim, info, callID)
             zimBackup = null
+            stopMedia()
             mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
         }
 
@@ -137,6 +157,7 @@ open class BaseFragment : Fragment() {
         ) {
             super.onCallInvitationTimeout(zim, info, callID)
             zimBackup = null
+            stopMedia()
             mContext?.let { NotificationManagerCompat.from(it).cancel(PrebuiltCallNotificationManager.incoming_call_notification_id) }
         }
     }
@@ -199,6 +220,32 @@ open class BaseFragment : Fragment() {
         }
     }
 
+    fun playMedia(){
+        try {
+            val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+            audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC)?.let {
+                audioManager.setStreamVolume(
+                    AudioManager.STREAM_MUSIC,
+                    it,
+                    0
+                )
+            }
+            val resID = resources.getIdentifier("rhythm", "raw", context?.packageName)
+            BaseApplication.getInstance()?.getMediaPlayer()?.stop()
+            val mediaPlayer = MediaPlayer.create(context, resID)
+            BaseApplication.getInstance()?.setMediaPlayer(mediaPlayer)
+            mediaPlayer?.isLooping = true
+            mediaPlayer?.start()
+        } catch (e: Exception) {
+        }
+    }
+
+    fun stopMedia(){
+        try {
+            BaseApplication.getInstance()?.getMediaPlayer()?.stop()
+        } catch (e: Exception) {
+        }
+    }
 
     fun setupZegoUIKit(Userid: Any, userName: String) {
         val appID: Long = 364167780
@@ -211,7 +258,7 @@ open class BaseFragment : Fragment() {
         callInvitationConfig.callingConfig.onlyInitiatorCanInvite = true
         callInvitationConfig.endCallWhenInitiatorLeave = true
         callInvitationConfig.incomingCallRingtone = "rhythm"
-        callInvitationConfig.outgoingCallRingtone = "rhythm"
+        callInvitationConfig.outgoingCallRingtone = "silent"
         ZegoUIKitPrebuiltCallService.events.callEvents.setOnlySelfInRoomListener {
             ZegoUIKitPrebuiltCallService.endCall()
         }
