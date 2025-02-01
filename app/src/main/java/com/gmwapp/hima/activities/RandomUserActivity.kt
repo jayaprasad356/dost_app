@@ -43,6 +43,7 @@ import com.permissionx.guolindev.callback.ExplainReasonCallback
 import com.permissionx.guolindev.callback.RequestCallback
 import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.plugin.common.PluginCallbackListener
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.invite.internal.OutgoingCallButtonListener
@@ -140,6 +141,13 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     private fun initializeCall(cancelled: Boolean) {
+        if (mediaPlayer == null) {
+            val resID = resources.getIdentifier("rhythm", "raw", packageName)
+            mediaPlayer = MediaPlayer.create(this, resID)
+            mediaPlayer?.isLooping = true
+           // mediaPlayer?.start()
+        }
+
         val instance = BaseApplication.getInstance()
         if (isReceiverDetailsAvailable) {
             instance?.setReceiverDetailsAvailable(true)
@@ -281,6 +289,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                     )
                 }
                 data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
+                Log.d("balanceTime", "${data?.balance_time}")
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it?.message, Toast.LENGTH_LONG
@@ -345,16 +354,22 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
+                    Log.d("InvitationEvent", "Incoming call canceled. CallID: $callID, Caller: ${caller?.name}")
+
                     stopCall()
                     finish()
                 }
 
                 override fun onIncomingCallTimeout(callID: String?, caller: ZegoCallUser?) {
+                    Log.d("InvitationEvent", "Incoming call timeout. CallID: $callID")
+
                     stopCall()
                     finish()
                 }
 
                 override fun onOutgoingCallAccepted(callID: String?, callee: ZegoCallUser?) {
+                    Log.d("InvitationEvent", "Call accepted $callID")
+
                 }
 
 
@@ -366,6 +381,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 }
 
                 override fun onOutgoingCallDeclined(callID: String?, callee: ZegoCallUser?) {
+                    Log.d("CallEvent", "Outgoing call declined. CallID: $callID, Callee: ${callee?.name}")
+
                     ZegoUIKitPrebuiltCallService.endCall()
                     initializeCall(true)
                 }
@@ -373,6 +390,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 override fun onOutgoingCallTimeout(
                     callID: String?, callees: MutableList<ZegoCallUser>?
                 ) {
+                    Log.d("CallEvent", "Outgoing call timeout. CallID: $callID")
+
                     ZegoUIKitPrebuiltCallService.endCall()
                     initializeCall(true)
                 }
@@ -382,6 +401,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         ZegoUIKit.addRoomStateChangedListener { room, reason, _, _ ->
             when (reason) {
                 ZegoRoomStateChangedReason.LOGINED -> {
+                    Log.d("RoomStateChanged", "Login successful")
                     if(CallInvitationServiceImpl.getInstance().callInvitationData.type == 1) {
                         activateWakeLock()
                     }
@@ -398,6 +418,9 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 }
 
                 ZegoRoomStateChangedReason.LOGOUT -> {
+                    Log.d("RoomStateChanged", "Logout successful")
+                    Log.d("RoomStateChanged", "Logout reason: $reason")  // This will give you the reason
+
                     releaseWakeLock()
                     lifecycleScope.launch {
                         stopService(Intent(this@RandomUserActivity, CallingService::class.java))
@@ -435,7 +458,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                     }
                 }
 
-                else -> {
+                else ->  {Log.d("RoomStateChanged", "Unhandled reason: $reason")
                 }
             }
         }
@@ -471,6 +494,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
     private fun StartVoiceCall(targetUserId: String, targetName: String, callId: Int) {
         binding.voiceCallButton.setIsVideoCall(false)
+
+
         binding.voiceCallButton.resourceID = "zego_call"
         val user = ZegoUIKitUser(targetUserId, targetName)
         val instance = BaseApplication.getInstance()

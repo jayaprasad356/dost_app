@@ -10,6 +10,7 @@ import com.gmwapp.hima.retrofit.responses.CallsListResponse
 import com.gmwapp.hima.retrofit.responses.CoinsResponse
 import com.gmwapp.hima.retrofit.responses.DeleteUserResponse
 import com.gmwapp.hima.retrofit.responses.EarningsResponse
+import com.gmwapp.hima.retrofit.responses.ExplanationVideoResponse
 import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.GetRemainingTimeResponse
@@ -369,6 +370,18 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         }
     }
 
+    fun getExplanationvideos(
+        language: String,
+        callback: NetworkCallback<ExplanationVideoResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<ExplanationVideoResponse> = getApiInterface().getExplanationVideos(language)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
 
 
 
@@ -692,4 +705,10 @@ interface ApiInterface {
 
     @POST("settings_list")
     fun getSettings(): Call<SettingsResponse>
+
+    @FormUrlEncoded
+    @POST("explaination_video_list")
+    fun getExplanationVideos(
+        @Field("language") language: String
+    ): Call<ExplanationVideoResponse>
 }

@@ -153,12 +153,36 @@ class HomeFragment : BaseFragment() {
         initFab()
     }
 
+//    private fun setupSwipeToRefresh() {
+//        binding.swipeRefreshLayout.setOnRefreshListener {
+//            val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+//            userData?.id?.let {
+//                if (context?.let { context -> isInternetAvailable(context) } == true) {
+//                    loadFemaleUsers(it)
+//                    Log.d("refreshing","refreshing")
+//                } else {
+//                    binding.tvNointernet.visibility = View.VISIBLE
+//                    binding.swipeRefreshLayout.isRefreshing = false
+//                }
+//            }
+//        }
+//    }
+
+
     private fun setupSwipeToRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
             userData?.id?.let {
                 if (context?.let { context -> isInternetAvailable(context) } == true) {
+                    // Clear the existing data
+                    femaleUsersViewModel.femaleUsersResponseLiveData.value?.data?.clear()
+
+                    // Notify the adapter that data has been cleared
+                    (binding.rvProfiles.adapter as? FemaleUserAdapter)?.notifyDataSetChanged()
+
+                    // Reload the data
                     loadFemaleUsers(it)
+                    Log.d("refreshing", "refreshing")
                 } else {
                     binding.tvNointernet.visibility = View.VISIBLE
                     binding.swipeRefreshLayout.isRefreshing = false
@@ -166,6 +190,7 @@ class HomeFragment : BaseFragment() {
             }
         }
     }
+
 
     private fun loadFemaleUsers(userId: Int) {
         femaleUsersViewModel.getFemaleUsers(userId)
@@ -251,4 +276,5 @@ class HomeFragment : BaseFragment() {
         return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
     }
+
 }

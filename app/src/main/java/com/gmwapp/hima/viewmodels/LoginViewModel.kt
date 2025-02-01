@@ -1,5 +1,6 @@
 package com.gmwapp.hima.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -79,6 +80,9 @@ class LoginViewModel @Inject constructor(private val loginRepositories: LoginRep
                     response: Response<SendOTPResponse>
                 ) {
                     sendOTPResponseLiveData.postValue(response.body());
+                    Log.d("RetrofitURL", "Request URL: ${call.request().url}")
+                    Log.d("RetrofitURL", "Request URL: ${response.body()}")
+
                 }
 
                 override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {

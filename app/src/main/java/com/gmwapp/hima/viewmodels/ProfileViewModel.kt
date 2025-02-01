@@ -1,5 +1,6 @@
 package com.gmwapp.hima.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -248,10 +249,13 @@ class ProfileViewModel @Inject constructor(private val profileRepositories: Prof
                         call: Call<SpeechTextResponse>, response: Response<SpeechTextResponse>
                     ) {
                         speechTextLiveData.postValue(response.body())
+                        Log.d("speechtest","${response.body()}")
+
                     }
 
                     override fun onFailure(call: Call<SpeechTextResponse>, t: Throwable) {
                         speechTextErrorLiveData.postValue(t.message)
+                        Log.d("speechtest","${t.message}")
                     }
 
                     override fun onNoNetwork() {
