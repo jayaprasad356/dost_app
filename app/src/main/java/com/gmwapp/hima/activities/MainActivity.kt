@@ -133,7 +133,6 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home -> {
-
                 val homeFragment = if (BaseApplication.getInstance()?.getPrefs()
                         ?.getUserData()?.gender == DConstants.FEMALE
                 ) FemaleHomeFragment() else HomeFragment()

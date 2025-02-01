@@ -14,6 +14,7 @@ import com.gmwapp.hima.databinding.BottomSheetLogoutBinding
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tencent.mmkv.MMKV
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 
 
@@ -33,6 +34,8 @@ class BottomSheetLogout : BottomSheetDialogFragment() {
 
     private fun initUI() {
         binding.btnLogout.setOnSingleClickListener({
+            MMKV.defaultMMKV().remove("user_id");
+            MMKV.defaultMMKV().remove("user_name");
             ZegoUIKitPrebuiltCallService.unInit()
             val prefs = BaseApplication.getInstance()?.getPrefs()
             prefs?.clearUserData()

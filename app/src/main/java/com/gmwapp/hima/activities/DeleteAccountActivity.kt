@@ -31,6 +31,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.tencent.mmkv.MMKV
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -113,6 +114,8 @@ class DeleteAccountActivity : BaseActivity(), OnButtonClickListener {
         })
         profileViewModel.deleteUserLiveData.observe(this, Observer {
             if (it!=null && it.success) {
+                MMKV.defaultMMKV().remove("user_id");
+                MMKV.defaultMMKV().remove("user_name");
                 ZegoUIKitPrebuiltCallService.unInit()
                 prefs?.clearUserData()
                 val intent = Intent(this, NewLoginActivity::class.java)
