@@ -11,6 +11,7 @@ import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.AdapterCoinBinding
 import com.gmwapp.hima.retrofit.responses.CoinsResponseData
 import com.gmwapp.hima.utils.setOnSingleClickListener
+import com.zego.ve.Log
 
 
 class CoinAdapter(
@@ -31,6 +32,8 @@ class CoinAdapter(
     override fun onBindViewHolder(holderParent: RecyclerView.ViewHolder, position: Int) {
         val holder: ItemHolder = holderParent as ItemHolder
         val coin: CoinsResponseData = coins[position]
+
+        Log.d("save percent","${coin.save}")
 
         // Set the default selected item to position 0
         if (position == 0 && coins.none { it.isSelected == true }) {
