@@ -3,7 +3,6 @@ package com.gmwapp.hima.adapters
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.gmwapp.hima.R
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.AdapterFemaleUserBinding
+import com.gmwapp.hima.retrofit.responses.FemaleUsersResponse
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.retrofit.responses.Interests
 import com.gmwapp.hima.utils.Helper
@@ -25,7 +25,7 @@ import com.google.android.flexbox.JustifyContent
 
 class FemaleUserAdapter(
     val activity: Activity,
-    private val femaleUsers: List<FemaleUsersResponseData>,
+    private var femaleUsers: List<FemaleUsersResponseData>,
     val onAudioListener: OnItemSelectionListener<FemaleUsersResponseData>,
     val onVideoListener: OnItemSelectionListener<FemaleUsersResponseData>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

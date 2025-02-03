@@ -110,6 +110,7 @@
                 <ImageView
                     android:id="@+id/iv_coinImg1"
                     android:layout_width="@dimen/_20sdp"
+                    android:visibility="invisible"
                     android:layout_height="@dimen/_20sdp"
                     android:src="@drawable/coin"/>
 
@@ -149,6 +150,7 @@
 
                 <ImageView
                     android:id="@+id/iv_coinImg2"
+                    android:visibility="invisible"
 
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
@@ -190,6 +192,7 @@
 
                 <ImageView
                     android:id="@+id/iv_coinImg3"
+                    android:visibility="invisible"
 
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
@@ -231,6 +234,8 @@
 
                 <ImageView
                     android:id="@+id/iv_coinImg4"
+
+                    android:visibility="invisible"
 
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
