@@ -1,6 +1,7 @@
 package com.gmwapp.hima.adapters
 
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -56,9 +57,16 @@ class FemaleUserAdapter(
 
         if (audioStatus == 1) {
             holder.binding.cvAudio.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.purple))
-            holder.binding.cvAudio.setOnSingleClickListener{
-                onAudioListener.onItemSelected(femaleUser)
+            holder.binding.cvAudio.setOnSingleClickListener {
+                val position = holder.adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val clickedUser = femaleUsers[position]
+                    onAudioListener.onItemSelected(clickedUser)
+                    Log.d("FemaleName", "${clickedUser.name}")
+                }
             }
+
+
         }
         if (videoStatus == 1) {
             holder.binding.cvVideo.setCardBackgroundColor(ContextCompat.getColor(activity, R.color.green))

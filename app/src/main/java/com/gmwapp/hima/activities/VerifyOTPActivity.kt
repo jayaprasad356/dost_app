@@ -18,6 +18,7 @@ import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityVerifyOtpBinding
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.LoginViewModel
+import com.zego.ve.Log
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -121,6 +122,7 @@ class VerifyOTPActivity : BaseActivity() {
                 if(s.toString().length==6){
                  //   binding.btnVerifyOtp.setBackgroundResource(R.drawable.d_button_bg_white)
                     binding.btnVerifyOtp.isEnabled = true
+                    binding.btnVerifyOtp.isClickable = true
                 }else{
                 //    binding.btnVerifyOtp.setBackgroundResource(R.drawable.d_button_bg)
                     binding.btnVerifyOtp.isEnabled = false
@@ -129,18 +131,23 @@ class VerifyOTPActivity : BaseActivity() {
         }
         )
         binding.btnVerifyOtp.setOnSingleClickListener {
-            val enteredOTP = binding.pvOtp.text.toString().toInt()
-            val default = "011011".toInt() // Convert default to Int
-            if (enteredOTP == otp) {
-                binding.pbVerifyOtpLoader.visibility = View.VISIBLE
-                binding.btnVerifyOtp.text = ""
-                login(mobileNumber)
-            } else if (enteredOTP == default) {
-                binding.pbVerifyOtpLoader.visibility = View.VISIBLE
-                binding.btnVerifyOtp.text = ""
-                login(mobileNumber)
+            Log.d("VerifyOTP", "Verify button clicked")
+            val enteredOTP = binding.pvOtp.text.toString()
+            if (enteredOTP.length == 6) {
+                Log.d("VerifyOTP", "OTP entered: $enteredOTP")
+                if (enteredOTP == otp.toString() || enteredOTP == "011011") {
+                    Log.d("VerifyOTP", "OTP matched, calling login()")
+                    binding.pbVerifyOtpLoader.visibility = View.VISIBLE
+                    binding.btnVerifyOtp.text = ""
+                    login(mobileNumber)
+                } else {
+                    Log.d("VerifyOTP", "OTP did not match")
+                }
+            } else {
+                Log.d("VerifyOTP", "Invalid OTP length")
             }
         }
+
     }
 
     private fun startTimer(){
@@ -158,6 +165,8 @@ class VerifyOTPActivity : BaseActivity() {
     }
 
     private fun login(mobile: String) {
+        Log.d("VerifyOTP", "Calling login function now")
+
         loginViewModel.login(mobile)
     }
 }
