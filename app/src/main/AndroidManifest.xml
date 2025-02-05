@@ -144,7 +144,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name="com.gmwapp.hima.activities.CallInviteWalletActivity" />
 
         <service
             android:name=".services.CallingService"
