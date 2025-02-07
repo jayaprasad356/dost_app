@@ -214,13 +214,19 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun activateWakeLock(){
-        val powerManager = context.getSystemService(POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Hima:Calling")
-        wakeLock?.acquire()
+        try {
+            val powerManager = context.getSystemService(POWER_SERVICE) as PowerManager
+            wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Hima:Calling")
+            wakeLock?.acquire()
+        } catch (e: Exception) {
+        }
     }
 
     protected fun releaseWakeLock(){
-        wakeLock?.release();
+        try {
+            wakeLock?.release();
+        } catch (e: Exception) {
+        }
     }
 
     override fun onStop() {
