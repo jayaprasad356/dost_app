@@ -21,6 +21,7 @@ import com.gmwapp.hima.retrofit.responses.RandomUsersResponse
 import com.gmwapp.hima.retrofit.responses.RatingResponse
 import com.gmwapp.hima.retrofit.responses.RegisterResponse
 import com.gmwapp.hima.retrofit.responses.ReportsResponse
+import com.gmwapp.hima.retrofit.responses.SendGiftResponse
 import com.gmwapp.hima.retrofit.responses.SendOTPResponse
 import com.gmwapp.hima.retrofit.responses.SettingsResponse
 import com.gmwapp.hima.retrofit.responses.SpeechTextResponse
@@ -392,6 +393,20 @@ class ApiManager @Inject constructor(private val retrofit: Retrofit) {
         }
     }
 
+    fun sendGift(
+        userId: Int,
+        receiverId: Int,
+        giftId: Int,
+        callback: NetworkCallback<SendGiftResponse>
+    ) {
+        if (Helper.checkNetworkConnection()) {
+            val apiCall: Call<SendGiftResponse> = getApiInterface().sendGift(userId, receiverId, giftId)
+            apiCall.enqueue(callback)
+        } else {
+            callback.onNoNetwork()
+        }
+    }
+
 
 
 
@@ -726,5 +741,13 @@ interface ApiInterface {
 
     @POST("gifts_list")
     fun getGiftImages(): Call<GiftImageResponse>
+
+    @FormUrlEncoded
+    @POST("send_gifts")
+    fun sendGift(
+        @Field("user_id") userId: Int,
+        @Field("receiver_id") receiverId: Int,
+        @Field("gift_id") giftId: Int
+    ): Call<SendGiftResponse>
 
 }

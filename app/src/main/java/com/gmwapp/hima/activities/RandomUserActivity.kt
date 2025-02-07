@@ -43,8 +43,10 @@ import com.gmwapp.hima.databinding.ActivityRandomUserBinding
 import com.gmwapp.hima.services.CallingService
 import com.gmwapp.hima.utils.DPreferences
 import com.gmwapp.hima.utils.GiftManager
+import com.gmwapp.hima.utils.GiftViewModelProvider
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
 import com.gmwapp.hima.viewmodels.GiftImageViewModel
+import com.gmwapp.hima.viewmodels.GiftViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.gmwapp.hima.widgets.CustomCallView
 import com.gmwapp.hima.workers.CallUpdateWorker
@@ -63,7 +65,10 @@ import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallUser
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoInvitationCallListener
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import dagger.hilt.android.AndroidEntryPoint
+import im.zego.zegoexpress.ZegoExpressEngine
+import im.zego.zegoexpress.callback.IZegoEventHandler
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason
+import im.zego.zegoexpress.entity.ZegoUser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -91,6 +96,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     private lateinit var sharedPreferences: SharedPreferences
     private var isPermissionDenied: Boolean = false
 
+
+
     private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
         timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
     }
@@ -112,7 +119,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
 
 
         initUI()
-
         askPermissions()
         onBackPressedDispatcher.addCallback(this) {
             stopCall()
@@ -269,6 +275,25 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     private fun initUI() {
+
+
+        val giftViewModel = ViewModelProvider(this)[GiftViewModel::class.java]
+
+        GiftViewModelProvider.init(giftViewModel)
+
+        // Observe API response
+        giftViewModel.giftResponseLiveData.observe(this) { response ->
+            if (response != null) {
+                Toast.makeText(this, "Gift sent successfully!", Toast.LENGTH_SHORT).show()
+                Log.d("GiftAPI", "Response: $response")
+            }
+        }
+
+        // Observe API failure
+        giftViewModel.giftErrorLiveData.observe(this) { error ->
+            Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
+            Log.e("GiftAPI", "Error: $error")
+        }
 
         GiftImageViewModel.giftResponseLiveData.observe(this) { response ->
             response?.let {
