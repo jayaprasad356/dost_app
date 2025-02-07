@@ -3,7 +3,9 @@ package com.gmwapp.hima.activities
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
@@ -53,6 +55,7 @@ import com.zegocloud.uikit.ZegoUIKit
 import com.zegocloud.uikit.plugin.common.PluginCallbackListener
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallConfig
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
+import com.zegocloud.uikit.prebuilt.call.config.ZegoCallDurationConfig
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.invite.internal.OutgoingCallButtonListener
 import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoCallType
@@ -85,6 +88,8 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     private var startTime: String = ""
     private var endTime: String = ""
     var targetUserId: String? = null
+    private lateinit var sharedPreferences: SharedPreferences
+    private var isPermissionDenied: Boolean = false
 
     private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
         timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
@@ -100,6 +105,12 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Initialize SharedPreferences in onCreate
+        sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        isPermissionDenied = sharedPreferences.getBoolean("isOneSignalTagSet", false)
+
+
         initUI()
 
         askPermissions()
@@ -110,27 +121,37 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
     }
 
     private fun checkOverlayPermission() {
-        try {
-            PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-                .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
-                    try {
-                        val message =
-                            "We need your consent for the following permissions in order to use the offline call function properly"
-                        scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-                    } catch (e: Exception) {
-                    }
-                }).request(RequestCallback { allGranted, grantedList, deniedList ->
-                    try {
-                        if (allGranted) {
-                            initializeCall(false)
-                        } else {
-                            checkOverlayPermission()
+
+        if (isPermissionDenied==true){
+            initializeCall(false)
+        }else{
+
+            try {
+                PermissionX.init(this).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
+                    .onExplainRequestReason(ExplainReasonCallback { scope, deniedList ->
+                        try {
+                            val message =
+                                "We need your consent for the following permissions in order to use the offline call function properly"
+                            scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+                        } catch (e: Exception) {
                         }
-                    } catch (e: Exception) {
-                    }
-                })
-        } catch (e: Exception) {
+                    }).request(RequestCallback { allGranted, grantedList, deniedList ->
+                        try {
+                            if (allGranted) {
+                                initializeCall(false)
+                            } else {
+                                sharedPreferences.edit().putBoolean("isOneSignalTagSet", true).apply()
+                                initializeCall(false)
+                            }
+                        } catch (e: Exception) {
+                        }
+                    })
+            } catch (e: Exception) {
+            }
         }
+
+
+
 
     }
 
@@ -159,6 +180,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
             } else {
                 val receiverId = intent.getIntExtra(DConstants.RECEIVER_ID, 0)
                 val receiverName = intent.getStringExtra(DConstants.RECEIVER_NAME)
+                Log.d("receivername","$receiverName")
                 callType = intent.getStringExtra(DConstants.CALL_TYPE)
                 instance?.setCallType(callType)
                 val userData = instance?.getPrefs()?.getUserData()
@@ -171,6 +193,9 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 femaleUsersViewModel.callFemaleUserResponseLiveData.observe(this, Observer {
 
                     GiftImageViewModel.fetchGiftImages()
+
+                    Log.d("typeofcall","${it.data?.audio_status}")
+                    Log.d("typeofcall","${it.data?.video_status}")
 
                     if (it != null && it.success) {
                         val callId = it.data?.call_id
@@ -304,6 +329,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 val data = it.data
                 data?.call_id?.let { it1 ->
 
+                    Log.d("randomfemalecalling","${data.user_name}")
                     setupCall(
                         data.call_user_id.toString(),
                         data.call_user_name.toString(),
@@ -314,6 +340,10 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                 }
                 data?.call_id?.let { it1 -> addRoomStateChangedListener(it1) }
                 Log.d("balanceTime", "${data?.balance_time}")
+                Log.d("StarTime", "${data?.balance_time}")
+                Log.d("EndTime", "${data?.balance_time}")
+
+
             } else {
                 Toast.makeText(
                     this@RandomUserActivity, it?.message, Toast.LENGTH_LONG
@@ -366,6 +396,9 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                     finish()
                 }
             }
+
+
+
         ZegoUIKitPrebuiltCallService.events.invitationEvents.invitationListener =
             object : ZegoInvitationCallListener {
                 override fun onIncomingCallReceived(
@@ -375,7 +408,6 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                     callees: MutableList<ZegoCallUser>?
                 ) {
                 }
-
 
                 override fun onIncomingCallCanceled(callID: String?, caller: ZegoCallUser?) {
                     Log.d("InvitationEvent", "Incoming call canceled. CallID: $callID, Caller: ${caller?.name}")
@@ -419,6 +451,7 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
                     ZegoUIKitPrebuiltCallService.endCall()
                     initializeCall(true)
                 }
+
             }
 
 
@@ -639,6 +672,14 @@ class RandomUserActivity : BaseActivity(), OnButtonClickListener {
         // Start the image sequence
         handler.post(updateImageSequence)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("destroying","destroyed")
+        intent.replaceExtras(null) // Clears all extras
+
+    }
+
 
 
 

@@ -25,10 +25,11 @@ import com.gmwapp.hima.viewmodels.WalletViewModel
 import com.gmwapp.hima.widgets.SpacesItemDecoration
 import com.google.androidbrowserhelper.trusted.LauncherActivity
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
+import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WalletActivity : BaseActivity() {
+class WalletActivity : BaseActivity()  {
     lateinit var binding: ActivityWalletBinding
     private val WalletViewModel: WalletViewModel by viewModels()
 

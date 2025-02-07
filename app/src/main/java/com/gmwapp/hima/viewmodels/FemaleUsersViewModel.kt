@@ -54,6 +54,7 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
                     response: Response<FemaleUsersResponse>
                 ) {
                     femaleUsersResponseLiveData.postValue(response.body());
+                    Log.d("checkResponse","${response.body()}")
                 }
 
                 override fun onFailure(call: Call<FemaleUsersResponse>, t: Throwable) {
@@ -75,6 +76,8 @@ class FemaleUsersViewModel @Inject constructor(private val femaleUsersRepositori
                     response: Response<RandomUsersResponse>
                 ) {
                     randomUsersResponseLiveData.postValue(response.body());
+                    Log.d("checkRandomResponse","${response.body()}")
+
                 }
 
                 override fun onFailure(call: Call<RandomUsersResponse>, t: Throwable) {

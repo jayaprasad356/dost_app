@@ -40,6 +40,7 @@ import com.gmwapp.hima.dialogs.BottomSheetCountry
 import com.gmwapp.hima.retrofit.responses.Country
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.zego.ve.Log
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -379,7 +380,15 @@ class NewLoginActivity : BaseActivity(), OnItemSelectionListener<Country> {
 
 
     private fun login(mobile: String) {
-        loginViewModel.login(mobile)
+        Log.d("VerifyOTP", "Calling login function now")
+        Log.d("VerifyOTP", "$mobile")
+
+        if (mobile.isNotEmpty()){
+            Log.d("VerifyOTP", "Not Empty")
+
+            loginViewModel.login(mobile)
+
+        }
     }
 
 
