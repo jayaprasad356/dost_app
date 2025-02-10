@@ -66,6 +66,7 @@ class CoinAdapter(
             notifyDataSetChanged()
         }
 
+
         // Set coin details
         holder.binding.tvCoins.text = coin.coins.toString()
         if (coin.save == null) {
@@ -75,6 +76,9 @@ class CoinAdapter(
             holder.binding.tvDiscountPrice.text = "Save ${coin.save} %"
         }
         holder.binding.tvPrice.text = activity.getString(R.string.rupee_text, coin.price)
+        if (coin.save==0){
+            holder.binding.tvDiscountPrice.visibility = View.INVISIBLE
+        }
     }
 
     override fun getItemCount(): Int {
