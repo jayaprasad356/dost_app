@@ -24,6 +24,8 @@ import com.gmwapp.hima.fragments.HomeFragment
 import com.gmwapp.hima.fragments.ProfileFemaleFragment
 import com.gmwapp.hima.fragments.ProfileFragment
 import com.gmwapp.hima.fragments.RecentFragment
+import com.gmwapp.hima.retrofit.responses.RazorPayApiResponse
+import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.gmwapp.hima.viewmodels.OfferViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
@@ -45,6 +47,8 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     val offerViewModel: OfferViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
+    private val accountViewModel: AccountViewModel by viewModels()
+
 
 
 
@@ -198,32 +202,122 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             val apiService = RetrofitClient.instance
             val call = apiService.addCoins(name, amount, email, mobile, userIdWithPoints)
 
-            call.enqueue(object : retrofit2.Callback<ApiResponse> {
-                override fun onResponse(
-                    call: retrofit2.Call<ApiResponse>,
-                    response: retrofit2.Response<ApiResponse>
-                ) {
-                    if (response.isSuccessful && response.body()?.success == true) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            response.body()?.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        // println("Long URL: ${it.longurl}") // Print to the terminal
-                        //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this@MainActivity, LauncherActivity::class.java)
-                        intent.setData(Uri.parse(response.body()?.longurl))
-                        startActivity(intent)
-                        //  Toast.makeText(this@WalletActivity, response.body()?.message ?: "Error", Toast.LENGTH_SHORT).show()
+            val callRazor = apiService.addCoinsRazorPay(userIdWithPoints,name,amount,email,mobile)
+
+            accountViewModel.getSettings()
+
+            accountViewModel.settingsLiveData.observe(this, Observer { response ->
+                if (response != null && response.success) {
+                    response.data?.let { settingsList ->
+                        if (settingsList.isNotEmpty()) {
+                            val settingsData = settingsList[0]
+
+                            when (settingsData.payment_gateway_type) {
+                                "razorpay" -> {
+
+
+                                    callRazor.enqueue(object : retrofit2.Callback<RazorPayApiResponse> {
+                                        override fun onResponse(call: retrofit2.Call<RazorPayApiResponse>, response: retrofit2.Response<RazorPayApiResponse>) {
+                                            if (response.isSuccessful && response.body() != null) {
+                                                val apiResponse = response.body()
+
+                                                // Extract the Razorpay payment link
+                                                val paymentUrl = apiResponse?.short_url
+
+                                                if (!paymentUrl.isNullOrEmpty()) {
+
+                                                    val intent =Intent(this@MainActivity, LauncherActivity::class.java)
+                                                    intent.setData(Uri.parse(response.body()?.short_url))
+                                                    Log.d("WalletResponse","${response.body()?.short_url}")
+                                                    startActivity(intent)
+
+//                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl))
+//                                startActivity(intent)
+                                                } else {
+                                                    Toast.makeText(this@MainActivity, "Failed to get payment link", Toast.LENGTH_SHORT).show()
+                                                }
+                                            } else {
+                                                Toast.makeText(this@MainActivity, "Error: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+
+                                        override fun onFailure(call: retrofit2.Call<RazorPayApiResponse>, t: Throwable) {
+                                            Toast.makeText(this@MainActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                    })
+
+
+
+
+
+                                }
+
+                                "instamojo" -> {
+
+
+                                    call.enqueue(object : retrofit2.Callback<ApiResponse> {
+                                        override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
+                                            if (response.isSuccessful && response.body()?.success == true) {
+                                                Toast.makeText(this@MainActivity, response.body()?.message, Toast.LENGTH_SHORT).show()
+                                            } else {
+                                                // println("Long URL: ${it.longurl}") // Print to the terminal
+                                                //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
+
+                                                val intent =
+                                                    Intent(this@MainActivity, LauncherActivity::class.java)
+                                                intent.setData(Uri.parse(response.body()?.longurl))
+                                                Log.d("WalletResponse","${response.body()?.longurl}")
+                                                startActivity(intent)
+                                                finish()// Directly starting the intent without launcher
+                                                //  Toast.makeText(this@WalletActivity, response.body()?.message ?: "Error", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+
+                                        override fun onFailure(call: retrofit2.Call<ApiResponse>, t: Throwable) {
+                                            Toast.makeText(this@MainActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                    })
+
+
+
+
+                                }
+                                else -> {
+                                    Toast.makeText(this, "Invalid Payment Gateway", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     }
                 }
-
-                override fun onFailure(call: retrofit2.Call<ApiResponse>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT)
-                        .show()
-                }
             })
+
+
+//            call.enqueue(object : retrofit2.Callback<ApiResponse> {
+//                override fun onResponse(
+//                    call: retrofit2.Call<ApiResponse>,
+//                    response: retrofit2.Response<ApiResponse>
+//                ) {
+//                    if (response.isSuccessful && response.body()?.success == true) {
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            response.body()?.message,
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    } else {
+//                        // println("Long URL: ${it.longurl}") // Print to the terminal
+//                        //Toast.makeText(mContext, it.longurl, Toast.LENGTH_SHORT).show()
+//                        val intent = Intent(this@MainActivity, LauncherActivity::class.java)
+//                        intent.setData(Uri.parse(response.body()?.longurl))
+//                        startActivity(intent)
+//                        //  Toast.makeText(this@WalletActivity, response.body()?.message ?: "Error", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//
+//                override fun onFailure(call: retrofit2.Call<ApiResponse>, t: Throwable) {
+//                    Toast.makeText(this@MainActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+//            })
         } else {
             Toast.makeText(this, "Invalid input data", Toast.LENGTH_SHORT).show()
         }
