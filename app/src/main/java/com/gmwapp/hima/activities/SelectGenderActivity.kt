@@ -42,6 +42,9 @@ class SelectGenderActivity : BaseActivity() {
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvAvatars)
         setCenterLayoutManager(binding.rvAvatars)
+
+        // Log.d
+
         binding.ivBack.setOnSingleClickListener {
             finish()
         }
