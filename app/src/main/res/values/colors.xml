@@ -32,12 +32,14 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green">#019A66</color>
     <color name="pink">#FF1381</color>
+    <color name="pink_bold">#C11063</color>
     <color name="pink_light">#FFA5CF</color>
     <color name="pink_extra_light">#FFC0D4</color>
     <color name="pink_extra_light_100">#4EFFFFFF</color>
     <color name="purple">#9C1DF9</color>
     <color name="blue">#2388F2</color>
     <color name="grey_medium">#75767a</color>
+    <color name="grey">#545454</color>
     <color name="grey_extra_light">#F5F6F8</color>
     <color name="text_light_grey">#979797</color>
     <color name="purple_400">#6E4EEF</color>

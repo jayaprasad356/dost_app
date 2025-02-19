@@ -78,6 +78,11 @@
         <activity android:name=".activities.AccountPrivacyActivity" />
         <activity android:name=".activities.DeleteAccountActivity" />
         <activity android:name=".activities.EditProfileActivity" />
+        <activity android:name=".activities.PaymentActivity"
+            tools:ignore="DuplicateActivity" />
+        <activity android:name=".activities.CouponActivity" />
+        <activity android:name=".activities.ShareActivity" />
+
         <activity android:name=".activities.SelectGenderActivity" />
         <activity android:name=".activities.SelectLanguageActivity" />
         <activity android:name=".activities.LoginActivity" />

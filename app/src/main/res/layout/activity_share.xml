@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ShareActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.027" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_left_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04622871" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_right_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="85dp" />
+
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/edit"
+        android:rotation="180"
+        android:src="@drawable/right_arrow"
+        app:layout_constraintStart_toStartOf="@id/gl_left_margin"
+        app:layout_constraintTop_toTopOf="@id/gl_top_margin"
+        app:tint="@color/pink_bold"
+        tools:ignore="MissingConstraints" />
+
+
+    <TextView
+        android:id="@+id/tv_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Share &amp; Get Coins"
+        android:textColor="@color/pink_bold"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_back"
+        app:layout_constraintStart_toEndOf="@+id/iv_back"
+        app:layout_constraintTop_toTopOf="@+id/iv_back" />
+
+
+    <TextView
+        android:id="@+id/my_invites"
+        android:layout_width="@dimen/_71sdp"
+        android:layout_height="@dimen/_21sdp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="My Invites"
+        android:textColor="@color/grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_share"
+        app:layout_constraintTop_toBottomOf="@+id/tv_share" />
+
+    <TextView
+        android:id="@+id/coinPerInvite"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_21sdp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Coins per invites"
+        android:textColor="@color/grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/my_invites"
+        app:layout_constraintTop_toBottomOf="@+id/tv_share" />
+
+
+    <ImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/small_profile"
+        app:layout_constraintStart_toStartOf="@+id/my_invites"
+        app:layout_constraintTop_toBottomOf="@+id/my_invites" />
+
+    <TextView
+        android:id="@+id/tv_invites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="0"
+        android:textColor="@color/grey"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@+id/iv_profile"
+        app:layout_constraintTop_toTopOf="@+id/iv_profile" />
+
+    <ImageView
+        android:id="@+id/iv_coin"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/coin_img"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_profile"
+        app:layout_constraintStart_toEndOf="@+id/my_invites"
+        app:layout_constraintTop_toBottomOf="@+id/coinPerInvite" />
+
+    <TextView
+        android:id="@+id/tv_coinPerInvite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="10"
+        android:textColor="@color/grey"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_profile"
+        app:layout_constraintStart_toEndOf="@+id/iv_coin"
+        app:layout_constraintTop_toTopOf="@+id/iv_coin" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text=" /per invite"
+        android:textColor="@color/inactive_call"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_coinPerInvite"
+        app:layout_constraintStart_toEndOf="@id/tv_coinPerInvite"
+        app:layout_constraintTop_toTopOf="@+id/tv_coinPerInvite" />
+
+    <TextView
+        android:id="@+id/coinEarned"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_21sdp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Total coins earned"
+        android:textColor="@color/grey"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/my_invites"
+        app:layout_constraintTop_toBottomOf="@+id/tv_invites" />
+
+    <ImageView
+        android:id="@+id/iv_coin2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="4dp"
+        android:src="@drawable/coin_img"
+        app:layout_constraintBottom_toBottomOf="@+id/coinEarned"
+        app:layout_constraintStart_toEndOf="@+id/coinEarned"
+        app:layout_constraintTop_toTopOf="@+id/coinEarned" />
+
+    <TextView
+        android:id="@+id/tv_coinEarned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/grey"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_coin2"
+        app:layout_constraintStart_toEndOf="@+id/iv_coin2"
+        app:layout_constraintTop_toTopOf="@+id/iv_coin2" />
+
+    <TextView
+        android:id="@+id/invitecode"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_21sdp"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="My Invite Code"
+        android:textColor="@color/grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/coinEarned"
+        app:layout_constraintTop_toBottomOf="@+id/coinEarned" />
+
+    <TextView
+        android:id="@+id/tv_invitecode"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_21sdp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="9FERDV43"
+        android:textColor="@color/pink"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/invitecode"
+        app:layout_constraintTop_toBottomOf="@+id/invitecode" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:background="@drawable/d_button_share"
+        android:drawableStart="@drawable/light_whatsapp"
+        android:drawablePadding="8dp"
+        android:text="Share Link"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_invitecode"
+        app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toTopOf="@+id/invitecode" />
+
+    <TextView
+
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_21sdp"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="How to get coins ?"
+        android:textColor="@color/grey"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@id/gl_right_margin"
+        app:layout_constraintStart_toStartOf="@id/gl_left_margin"
+        app:layout_constraintTop_toBottomOf="@+id/tv_invitecode" />
+
+
+    <ImageView
+        android:id="@+id/whatsapp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:src="@drawable/whatsapp"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_21sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Share your link"
+        android:textColor="@color/grey"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/whatsapp"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toBottomOf="@+id/whatsapp" />
+
+
+    <ImageView
+
+        android:id="@+id/right_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/right_arrow_grey"
+        app:layout_constraintBottom_toBottomOf="@+id/whatsapp"
+        app:layout_constraintEnd_toStartOf="@+id/coin_h"
+        app:layout_constraintStart_toEndOf="@+id/whatsapp"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <ImageView
+        android:id="@+id/coin_h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/coin_big"
+        app:layout_constraintBottom_toBottomOf="@+id/whatsapp"
+        app:layout_constraintEnd_toEndOf="@id/guideline7"
+
+        app:layout_constraintTop_toTopOf="@+id/whatsapp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="85dp" />
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_21sdp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Get FREE Coins"
+        android:textColor="@color/grey"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+        app:layout_constraintEnd_toEndOf="@+id/coin_h"
+        app:layout_constraintStart_toStartOf="@+id/coin_h"
+        app:layout_constraintTop_toBottomOf="@+id/coin_h" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

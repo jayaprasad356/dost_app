@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/_8sdp"
+    android:background="@drawable/d_bg_coupons_cv"
+    android:layout_height="@dimen/_138sdp">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-6dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:rotation="270"
+            android:text="60 % Offer"
+            android:textColor="#FFD018"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!--        <ImageView-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="@dimen/_157sdp"-->
+        <!--            android:layout_marginLeft="-5dp"-->
+        <!--            android:layout_weight="1"-->
+
+        <!--            android:src="@drawable/straight_dottet_line"/>-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tvCouponCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="03DCL0"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="#545454"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="@dimen/_18sdp"/>
+
+        <TextView
+            android:id="@+id/tvSaveAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save upto Rs 49"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="#AB47BC"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="@dimen/_12sdp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/horizontal_dottet_line"/>
+
+        <TextView
+            android:id="@+id/tvValidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Valid on 499 pack only"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="#545454"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="@dimen/_12sdp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_5sdp"
+            android:paddingRight="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:background="@drawable/d_green_rounded_corner"
+            android:layout_height="30dp">
+
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/coin_img"/>
+
+            <TextView
+                android:id="@+id/tvCoins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1200"
+                android:gravity="center"
+
+                android:layout_gravity="center"
+                android:textColor="#545454"
+                android:textSize="@dimen/_9sdp"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginLeft="@dimen/_5sdp"/>
+
+            <TextView
+                android:id="@+id/tvOriginalPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\u20B9499"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="#545454"
+                android:textSize="@dimen/_9sdp"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginLeft="@dimen/_45sdp"/>
+
+            <TextView
+                android:id="@+id/tvDiscountedPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\u20B9299"
+                android:gravity="center"
+                android:background="@drawable/d_green_rounded_circle"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8sdp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginLeft="@dimen/_5sdp"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnApplyCoupon"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_35sdp"
+        android:backgroundTint="#FFD018"
+        android:text="Apply"
+        android:background="@drawable/round_border"
+        android:textColor="#545454"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginLeft="-90dp"/>
+
+
+
+
+
+
+</LinearLayout>

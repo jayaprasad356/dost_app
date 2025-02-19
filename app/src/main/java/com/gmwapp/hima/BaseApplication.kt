@@ -1,25 +1,40 @@
 package com.gmwapp.hima
 
 import android.app.Activity
+import android.app.ActivityManager
+import android.app.AlertDialog
 import android.app.Application
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.content.Context
+
+import android.os.Looper
 import android.util.Log
+import android.view.WindowManager
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.gmwapp.hima.activities.WalletActivity
 import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.utils.DPreferences
 import com.google.firebase.FirebaseApp
 import com.onesignal.OneSignal
+import com.onesignal.common.OneSignalUtils
 import com.onesignal.debug.LogLevel
+import com.onesignal.notifications.INotification
+import com.onesignal.notifications.INotificationClickEvent
+import com.onesignal.notifications.INotificationClickListener
+import com.onesignal.notifications.INotificationLifecycleListener
+import com.onesignal.notifications.INotificationWillDisplayEvent
 import com.zegocloud.uikit.prebuilt.call.core.CallInvitationServiceImpl
 import com.zegocloud.uikit.prebuilt.call.core.notification.RingtoneManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -40,12 +55,15 @@ class BaseApplication : Application(), Configuration.Provider {
     private val lifecycleCallbacks: ActivityLifecycleCallbacks =
         object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+
             }
 
             override fun onActivityStarted(activity: Activity) {
+
             }
 
             override fun onActivityResumed(activity: Activity) {
+
                 if(getInstance()?.getPrefs()?.getUserData()?.gender == DConstants.MALE) {
                     CallInvitationServiceImpl.getInstance().hideIncomingCallDialog()
                     RingtoneManager.stopRingTone()
@@ -61,7 +79,8 @@ class BaseApplication : Application(), Configuration.Provider {
             override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
             }
 
-            override fun onActivityDestroyed(p0: Activity) {
+            override fun onActivityDestroyed(activity: Activity) {
+
             }
 
         }
@@ -72,9 +91,13 @@ class BaseApplication : Application(), Configuration.Provider {
     companion object {
         private var mInstance: BaseApplication? = null
 
+
         fun getInstance(): BaseApplication? {
             return mInstance
         }
+
+
+
     }
 
     override fun onCreate() {
@@ -90,6 +113,7 @@ class BaseApplication : Application(), Configuration.Provider {
         // OneSignal Initialization
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID)
 
+
         // requestPermission will show the native Android notification permission prompt.
         // NOTE: It's recommended to use a OneSignal In-App Message to prompt instead.
         CoroutineScope(Dispatchers.IO).launch {
@@ -97,12 +121,22 @@ class BaseApplication : Application(), Configuration.Provider {
         }
         var userId = getInstance()?.getPrefs()
             ?.getUserData()?.id.toString() // Set user_id
+        Log.d("userIDCheck", "Logging in with userId: $userId")
 
-        Log.d("UserId","userID $userId")
-        OneSignal.login(userId)
+
+        if (!userId.isNullOrEmpty()) {
+            Log.d("OneSignal", "Logging in with userId: $userId")
+            OneSignal.login(userId)
+        } else {
+            Log.e("OneSignal", "User ID is null or empty, cannot log in.")
+        }
+
         registerActivityLifecycleCallbacks(lifecycleCallbacks)
 
+
+
     }
+
 
     override fun registerActivityLifecycleCallbacks(callback: ActivityLifecycleCallbacks?) {
         super.registerActivityLifecycleCallbacks(callback)
