@@ -39,6 +39,7 @@ import com.gmwapp.hima.retrofit.responses.FemaleCallAttendResponse
 import com.gmwapp.hima.services.CallingService
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.gmwapp.hima.viewmodels.FirebaseViewModel
 import com.gmwapp.hima.workers.CallUpdateWorker
 import com.onesignal.OneSignal
 import com.tencent.mmkv.MMKV
@@ -64,7 +65,10 @@ class FemaleHomeFragment : BaseFragment() {
     private val NOTIFICATIONS_ENABLED_REQUEST_CODE = 3
     lateinit var binding: FragmentFemaleHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
+
     private lateinit var sharedPreferences: SharedPreferences
+    private var isUserAddedInDB: Boolean = false
     private var isPermissionDenied: Boolean = false
     private val dateFormat = SimpleDateFormat("HH:mm:ss").apply {
         timeZone = TimeZone.getTimeZone("Asia/Kolkata") // Set to IST time zone
@@ -93,8 +97,11 @@ class FemaleHomeFragment : BaseFragment() {
 
         sharedPreferences = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         isPermissionDenied = sharedPreferences.getBoolean("isTagSet", false)
+        isUserAddedInDB = sharedPreferences.getBoolean("isUserAddedInDB", false)
+
         initUI()
         askPermissions()
+        addObserver()
         return binding.root
     }
 
@@ -281,6 +288,11 @@ class FemaleHomeFragment : BaseFragment() {
 
         }
 
+        if (userData?.id!= null && !isUserAddedInDB) {
+            Log.d("firstoreusercreated", "functioncalled")
+            userData?.id?.let { addUserInDB(it) }  // Only calls the function if id is not null
+        }
+
 
 
 //
@@ -442,6 +454,25 @@ class FemaleHomeFragment : BaseFragment() {
                 }
             }
         }
+    }
+
+    fun addUserInDB(femaleUserId: Int?) {
+
+        firebaseViewModel.addFemaleUserInDB(femaleUserId, null, false)
+
+    }
+
+    fun addObserver(){
+        firebaseViewModel.femaleUserStatus.observe(viewLifecycleOwner, Observer { isSuccess ->
+            if (isSuccess) {
+                sharedPreferences.edit().putBoolean("isUserAddedInDB", true).apply()
+
+            } else {
+                Log.d("firstoreusercreated","Not Succesfully")
+
+            }
+        })
+
     }
 
 }

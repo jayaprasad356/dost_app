@@ -2,6 +2,7 @@ package com.gmwapp.hima.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -23,6 +24,8 @@ import com.gmwapp.hima.databinding.FragmentHomeBinding
 import com.gmwapp.hima.retrofit.responses.FemaleUsersResponseData
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.FemaleUsersViewModel
+import com.gmwapp.hima.viewmodels.FirebaseViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import com.onesignal.OneSignal
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,6 +35,11 @@ class HomeFragment : BaseFragment() {
     private var isAllFabVisible: Boolean = false
     lateinit var binding: FragmentHomeBinding
     private val femaleUsersViewModel: FemaleUsersViewModel by viewModels()
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private lateinit var sharedPreferences: SharedPreferences // Declare it but initialize later
+    private var isUserAddedInDB: Boolean = false
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -42,6 +50,7 @@ class HomeFragment : BaseFragment() {
 
         initUI()
         setupSwipeToRefresh()
+        addObserver()
         return binding.root
     }
 
@@ -54,7 +63,9 @@ class HomeFragment : BaseFragment() {
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         val language = userData?.language
 
-        val sharedPreferences = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        isUserAddedInDB = sharedPreferences.getBoolean("isUserAddedInDB", false)
+
         val isTagSet = sharedPreferences.getBoolean("isOneSignalTagSet", false)
 
         OneSignal.User.addTag("gender", "male")
@@ -67,6 +78,11 @@ class HomeFragment : BaseFragment() {
             OneSignal.User.addTag("gender_language", "male_$it")
             Log.d("OneSignalTag", "male_$it")
 
+        }
+
+        if (userData?.id != null && !isUserAddedInDB) {
+            Log.d("firstoreusercreated", "functioncalled")
+            userData?.id?.let { addUserInDB(it) }  // Only calls the function if id is not null
         }
 
 
@@ -322,4 +338,24 @@ class HomeFragment : BaseFragment() {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
     }
 
+
+
+    fun addUserInDB(maleUserId: Int?) {
+
+        firebaseViewModel.addMaleUserInDB(maleUserId, null, false)
+
+    }
+
+    fun addObserver(){
+        firebaseViewModel.maleUserStatus.observe(viewLifecycleOwner, Observer { isSuccess ->
+            if (isSuccess) {
+                sharedPreferences.edit().putBoolean("isUserAddedInDB", true).apply()
+
+            } else {
+                Log.d("firstoreusercreated","Not Succesfully")
+
+            }
+        })
+
+    }
 }

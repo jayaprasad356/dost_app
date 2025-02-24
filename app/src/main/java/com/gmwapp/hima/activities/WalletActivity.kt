@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
@@ -187,9 +188,9 @@ class WalletActivity : BaseActivity()  {
                 val paymentUrl = response.data.firstOrNull()?.payment_url
 
                 if (!paymentUrl.isNullOrEmpty()) {
-                    Log.d("UPI Payment", "Payment URL: $paymentUrl")
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl))
-                    startActivity(intent)
+                    Log.d("UPI Payment", "Opening UPI payment page")
+                    val customTabsIntent = CustomTabsIntent.Builder().build()
+                    customTabsIntent.launchUrl(this, Uri.parse(paymentUrl))
                 } else {
                     Log.e("UPI Payment Error", "Payment URL is null or empty")
                     Toast.makeText(this, "Payment URL not found. Please try again later.", Toast.LENGTH_LONG).show()
