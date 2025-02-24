@@ -13,21 +13,19 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gmwapp.hima.BaseApplication
+import com.gmwapp.hima.PaymentWebViewActivity
 import com.gmwapp.hima.R
 import com.gmwapp.hima.adapters.CoinAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
-import com.gmwapp.hima.constants.DConstants
 import com.gmwapp.hima.databinding.ActivityWalletBinding
 import com.gmwapp.hima.retrofit.responses.CoinsResponseData
 import com.gmwapp.hima.retrofit.responses.RazorPayApiResponse
 import com.gmwapp.hima.utils.setOnSingleClickListener
 import com.gmwapp.hima.viewmodels.AccountViewModel
+import com.gmwapp.hima.viewmodels.UpiPaymentViewModel
 import com.gmwapp.hima.viewmodels.UpiViewModel
 import com.gmwapp.hima.viewmodels.WalletViewModel
-import com.gmwapp.hima.widgets.SpacesItemDecoration
 import com.google.androidbrowserhelper.trusted.LauncherActivity
-import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
-import com.zegocloud.uikit.prebuilt.call.invite.internal.CallInviteActivity
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 
@@ -36,12 +34,20 @@ class WalletActivity : BaseActivity()  {
     lateinit var binding: ActivityWalletBinding
     private val WalletViewModel: WalletViewModel by viewModels()
     private val accountViewModel: AccountViewModel by viewModels()
+    private val upiPaymentViewModel: UpiPaymentViewModel by viewModels()
     private lateinit var call: Call<ApiResponse>
     private lateinit var callRazor: Call<RazorPayApiResponse>
 
     private lateinit var selectedCoin : String
     private lateinit var selectedSavePercent : String
 
+    private lateinit var email :String
+    private lateinit var mobile :String
+    private lateinit var total_amount :String
+    private lateinit var userIdWithPoints :String
+    private lateinit var name :String
+
+    val apiService = RetrofitClient.instance
 
 
     private val viewModel: UpiViewModel by viewModels()
@@ -65,18 +71,6 @@ class WalletActivity : BaseActivity()  {
 
     private fun initUI() {
 
-        accountViewModel.settingsLiveData.observe(this, Observer { response ->
-            if (response != null && response.success) {
-                response.data?.let { settingsList ->
-                    if (settingsList.isNotEmpty()) {
-                        val settingsData = settingsList[0]
-                        Log.d("settingsData", "settingsData ${settingsData.payment_gateway_type}")
-                        handlePaymentGateway(settingsData.payment_gateway_type)
-                    }
-                }
-            }
-
-        })
 
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         binding.tvCoins.text = userData?.coins.toString()
@@ -141,25 +135,25 @@ class WalletActivity : BaseActivity()  {
             val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
 
             val userId = userData?.id
-            val name = userData?.name ?: ""
-            val email = "test@gmail.com"
-            val mobile = userData?.mobile ?: ""
+             name = userData?.name ?: ""
+             email = "test@gmail.com"
+             mobile = userData?.mobile ?: ""
 
             // get 2 percentage of amount
             val twoPercentage = amount.toDouble() * 0.02
             val roundedAmount = Math.round(twoPercentage)
-            val total_amount = (amount.toDouble() + roundedAmount).toString()
+             total_amount = (amount.toDouble() + roundedAmount).toString()
 
             Log.d("Amount", "amount $amount")
             Log.d("Amount", "Totalamount $total_amount")
             Log.d("Amount", "Roundamount $roundedAmount")
             if (userId != null && pointsId.isNotEmpty() && total_amount.isNotEmpty()) {
-                val userIdWithPoints = "$userId-$pointsId"
+                 userIdWithPoints = "$userId-$pointsId"
 
-                val apiService = RetrofitClient.instance
-                 call = apiService.addCoins(name, total_amount, email, mobile, userIdWithPoints)
-                 callRazor = apiService.addCoinsRazorPay(userIdWithPoints,name,total_amount,email,mobile)
+
                   accountViewModel.getSettings()
+
+
 
 //                val intent = Intent(this@WalletActivity, PaymentActivity::class.java).apply {
 //                    putExtra("AMOUNT", total_amount)
@@ -188,12 +182,49 @@ class WalletActivity : BaseActivity()  {
             }
         })
 
+        upiPaymentViewModel.upiPaymentLiveData.observe(this, Observer { response ->
+            if (response != null && response.status) {
+                val paymentUrl = response.data.firstOrNull()?.payment_url
+
+                if (!paymentUrl.isNullOrEmpty()) {
+                    Log.d("UPI Payment", "Payment URL: $paymentUrl")
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl))
+                    startActivity(intent)
+                } else {
+                    Log.e("UPI Payment Error", "Payment URL is null or empty")
+                    Toast.makeText(this, "Payment URL not found. Please try again later.", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Log.e("UPI Payment Error", "Invalid response: ${response?.data}")
+                Toast.makeText(this, "Payment failed. Please check your internet or payment details.", Toast.LENGTH_LONG).show()
+            }
+        })
+
+
+
+
+
+        accountViewModel.settingsLiveData.observe(this, Observer { response ->
+            if (response != null && response.success) {
+                response.data?.let { settingsList ->
+                    if (settingsList.isNotEmpty()) {
+                        val settingsData = settingsList[0]
+                        Log.d("settingsData", "settingsData ${settingsData.payment_gateway_type}")
+                        handlePaymentGateway(settingsData.payment_gateway_type)
+                    }
+                }
+            }
+
+        })
+
     }
 
     private fun handlePaymentGateway(paymentGatewayType: String) {
         // Handle the payment gateway type logic
         when (paymentGatewayType) {
             "razorpay" -> {
+
+                callRazor = apiService.addCoinsRazorPay(userIdWithPoints,name,total_amount,email,mobile)
 
 
                 callRazor.enqueue(object : retrofit2.Callback<RazorPayApiResponse> {
@@ -232,7 +263,23 @@ class WalletActivity : BaseActivity()  {
 
             }
 
+            "upigateway" ->{
+
+                val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+                var userid = userData?.id
+
+
+                userid?.let {
+                    val clientTxnId = generateRandomTxnId(it,pointsId)  // Generate a new transaction ID
+                    upiPaymentViewModel.createUpiPayment(it, clientTxnId, total_amount)
+                }
+
+            }
+
             "instamojo" -> {
+
+
+                call = apiService.addCoins(name, total_amount, email, mobile, userIdWithPoints)
 
 
                 call.enqueue(object : retrofit2.Callback<ApiResponse> {
@@ -268,6 +315,11 @@ class WalletActivity : BaseActivity()  {
         }
 
     }
+
+    fun generateRandomTxnId(userId: Int, coinId: String): String {
+        return "$userId-$coinId-${System.currentTimeMillis()}"
+    }
+
 
 
 

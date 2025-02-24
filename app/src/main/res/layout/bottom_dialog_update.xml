@@ -6,13 +6,27 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:src="@drawable/line"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rocket"/>
+
+
+
     <TextView
         android:layout_gravity="center"
         android:id="@+id/dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update Available"
-        android:textColor="@color/pink"
+        android:text="New update available"
+        android:textColor="#4D4346"
         android:fontFamily="@font/poppins_medium"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -30,10 +44,12 @@
     <TextView
         android:id="@+id/dialog_message"
         android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_regular"
         android:textColor="@color/black"
-        android:text="An update is available for the app. Please update to the latest version."
+        android:text="@string/appupdate"
         android:textSize="16sp" />
 
     <com.google.android.material.button.MaterialButton
@@ -44,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/pink"
-        android:text="Update Now"
+        android:text="Update Now!"
         android:textAllCaps="false"
         android:fontFamily="@font/poppins_medium"
         />

@@ -28,6 +28,7 @@ import com.gmwapp.hima.retrofit.responses.RazorPayApiResponse
 import com.gmwapp.hima.viewmodels.AccountViewModel
 import com.gmwapp.hima.viewmodels.OfferViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
+import com.gmwapp.hima.viewmodels.UpiPaymentViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -49,8 +50,13 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     val offerViewModel: OfferViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
     private val accountViewModel: AccountViewModel by viewModels()
+    private val upiPaymentViewModel: UpiPaymentViewModel by viewModels()
+
     private lateinit var call: Call<ApiResponse>
     private lateinit var callRazor: Call<RazorPayApiResponse>
+
+    lateinit var total_amount : String
+    lateinit var coinId: String
 
 
 
@@ -98,6 +104,25 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     }
 
     private fun initUI() {
+
+        upiPaymentViewModel.upiPaymentLiveData.observe(this, Observer { response ->
+            if (response != null && response.status) {
+                val paymentUrl = response.data.firstOrNull()?.payment_url
+
+                if (!paymentUrl.isNullOrEmpty()) {
+                    Log.d("UPI Payment", "Payment URL: $paymentUrl")
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl))
+                    startActivity(intent)
+                } else {
+                    Log.e("UPI Payment Error", "Payment URL is null or empty")
+                    Toast.makeText(this, "Payment URL not found. Please try again later.", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Log.e("UPI Payment Error", "Invalid response: ${response?.data}")
+                Toast.makeText(this, "Payment failed. Please check your internet or payment details.", Toast.LENGTH_LONG).show()
+            }
+        })
+
 
         accountViewModel.settingsLiveData.observe(this, Observer { response ->
             if (response != null && response.success) {
@@ -204,9 +229,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     override fun onAddCoins(amount: String, id: Int) {
 
-        var amount = "$amount"
+        total_amount = "$amount"
         var pointsId = "$id"
-        Log.d("amount", "amount $amount")
+        coinId = id.toString()
+        Log.d("amount", "amount $total_amount")
 
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
 
@@ -215,13 +241,13 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         val email = "test@gmail.com"
         val mobile = userData?.mobile ?: ""
 
-        if (userId != null && pointsId.isNotEmpty() && amount.isNotEmpty()) {
+        if (userId != null && pointsId.isNotEmpty() && total_amount.isNotEmpty()) {
             val userIdWithPoints = "$userId-$pointsId"
 
             val apiService = RetrofitClient.instance
-            call = apiService.addCoins(name, amount, email, mobile, userIdWithPoints)
+            call = apiService.addCoins(name, total_amount, email, mobile, userIdWithPoints)
 
-            callRazor = apiService.addCoinsRazorPay(userIdWithPoints,name,amount,email,mobile)
+            callRazor = apiService.addCoinsRazorPay(userIdWithPoints,name,total_amount,email,mobile)
 
             accountViewModel.getSettings()
 
@@ -277,6 +303,8 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
                             // Extract the Razorpay payment link
                             val paymentUrl = apiResponse?.short_url
+                            Log.d("WalletResponse","${ apiResponse?.short_url}")
+
 
                             if (!paymentUrl.isNullOrEmpty()) {
 
@@ -305,6 +333,20 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
 
             }
+
+            "upigateway" ->{
+
+                val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
+                var userid = userData?.id
+
+
+                userid?.let {
+                    val clientTxnId = generateRandomTxnId(it,coinId)  // Generate a new transaction ID
+                    upiPaymentViewModel.createUpiPayment(it, clientTxnId, total_amount)
+                }
+
+            }
+
 
             "instamojo" -> {
 
@@ -341,6 +383,10 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
             }
         }
 
+    }
+
+    fun generateRandomTxnId(userId: Int, coinId: String): String {
+        return "$userId-$coinId-${System.currentTimeMillis()}"
     }
     
     

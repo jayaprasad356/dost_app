@@ -221,5 +221,6 @@
     <string name="select">select</string>
     <string name="running_service_to_call">Running service to calling</string>
     <string name="enable_notification">Please enable the notifications to receive the calls properly</string>
+    <string name="appupdate">A brand new version of the Hi ma app is available in the Google play store. Please update your app to explore all of new amazing featuresy</string>
 
 </resources>

@@ -22,6 +22,7 @@ import com.gmwapp.hima.retrofit.responses.UserData
 import com.gmwapp.hima.viewmodels.LoginViewModel
 import com.gmwapp.hima.viewmodels.ProfileViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.zego.ve.Log
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -126,7 +127,9 @@ class SplashScreenActivity : BaseActivity() {
         description: String
     ) {
 
-        if (currentVersion >= latestVersion) {
+
+
+        if (currentVersion.toInt() >= latestVersion.toInt()) {
 //            Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
             if (userData == null) {
 //                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show()

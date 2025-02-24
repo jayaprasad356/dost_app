@@ -86,12 +86,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
         app:cardBackgroundColor="@color/inactive_call"
         app:layout_constraintEnd_toEndOf="@+id/gl_horizontal_center"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_summary"
-        app:layout_constraintWidth_percent="0.4">
+        app:layout_constraintEnd_toStartOf="@+id/gl_horizontal_center"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -142,6 +144,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
         android:layout_marginEnd="8dp"
         android:padding="@dimen/_20sdp"
         app:cardBackgroundColor="@color/inactive_call"
@@ -149,7 +152,7 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintStart_toStartOf="@+id/gl_horizontal_center"
         app:layout_constraintTop_toBottomOf="@+id/tv_summary"
-        app:layout_constraintWidth_percent="0.4">
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:paddingVertical="@dimen/_10sdp"

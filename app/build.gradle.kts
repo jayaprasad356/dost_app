@@ -17,8 +17,8 @@ android {
         applicationId = "com.gmwapp.hima"
         minSdk = 26
         targetSdk = 35
-        versionCode = 9
-        versionName = "9.0"
+        versionCode = 11
+        versionName = "11.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -134,6 +134,8 @@ dependencies {
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
 
     implementation ("com.github.NorthernCaptain:TAndroidLame:1.1")
+
+
 
 
     testImplementation(libs.junit)
