@@ -208,19 +208,24 @@ class WalletActivity : BaseActivity()  {
 
 
 
-
         accountViewModel.settingsLiveData.observe(this, Observer { response ->
-            if (response != null && response.success) {
+            if (response?.success == true) {
                 response.data?.let { settingsList ->
                     if (settingsList.isNotEmpty()) {
                         val settingsData = settingsList[0]
-                        Log.d("settingsData", "settingsData ${settingsData.payment_gateway_type}")
-                        handlePaymentGateway(settingsData.payment_gateway_type)
+                        settingsData.payment_gateway_type?.let { paymentGatewayType ->
+                            Log.d("settingsData", "settingsData $paymentGatewayType")
+                            handlePaymentGateway(paymentGatewayType)
+                        } ?: run {
+                            // Show Toast if payment_gateway_type is null
+                            Toast.makeText(this, "Please try again later", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-
         })
+
+
 
     }
 
