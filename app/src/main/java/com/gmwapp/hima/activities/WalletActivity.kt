@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.gmwapp.hima.BaseApplication
 import com.gmwapp.hima.PaymentWebViewActivity
 import com.gmwapp.hima.R
+import com.gmwapp.hima.YoutubeRechargeActivity
 import com.gmwapp.hima.adapters.CoinAdapter
 import com.gmwapp.hima.callbacks.OnItemSelectionListener
 import com.gmwapp.hima.databinding.ActivityWalletBinding
@@ -72,6 +73,10 @@ class WalletActivity : BaseActivity()  {
 
     private fun initUI() {
 
+        binding.llRecharge.setOnSingleClickListener {
+            val intent = Intent(this, YoutubeRechargeActivity::class.java)
+            startActivity(intent)
+        }
 
         val userData = BaseApplication.getInstance()?.getPrefs()?.getUserData()
         binding.tvCoins.text = userData?.coins.toString()
